@@ -1,0 +1,852 @@
+body {
+    background-image: url("img/chessBackground.png");
+    background-size: 100%;
+}
+
+.hide {
+    display: none;
+}
+
+.checkmate {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 60px;
+    text-align: center;
+    text-shadow: 4px 4px 2px rgba(150, 150, 150, 1);
+}
+
+#A1 {
+    position: absolute;
+    left: 20.5%;
+    bottom: 7.5%;
+    z-index: 800;
+    transform: translate(-50%);
+}
+
+#A1 > img  {
+    height: 119%;
+    width: 119%;
+}
+
+#B1 {
+    position: absolute;
+    left: 29%;
+    bottom: 10.5%;
+    z-index: 800;
+    transform: translate(-50%);
+}
+
+#B1 > img  {
+    height: 118%;
+    width: 118%;
+}
+
+#C1 {
+    position: absolute;
+    left: 37.5%;
+    bottom: 13.2%;
+    z-index: 800;
+    transform: translate(-50%);
+}
+
+#C1 > img  {
+    height: 117%;
+    width: 117%;
+}
+
+#D1 {
+    position: absolute;
+    left: 45%;
+    bottom: 16%;
+    z-index: 800;
+    transform: translate(-50%);
+}
+
+#D1 > img  {
+    height: 116%;
+    width: 116%;
+}
+
+#E1 {
+    position: absolute;
+    left: 53%;
+    bottom:18.6%;
+    z-index: 800;
+    transform: translate(-50%);
+}
+
+#E1 > img  {
+    height: 115%;
+    width: 115%;
+}
+
+#F1 {
+    position: absolute;
+    left: 60.5%;
+    bottom: 21.5%;
+    z-index: 800;
+    transform: translate(-50%);
+}
+
+#F1 > img  {
+    height: 114%;
+    width: 114%;
+}
+
+#G1 {
+    position: absolute;
+    left: 68%;
+    bottom: 24%;
+    z-index: 800;
+    transform: translate(-50%);
+}
+
+#G1 > img  {
+    height: 113%;
+    width: 113%;
+}
+
+#H1 {
+    position: absolute;
+    left: 75.3%;
+    bottom: 26.3%;
+    z-index: 800;
+    transform: translate(-50%);
+}
+
+#H1 > img  {
+    height: 112%;
+    width: 112%;
+}
+
+#A2 {
+    position: absolute;
+    left: 19%;
+    bottom: 17%;
+    z-index: 700;
+    transform: translate(-50%);
+}
+
+#A2 > img  {
+    height: 116%;
+    width: 116%;
+}
+
+#B2 {
+    position: absolute;
+    left: 27.5%;
+    bottom: 19%;
+    z-index: 700;
+    transform: translate(-50%);
+}
+
+#B2 > img  {
+    height: 115%;
+    width: 115%;
+}
+
+#C2 {
+    position: absolute;
+    left: 35%;
+    bottom: 22%;
+    z-index: 700;
+    transform: translate(-50%);
+}
+
+#C2 > img  {
+    height: 114%;
+    width: 114%;
+}
+
+#D2 {
+    position: absolute;
+    left: 43%;
+    bottom: 24.5%;
+    z-index: 700;
+    transform: translate(-50%);
+}
+
+#D2 > img  {
+    height: 113%;
+    width: 113%;
+}
+
+#E2 {
+    position: absolute;
+    left: 50.5%;
+    bottom: 27%;
+    z-index: 700;
+    transform: translate(-50%);
+}
+
+#E2 > img  {
+    height: 112%;
+    width: 112%;
+}
+
+#F2 {
+    position: absolute;
+    left: 58%;
+    bottom: 29.5%;
+    z-index: 700;
+    transform: translate(-50%);
+}
+
+#F2 > img  {
+    height: 111%;
+    width: 111%;
+}
+
+#G2 {
+    position: absolute;
+    left: 65%;
+    bottom: 32%;
+    z-index: 700;
+    transform: translate(-50%);
+}
+
+#G2 > img  {
+    height: 110%;
+    width: 110%;
+}
+
+#H2 {
+    position: absolute;
+    left: 72%;
+    bottom: 34.5%;
+    z-index: 700;
+    transform: translate(-50%);
+}
+
+#H2 > img  {
+    height: 109%;
+    width: 109%;
+}
+
+#A3 {
+    position: absolute;
+    left: 17.4%;
+    bottom: 25.5%;
+    z-index: 500;
+    transform: translate(-50%);
+}
+
+#A3 > img  {
+    height: 113%;
+    width: 113%;
+}
+
+#B3 {
+    position: absolute;
+    left: 25.3%;
+    bottom: 27.8%;
+    z-index: 500;
+    transform: translate(-50%);
+}
+
+#B3 > img  {
+    height: 112%;
+    width: 112%;
+}
+
+#C3 {
+    position: absolute;
+    left: 33%;
+    bottom: 30.2%;
+    z-index: 500;
+    transform: translate(-50%);
+}
+
+#C3 > img  {
+    height: 111%;
+    width: 111%;
+}
+
+#D3 {
+    position: absolute;
+    left: 40.5%;
+    bottom: 32.5%;
+    z-index: 500;
+    transform: translate(-50%);
+}
+
+#D3 > img  {
+    height: 110%;
+    width: 110%;
+}
+
+#E3 {
+    position: absolute;
+    left: 48%;
+    bottom: 35%;
+    z-index: 500;
+    transform: translate(-50%);
+}
+
+#E3 > img  {
+    height: 109%;
+    width: 109%;
+}
+
+#F3 {
+    position: absolute;
+    left: 55%;
+    bottom: 37.2%;
+    z-index: 500;
+    transform: translate(-50%);
+}
+
+#F3 > img  {
+    height: 108%;
+    width: 108%;
+}
+
+#G3 {
+    position: absolute;
+    left: 62%;
+    bottom: 39.5%;
+    z-index: 500;
+    transform: translate(-50%);
+}
+
+#G3 > img  {
+    height: 107%;
+    width: 107%;
+}
+
+#H3 {
+    position: absolute;
+    left: 69%;
+    bottom: 41.7%;
+    z-index: 500;
+    transform: translate(-50%);
+}
+
+#H3 > img  {
+    height: 106%;
+    width: 106%;
+}
+
+#A4 {
+    position: absolute;
+    left: 16%;
+    bottom: 33.8%;
+    z-index: 500;
+    transform: translate(-50%);
+}
+
+#A4 > img  {
+    height: 110%;
+    width: 110%;
+}
+
+#B4 {
+    position: absolute;
+    left: 23.5%;
+    bottom: 36.2%;
+    z-index: 500;
+    transform: translate(-50%);
+}
+
+#B4 > img  {
+    height: 109%;
+    width: 109%;
+}
+
+#C4 {
+    position: absolute;
+    left: 31.2%;
+    bottom: 38%;
+    z-index: 500;
+    transform: translate(-50%);
+}
+
+#C4 > img  {
+    height: 108%;
+    width: 108%;
+}
+
+#D4 {
+    position: absolute;
+    left: 38.5%;
+    bottom: 40.2%;
+    z-index: 500;
+    transform: translate(-50%);
+}
+
+#D4 > img  {
+    height: 107%;
+    width: 107%;
+}
+
+#E4 {
+    position: absolute;
+    left: 45.3%;
+    bottom: 42.5%;
+    z-index: 500;
+    transform: translate(-50%);
+}
+
+#E4 > img  {
+    height: 106%;
+    width: 106%;
+}
+
+#F4 {
+    position: absolute;
+    left: 52.3%;
+    bottom: 44.8%;
+    z-index: 500;
+    transform: translate(-50%);
+}
+
+#F4 > img  {
+    height: 105%;
+    width: 105%;
+}
+
+#G4 {
+    position: absolute;
+    left: 59.3%;
+    bottom: 46.8%;
+    z-index: 500;
+    transform: translate(-50%);
+}
+
+#G4 > img  {
+    height: 104%;
+    width: 104%;
+}
+
+#H4 {
+    position: absolute;
+    left: 65.8%;
+    bottom: 49%;
+    z-index: 500;
+    transform: translate(-50%);
+}
+
+#H4 > img  {
+    height: 103%;
+    width: 103%;
+}
+
+#A5 {
+    position: absolute;
+    left: 14.7%;
+    bottom: 41.5%;
+    z-index: 400;
+    transform: translate(-50%);
+}
+
+#A5 > img  {
+    height: 107%;
+    width: 107%;
+}
+
+#B5 {
+    position: absolute;
+    left: 22.2%;
+    bottom: 43.5%;
+    z-index: 400;
+    transform: translate(-50%);
+}
+
+#B5 > img  {
+    height: 106%;
+    width: 106%;
+}
+
+#C5 {
+    position: absolute;
+    left: 29.5%;
+    bottom: 45.6%;
+    z-index: 400;
+    transform: translate(-50%);
+}
+
+#C5 > img  {
+    height: 105%;
+    width: 105%;
+}
+
+#D5 {
+    position: absolute;
+    left: 36.5%;
+    bottom: 47.4%;
+    z-index: 400;
+    transform: translate(-50%);
+}
+
+#D5 > img  {
+    height: 104%;
+    width: 104%;
+}
+
+#E5 {
+    position: absolute;
+    left: 43.3%;
+    bottom: 49.5%;
+    z-index: 400;
+    transform: translate(-50%);
+}
+
+#E5 > img  {
+    height: 103%;
+    width: 103%;
+}
+
+#F5 {
+    position: absolute;
+    left: 50%;
+    bottom: 51.5%;
+    z-index: 400;
+    transform: translate(-50%);
+}
+
+#F5 > img  {
+    height: 102%;
+    width: 102%;
+}
+
+#G5 {
+    position: absolute;
+    left: 56.7%;
+    bottom: 53.5%;
+    z-index: 400;
+    transform: translate(-50%);
+}
+
+#G5 > img  {
+    height: 101%;
+    width: 101%;
+}
+
+#H5 {
+    position: absolute;
+    left: 63%;
+    bottom: 55.5%;
+    z-index: 400;
+    transform: translate(-50%);
+}
+
+#H5 > img  {
+    height: 100%;
+    width: 100%;
+}
+
+#A6 {
+    position: absolute;
+    left: 13.5%;
+    bottom: 48.5%;
+    transform: translate(-50%);
+    z-index: 300;
+}
+
+#A6 > img  {
+    height: 104%;
+    width: 104%;
+}
+
+#B6 {
+    position: absolute;
+    left: 20.5%;
+    bottom: 50.5%;
+    z-index: 300;
+    transform: translate(-50%);
+}
+
+#B6 > img  {
+    height: 103%;
+    width: 103%;
+}
+
+#C6 {
+    position: absolute;
+    left: 27.6%;
+    bottom: 52.2%;
+    z-index: 300;
+    transform: translate(-50%);
+}
+
+#C6 > img  {
+    height: 102%;
+    width: 102%;
+}
+
+#D6 {
+    position: absolute;
+    left: 34.5%;
+    bottom: 54.2%;
+    z-index: 300;
+    transform: translate(-50%);
+}
+
+#D6 > img  {
+    height: 101%;
+    width: 101%;
+}
+
+#E6 {
+    position: absolute;
+    left: 41%;
+    bottom: 56%;
+    z-index: 300;
+    transform: translate(-50%);
+}
+
+#E6 > img  {
+    height: 100%;
+    width: 100%;
+}
+
+#F6 {
+    position: absolute;
+    left: 47.7%;
+    bottom: 58%;
+    z-index: 300;
+    transform: translate(-50%);
+}
+
+#F6 > img  {
+    height: 99%;
+    width: 99%;
+}
+
+#G6 {
+    position: absolute;
+    left: 54.2%;
+    bottom: 59.7%;
+    z-index: 300;
+    transform: translate(-50%);
+}
+
+#G6 > img  {
+    height: 98%;
+    width: 98%;
+}
+
+#H6 {
+    position: absolute;
+    left: 60.5%;
+    bottom: 61.5%;
+    z-index: 300;
+    transform: translate(-50%);
+}
+
+#H6 > img  {
+    height: 97%;
+    width: 97%;
+}
+
+#A7 {
+    position: absolute;
+    left: 12%;
+    bottom: 55%;
+    z-index: 200;
+    transform: translate(-50%);
+}
+
+#A7 > img  {
+    height: 101%;
+    width: 101%;
+}
+
+#B7 {
+    position: absolute;
+    left: 19%;
+    bottom: 56.5%;
+    z-index: 200;
+    transform: translate(-50%);
+}
+
+#B7 > img  {
+    height: 100%;
+    width: 100%;
+}
+
+#C7 {
+    position: absolute;
+    left: 26%;
+    bottom: 58.7%;
+    z-index: 200;
+    transform: translate(-50%);
+}
+
+#C7 > img  {
+    height: 99%;
+    width: 99%;
+}
+
+#D7 {
+    position: absolute;
+    left: 32.5%;
+    bottom: 60.5%;
+    z-index: 200;
+    transform: translate(-50%);
+}
+
+#D7 > img  {
+    height: 98%;
+    width: 98%;
+}
+
+#E7 {
+    position: absolute;
+    left: 39.5%;
+    bottom: 62%;
+    z-index: 200;
+    transform: translate(-50%);
+}
+
+#E7 > img  {
+    height: 97%;
+    width: 97%;
+}
+
+#F7 {
+    position: absolute;
+    left: 45.5%;
+    bottom: 63.5%;
+    z-index: 200;
+    transform: translate(-50%);
+}
+
+#F7 > img  {
+    height: 96%;
+    width: 96%;
+}
+
+#G7 {
+    position: absolute;
+    left: 52%;
+    bottom: 65.5%;
+    z-index: 200;
+    transform: translate(-50%);
+}
+
+#G7 > img  {
+    height: 95%;
+    width: 95%;
+}
+
+#H7 {
+    position: absolute;
+    left: 58%;
+    bottom: 67.2%;
+    z-index: 200;
+    transform: translate(-50%);
+}
+
+#H7 > img  {
+    height: 94%;
+    width: 94%;
+}
+
+#A8 {
+    position: absolute;
+    left: 11.3%;
+    bottom: 61.1%;
+    z-index: 100;
+    transform: translate(-50%);
+}
+
+#A8 > img  {
+    height: 98%;
+    width: 98%;
+}
+
+#B8 {
+    position: absolute;
+    left: 17.8%;
+    bottom: 63%;
+    z-index: 100;
+    transform: translate(-50%);
+}
+
+#B8 > img  {
+    height: 97%;
+    width: 97%;
+}
+
+#C8 {
+    position: absolute;
+    left: 24.5%;
+    bottom: 64.5%;
+    z-index: 100;
+    transform: translate(-50%);
+}
+
+#C8 > img  {
+    height: 96%;
+    width: 96%;
+}
+
+#D8 {
+    position: absolute;
+    left: 31%;
+    bottom: 65.5%;
+    z-index: 100;
+    transform: translate(-50%);
+}
+
+#D8 > img  {
+    height: 95%;
+    width: 95%;
+}
+
+#E8 {
+    position: absolute;
+    left: 37.2%;
+    bottom: 67.5%;
+    z-index: 100;
+    transform: translate(-50%);
+}
+
+#E8 > img  {
+    height: 94%;
+    width: 94%;
+}
+
+#F8 {
+    position: absolute;
+    left: 43.5%;
+    bottom: 69%;
+    z-index: 100;
+    transform: translate(-50%);
+}
+
+#F8 > img  {
+    height: 93%;
+    width: 93%;
+}
+
+#G8 {
+    position: absolute;
+    left: 49.5%;
+    bottom: 71%;
+    z-index: 100;
+    transform: translate(-50%);
+}
+
+#G8 > img  {
+    height: 92%;
+    width: 92%;
+}
+
+#H8 {
+    position: absolute;
+    left: 55.5%;
+    bottom: 72.7%;
+    z-index: 100;
+    transform: translate(-50%);
+}
+
+#H8 > img  {
+    height: 91%;
+    width: 91%;
+}
+
+img {
+    height: 125%;
+    width: 125%;
+}
