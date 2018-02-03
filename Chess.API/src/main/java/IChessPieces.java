@@ -3,5 +3,4 @@ import java.util.List;
 
 public interface IChessPieces {
 
-    void moves();
 }

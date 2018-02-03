@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class BlackPawn extends ChessPiece {
+public class BlackPawn extends ChessPiece implements IPawn{
 
     public BlackPawn(int x, int y, String color, int id) {
 
@@ -9,43 +9,83 @@ public class BlackPawn extends ChessPiece {
     }
 
 
-    public void moves() {
-        if(super.field.getY() == 1){
-            firstMove();
+    @Override
+    public void setPotentialMoves() {
+        // Swaps the pawn for a queen. Need to fix so that it works in the fontend aswell and that it counts as a move
+        if(super.field.getY() == 7){
+            int x = super.field.getX();
+            int y = super.field.getY();
+            Game.board[x][y] = new Queen(x, y, "Black", id);
         }
-        nextMove();
-        strikeRight();
-        strikeLeft();
+
+        if(super.field.getY() == 1){
+            firstMove(super.field.getX(), super.field.getY() + 1);
+        }
+        nextMove(super.field.getX(), super.field.getY() + 1);
+        strikeRight(super.field.getX() + 1, super.field.getY() + 1);
+        strikeLeft(super.field.getX() - 1, super.field.getY() + 1);
     }
 
-    public void firstMove(){
-        int x = super.field.getX();
-        int y = super.field.getY() + 1;
+    @Override
+    public void firstMove(int x, int y){
         if(isMoveOnBoard(x, y) && isFieldEmpty(x, y)){
             y++;
             checkMove(x, y, false, true);
+            checkNextPotentialMoves(x, y);
         }
     }
 
-    public void nextMove(){
-        int x = super.field.getX();
-        int y = super.field.getY() + 1;
+
+    @Override
+    public void nextMove(int x, int y){
         if(isMoveOnBoard(x, y)){
             checkMove(x, y,false, true);
+            checkNextPotentialMoves(x, y);
         }
     }
 
-    public void strikeRight(){
-        int x = super.field.getX() + 1;
-        int y = super.field.getY() + 1;
+
+    @Override
+    public void strikeRight(int x, int y){
+        if(isMoveOnBoard(x, y)){
+            if(checkMove(x, y, true, true)) {
+                checkNextPotentialMoves(x, y);
+            }
+        }
+    }
+
+
+    @Override
+    public void strikeLeft(int x, int y){
+        if(isMoveOnBoard(x, y)) {
+            if(checkMove(x, y, true, true)) {
+                checkNextPotentialMoves(x, y);
+            }
+        }
+    }
+
+    public void checkNextPotentialMoves(int x, int y){
+        nextMoveNextMove(x, y + 1);
+        nextMoveStrikeLeft(x - 1, y + 1);
+        nextMoveStrikeRight(x + 1, y + 1);
+    }
+
+    public void nextMoveNextMove(int x, int y){
+        if(isMoveOnBoard(x, y)){
+            checkNextMove(x, y, false, true);
+        }
+    }
+
+    public void nextMoveStrikeRight(int x, int y){
         if(isMoveOnBoard(x, y)){
             checkMove(x, y, true, true);
         }
     }
 
-    public void strikeLeft(){
-        int x = super.field.getX() - 1;
-        int y = super.field.getY() + 1;
-        checkMove(x, y, true, true);
+    public void nextMoveStrikeLeft(int x, int y){
+        if(isMoveOnBoard(x, y)) {
+            checkNextMove(x, y, true, true);
+
+        }
     }
 }

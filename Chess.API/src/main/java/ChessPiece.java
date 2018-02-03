@@ -12,6 +12,9 @@ class ChessPiece {
     protected int id;
     private List<Coordinates> potentialMoves = new ArrayList<>();
     private List<Coordinates> potentialStrikes = new ArrayList<>();
+    private List<Coordinates> nextPotentialMoves = new ArrayList<>();
+    private List<Coordinates> nextPotentialStrikes = new ArrayList<>();
+    private Map<String, List<Coordinates>> allPotentialmoves = new HashMap<>();
 
     public ChessPiece(int x, int y, String color, int id){
         this.field = new Coordinates(x, y);
@@ -23,16 +26,33 @@ class ChessPiece {
 
     }
 
+    public void setAllPotentialmoves() {
+        this.allPotentialmoves.put("potentialMoves", potentialMoves);
+        this.allPotentialmoves.put("potentialStrikes", potentialStrikes);
+        this.allPotentialmoves.put("nextPotentialMoves", nextPotentialMoves);
+        this.allPotentialmoves.put("nextPotentialStrikes", nextPotentialStrikes);
+    }
+
+    public Map<String, List<Coordinates>> getAllPotentialmoves() {
+        return allPotentialmoves;
+    }
+
     public List<Coordinates> getPotentialMoves() {
-        potentialMoves = new ArrayList<>();
+        potentialMoves = new ArrayList<>(); // Maybe .clear() instead?
+        nextPotentialMoves = new ArrayList<>();
+        potentialStrikes = new ArrayList<>();
+        nextPotentialStrikes = new ArrayList<>();
+        allPotentialmoves = new HashMap<>();
         setPotentialMoves();
+        setAllPotentialmoves();
         return potentialMoves;
     }
 
-    public List<Coordinates> getPotentialStrikes() {
-        potentialStrikes = new ArrayList<>();
-        return potentialStrikes;
-    }
+    // Hmm???
+//    public List<Coordinates> getPotentialStrikes() {
+//        potentialStrikes = new ArrayList<>();
+//        return potentialStrikes;
+//    }
 
     public void addPotentialMove(int x, int y){
         potentialMoves.add(new Coordinates(x, y));
@@ -41,6 +61,15 @@ class ChessPiece {
     public void addPotentialStrike(int x, int y){
         potentialStrikes.add(new Coordinates(x, y));
     }
+
+    public void addNextPotentialMove(int x, int y){
+        nextPotentialMoves.add(new Coordinates(x, y));
+    }
+
+    public void addNextPotentialStrike(int x, int y){
+        nextPotentialStrikes.add(new Coordinates(x, y));
+    }
+
     public boolean checkMove(int x, int y, boolean strike, boolean pawn){
         if(pawn){
             if (isFieldEmpty(x, y) && !strike) {
@@ -50,6 +79,7 @@ class ChessPiece {
                 if(!isSameColor(x, y)){
                     addPotentialMove(x, y);
                     addPotentialStrike(x, y);
+                    return true;
                 }
             }
         }
@@ -62,6 +92,33 @@ class ChessPiece {
                 if(!isSameColor(x, y)){
                     addPotentialMove(x, y);
                     addPotentialStrike(x, y);
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean checkNextMove(int x, int y, boolean strike, boolean pawn){
+        if(pawn) {
+            if (isFieldEmpty(x, y) && !strike) {
+                addNextPotentialMove(x, y);
+            } else if (!isFieldEmpty(x, y) && strike) {
+                if (!isSameColor(x, y)) {
+                    addNextPotentialMove(x, y);
+                    addNextPotentialStrike(x, y);
+                }
+            }
+        }
+        else if(!pawn){
+            if (isFieldEmpty(x, y)) {
+                addNextPotentialMove(x, y);
+                return true;
+            }
+            else if(!isFieldEmpty(x, y)){
+                if(!isSameColor(x, y)){
+                    addNextPotentialMove(x, y);
+                    addNextPotentialStrike(x, y);
                     return false;
                 }
             }
@@ -88,5 +145,11 @@ class ChessPiece {
             return true;
         }
         return false;
+    }
+
+    public void isMoveCheck(int x, int y){
+        if(Game.board[x][y].id == 29 || Game.board[x][y].id == 5){
+
+        }
     }
 }

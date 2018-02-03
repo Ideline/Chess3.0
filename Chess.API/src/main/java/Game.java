@@ -98,7 +98,7 @@ public class Game {
         board[1][7] = new Knight(1, 7, "White", 26);
         board[2][7] = new Bishop(2, 7, "White", 27);
         board[3][7] = new Queen(3, 7, "White", 28);
-        board[4][7] = new Rook(4, 7, "White", 29);
+        board[4][7] = new King(4, 7, "White", 29);
         board[5][7] = new Bishop(5, 7, "White", 30);
         board[6][7] = new Knight(6, 7, "White", 31);
         board[7][7] = new Rook(7, 7, "White", 32);

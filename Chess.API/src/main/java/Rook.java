@@ -7,7 +7,7 @@ public class Rook extends ChessPiece {
         super(x, y, color, id);
     }
 
-    public void moves() {
+    public void setPotentialMoves() {
         moveDown();
         moveUp();
         moveLeft();
