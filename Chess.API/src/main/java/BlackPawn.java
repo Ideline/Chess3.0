@@ -11,19 +11,18 @@ public class BlackPawn extends ChessPiece implements IPawn{
 
     @Override
     public void setPotentialMoves() {
-        // Swaps the pawn for a queen. Need to fix so that it works in the fontend aswell and that it counts as a move
+        // Swaps the pawn for a queen. Need to fix so that it works in the frontend aswell and that it counts as a move
         if(super.field.getY() == 7){
-            int x = super.field.getX();
-            int y = super.field.getY();
-            Game.board[x][y] = new Queen(x, y, "Black", id);
+            setPossibleQueen(true);
         }
-
-        if(super.field.getY() == 1){
-            firstMove(super.field.getX(), super.field.getY() + 1);
+        else {
+            if (super.field.getY() == 1) {
+                firstMove(super.field.getX(), super.field.getY() + 1);
+            }
+            nextMove(super.field.getX(), super.field.getY() + 1);
+            strikeRight(super.field.getX() + 1, super.field.getY() + 1);
+            strikeLeft(super.field.getX() - 1, super.field.getY() + 1);
         }
-        nextMove(super.field.getX(), super.field.getY() + 1);
-        strikeRight(super.field.getX() + 1, super.field.getY() + 1);
-        strikeLeft(super.field.getX() - 1, super.field.getY() + 1);
     }
 
     @Override
@@ -78,7 +77,7 @@ public class BlackPawn extends ChessPiece implements IPawn{
 
     public void nextMoveStrikeRight(int x, int y){
         if(isMoveOnBoard(x, y)){
-            checkMove(x, y, true, true);
+            checkNextMove(x, y, true, true);
         }
     }
 

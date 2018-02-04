@@ -11,46 +11,51 @@ public class MoveHandler {
     private static List<ChessPiece> whitePieces = new ArrayList<>();
     private static Random r = new Random();
     private static Move fakeReturnMove = new Move("A2", "A3");
+    private static Move queenSwapMove;
     private static List<Coordinates> potentialMoves = new ArrayList<Coordinates>();
 
 
     public static Move getMove(boolean black) {
 
         // Creates a list with all current pieces
-        createChessPieceList();
+        boolean endTurn = createChessPieceList();
 
-        // Picks a random chesspiece
-        if (black) {
-            boolean run = true;
-            while (run) {
-                int index = r.nextInt(chessPieceList.get("Black").size());
-                ChessPiece c = chessPieceList.get("Black").get(index);
+        if(endTurn){
+            return queenSwapMove;
+        }
+        else {
+            // Picks a random chesspiece
+            if (black) {
 
-                // Checks if chosen piece has any moves and is a working piece then randomizes one of it's moves
-                if(allPotentialMoves.get(c.id) != null) {
-                    run = false;
-                    return chooseMove(c);
+                boolean run = true;
+                while (run) {
+                    int index = r.nextInt(chessPieceList.get("Black").size());
+                    ChessPiece c = chessPieceList.get("Black").get(index);
+
+                    // Checks if chosen piece has any moves and is a working piece then randomizes one of it's moves
+                    if (allPotentialMoves.get(c.id) != null) {
+                        run = false;
+                        return chooseMove(c);
+                    }
+                }
+
+            } else {
+
+                boolean run = true;
+                while (run) {
+                    int index = r.nextInt(chessPieceList.get("White").size());
+                    ChessPiece c = chessPieceList.get("White").get(index);
+                    if (allPotentialMoves.get(c.id) != null) {
+                        run = false;
+                        return chooseMove(c);
+                    }
                 }
             }
-//            int index = r.nextInt(chessPieceList.get("Black").size());
-//            return chooseMove(chessPieceList.get("Black").get(index));
-        } else {
-            boolean run = true;
-            while (run) {
-                int index = r.nextInt(chessPieceList.get("White").size());
-                ChessPiece c = chessPieceList.get("White").get(index);
-                if(allPotentialMoves.get(c.id) != null) {
-                    run = false;
-                    return chooseMove(c);
-                }
-            }
-//            int index = r.nextInt(chessPieceList.get("White").size());
-//            return chooseMove(chessPieceList.get("White").get(index));
         }
         return fakeReturnMove;
     }
 
-    private static void createChessPieceList() {
+    private static boolean createChessPieceList() {
 
         allPotentialMoves.clear();
         chessPieceList.clear();
@@ -64,25 +69,36 @@ public class MoveHandler {
             for (int x = 0; x < 8; x++) {
                 ChessPiece c = Game.board[x][y];
                 if (c != null) {
-                    if (c.color == "White") {
-                        whitePieces.add(c);
-                        potentialMoves = c.getPotentialMoves();
-                        nextPotentialMoves = c.getAllPotentialmoves();
-                        if(potentialMoves != null && potentialMoves.size() > 0) {
-                            allPotentialMoves.put(c.id, potentialMoves);
-                        }
-                        if(nextPotentialMoves.get("potentialMoves") != null && nextPotentialMoves.get("potentialMoves").size() > 0){
-                            allNextPotentialMoves.put(c.id, c.getAllPotentialmoves());
-                        }
-                    } else {
-                        blackPieces.add(c);
-                        potentialMoves = c.getPotentialMoves();
-                        nextPotentialMoves = c.getAllPotentialmoves();
-                        if(potentialMoves != null && potentialMoves.size() > 0) {
-                            allPotentialMoves.put(c.id, potentialMoves);
-                        }
-                        if(nextPotentialMoves.get("potentialMoves") != null && nextPotentialMoves.get("potentialMoves").size() > 0){
-                            allNextPotentialMoves.put(c.id, c.getAllPotentialmoves());
+
+                    if(c.isPossibleQueen()){
+                        //c.setPossibleQueen(false);
+                        int a = c.field.getX();
+                        int b = c.field.getY();
+                        Game.board[a][b] = new Queen(a, b, c.color, c.id);
+                        queenSwapMove = new Move(a, b, a, b);
+                        return true;
+                    }
+                    else {
+                        if (c.color == "White") {
+                            whitePieces.add(c);
+                            potentialMoves = c.getPotentialMoves();
+                            nextPotentialMoves = c.getAllPotentialmoves();
+                            if (potentialMoves != null && potentialMoves.size() > 0) {
+                                allPotentialMoves.put(c.id, potentialMoves);
+                            }
+                            if (nextPotentialMoves.get("potentialMoves") != null && nextPotentialMoves.get("potentialMoves").size() > 0) {
+                                allNextPotentialMoves.put(c.id, c.getAllPotentialmoves());
+                            }
+                        } else {
+                            blackPieces.add(c);
+                            potentialMoves = c.getPotentialMoves();
+                            nextPotentialMoves = c.getAllPotentialmoves();
+                            if (potentialMoves != null && potentialMoves.size() > 0) {
+                                allPotentialMoves.put(c.id, potentialMoves);
+                            }
+                            if (nextPotentialMoves.get("potentialMoves") != null && nextPotentialMoves.get("potentialMoves").size() > 0) {
+                                allNextPotentialMoves.put(c.id, c.getAllPotentialmoves());
+                            }
                         }
                     }
                 }
@@ -90,6 +106,7 @@ public class MoveHandler {
         }
         chessPieceList.put("White", whitePieces);
         chessPieceList.put("Black", blackPieces);
+        return false;
     }
 
     // Picks a random move for chosen piece
@@ -108,7 +125,7 @@ public class MoveHandler {
         return m;
     }
 
-    private static void updateGameBoard(ChessPiece c, int moveFromX, int moveFromY, int moveToX, int moveToY){
+    private static void updateGameBoard(ChessPiece c, int moveFromX, int moveFromY, int moveToX, int moveToY) {
 
         Game.board[moveToX][moveToY] = c;
         c.field.setX(moveToX);

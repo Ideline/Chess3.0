@@ -10,6 +10,7 @@ class ChessPiece {
     protected Coordinates field;
     protected String color;
     protected int id;
+    private boolean possibleQueen = false;
     private List<Coordinates> potentialMoves = new ArrayList<>();
     private List<Coordinates> potentialStrikes = new ArrayList<>();
     private List<Coordinates> nextPotentialMoves = new ArrayList<>();
@@ -24,6 +25,14 @@ class ChessPiece {
 
     public void setPotentialMoves(){
 
+    }
+
+    public boolean isPossibleQueen() {
+        return possibleQueen;
+    }
+
+    public void setPossibleQueen(boolean possible) {
+        possibleQueen = possible;
     }
 
     public void setAllPotentialmoves() {
@@ -44,7 +53,7 @@ class ChessPiece {
         nextPotentialStrikes = new ArrayList<>();
         allPotentialmoves = new HashMap<>();
         setPotentialMoves();
-        setAllPotentialmoves();
+        //setAllPotentialmoves();
         return potentialMoves;
     }
 
@@ -147,9 +156,13 @@ class ChessPiece {
         return false;
     }
 
-    public void isMoveCheck(int x, int y){
-        if(Game.board[x][y].id == 29 || Game.board[x][y].id == 5){
+//    public boolean possibleQueen(){
+//
+//    }
 
-        }
+    public void isMoveCheck(int x, int y){
+//        if(Game.board[x][y].id == 29 || Game.board[x][y].id == 5){
+//
+//        }
     }
 }
