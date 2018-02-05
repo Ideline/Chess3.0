@@ -17,7 +17,7 @@ public class Rook extends ChessPiece {
     public void moveDown(){
         int x = super.field.getX();
         for(int y = super.field.getY()-1; y >= 0; y-- ){
-            if(!checkMove(x, y, true, false))
+            if(!checkMove(x, y, true, false, false))
                 break;
         }
     }
@@ -25,7 +25,7 @@ public class Rook extends ChessPiece {
     public void moveUp(){
         int x = super.field.getX();
         for(int y = super.field.getY()+1; y < 8; y++ ){
-            if(!checkMove(x, y, true, false))
+            if(!checkMove(x, y, true, false, false))
                 break;
         }
     }
@@ -33,7 +33,7 @@ public class Rook extends ChessPiece {
     public void moveLeft(){
         int y = super.field.getY();
         for(int x = super.field.getX()-1; x >= 0; x-- ){
-            if(!checkMove(x, y, true, false))
+            if(!checkMove(x, y, true, false, false))
                 break;
         }
     }
@@ -41,7 +41,7 @@ public class Rook extends ChessPiece {
     public void moveRight(){
         int y = super.field.getY();
         for(int x = super.field.getX()+1; x < 8; x++ ){
-            if(!checkMove(x, y, true, false))
+            if(!checkMove(x, y, true, false, false))
                 break;
 
         }

@@ -18,7 +18,7 @@ public class MoveHandler {
     public static Move getMove(boolean black) {
 
         // Creates a list with all current pieces
-        boolean endTurn = createChessPieceList();
+        boolean endTurn = createCollections();
 
         if(endTurn){
             return queenSwapMove;
@@ -55,7 +55,7 @@ public class MoveHandler {
         return fakeReturnMove;
     }
 
-    private static boolean createChessPieceList() {
+    private static boolean createCollections() {
 
         allPotentialMoves.clear();
         chessPieceList.clear();
@@ -81,24 +81,10 @@ public class MoveHandler {
                     else {
                         if (c.color == "White") {
                             whitePieces.add(c);
-                            potentialMoves = c.getPotentialMoves();
-                            nextPotentialMoves = c.getAllPotentialmoves();
-                            if (potentialMoves != null && potentialMoves.size() > 0) {
-                                allPotentialMoves.put(c.id, potentialMoves);
-                            }
-                            if (nextPotentialMoves.get("potentialMoves") != null && nextPotentialMoves.get("potentialMoves").size() > 0) {
-                                allNextPotentialMoves.put(c.id, c.getAllPotentialmoves());
-                            }
+                            createAllPotentialMovesMap(c);
                         } else {
                             blackPieces.add(c);
-                            potentialMoves = c.getPotentialMoves();
-                            nextPotentialMoves = c.getAllPotentialmoves();
-                            if (potentialMoves != null && potentialMoves.size() > 0) {
-                                allPotentialMoves.put(c.id, potentialMoves);
-                            }
-                            if (nextPotentialMoves.get("potentialMoves") != null && nextPotentialMoves.get("potentialMoves").size() > 0) {
-                                allNextPotentialMoves.put(c.id, c.getAllPotentialmoves());
-                            }
+                            createAllPotentialMovesMap(c);
                         }
                     }
                 }
@@ -107,6 +93,17 @@ public class MoveHandler {
         chessPieceList.put("White", whitePieces);
         chessPieceList.put("Black", blackPieces);
         return false;
+    }
+
+    private static void createAllPotentialMovesMap(ChessPiece c){
+        potentialMoves = c.getPotentialMoves();
+        nextPotentialMoves = c.getAllPotentialmoves();
+        if (potentialMoves != null && potentialMoves.size() > 0) {
+            allPotentialMoves.put(c.id, potentialMoves);
+        }
+        if (nextPotentialMoves.get("potentialMoves") != null && nextPotentialMoves.get("potentialMoves").size() > 0) {
+            allNextPotentialMoves.put(c.id, c.getAllPotentialmoves());
+        }
     }
 
     // Picks a random move for chosen piece

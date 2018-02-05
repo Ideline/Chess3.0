@@ -57,11 +57,65 @@ class ChessPiece {
         return potentialMoves;
     }
 
-    // Hmm???
-//    public List<Coordinates> getPotentialStrikes() {
-//        potentialStrikes = new ArrayList<>();
-//        return potentialStrikes;
-//    }
+    public boolean checkMove(int x, int y, boolean strike, boolean pawn, boolean nextMove){
+        if(pawn){
+            if (isFieldEmpty(x, y) && !strike) {
+                if(nextMove){
+                    addNextPotentialMove(x, y);
+                }
+                else {
+                    addPotentialMove(x, y);
+                }
+            }
+            else if(!isFieldEmpty(x, y) && strike){
+                if(!isSameColor(x, y)){
+                    canStrike(nextMove, x, y);
+                }
+            }
+            return !nextMove;
+        }
+        else if(!pawn){
+            if (isFieldEmpty(x, y)) {
+                if(nextMove){
+                    addNextPotentialMove(x, y);
+                }
+                else {
+                    addPotentialMove(x, y);
+                }
+                return true;
+            }
+            else if(!isFieldEmpty(x, y)){
+                if(!isSameColor(x, y)){
+                    canStrike(nextMove, x, y);
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+
+    public void canStrike(boolean nextMove, int x, int y){
+        if(nextMove){
+            addNextPotentialMove(x, y);
+            addNextPotentialStrike(x, y);
+        }
+        else {
+            addPotentialMove(x, y);
+            addPotentialStrike(x, y);
+        }
+    }
+
+    public boolean isMoveOnBoard(int x, int y){
+        return (y >= 0 && y < 8 && x >= 0 && x < 8);
+    }
+
+    public boolean isSameColor(int x, int y){
+        return (color == Game.board[x][y].color);
+    }
+
+    public boolean isFieldEmpty(int x, int y){
+        return (Game.board[x][y] == null);
+    }
 
     public void addPotentialMove(int x, int y){
         potentialMoves.add(new Coordinates(x, y));
@@ -77,92 +131,5 @@ class ChessPiece {
 
     public void addNextPotentialStrike(int x, int y){
         nextPotentialStrikes.add(new Coordinates(x, y));
-    }
-
-    public boolean checkMove(int x, int y, boolean strike, boolean pawn){
-        if(pawn){
-            if (isFieldEmpty(x, y) && !strike) {
-                addPotentialMove(x, y);
-            }
-            else if(!isFieldEmpty(x, y) && strike){
-                if(!isSameColor(x, y)){
-                    addPotentialMove(x, y);
-                    addPotentialStrike(x, y);
-                    return true;
-                }
-            }
-        }
-        else if(!pawn){
-            if (isFieldEmpty(x, y)) {
-                addPotentialMove(x, y);
-                return true;
-            }
-            else if(!isFieldEmpty(x, y)){
-                if(!isSameColor(x, y)){
-                    addPotentialMove(x, y);
-                    addPotentialStrike(x, y);
-                    return false;
-                }
-            }
-        }
-        return false;
-    }
-
-    public boolean checkNextMove(int x, int y, boolean strike, boolean pawn){
-        if(pawn) {
-            if (isFieldEmpty(x, y) && !strike) {
-                addNextPotentialMove(x, y);
-            } else if (!isFieldEmpty(x, y) && strike) {
-                if (!isSameColor(x, y)) {
-                    addNextPotentialMove(x, y);
-                    addNextPotentialStrike(x, y);
-                }
-            }
-        }
-        else if(!pawn){
-            if (isFieldEmpty(x, y)) {
-                addNextPotentialMove(x, y);
-                return true;
-            }
-            else if(!isFieldEmpty(x, y)){
-                if(!isSameColor(x, y)){
-                    addNextPotentialMove(x, y);
-                    addNextPotentialStrike(x, y);
-                    return false;
-                }
-            }
-        }
-        return false;
-    }
-
-    public boolean isMoveOnBoard(int x, int y){
-        if(y >= 0 && y < 8 && x >= 0 && x < 8){
-            return true;
-        }
-        return false;
-    }
-
-    public boolean isSameColor(int x, int y){
-        if(color == Game.board[x][y].color){
-            return true;
-        }
-        return false;
-    }
-
-    public boolean isFieldEmpty(int x, int y){
-        if (Game.board[x][y] == null) {
-            return true;
-        }
-        return false;
-    }
-
-//    public boolean possibleQueen(){
-//
-//    }
-
-    public void isMoveCheck(int x, int y){
-//        if(Game.board[x][y].id == 29 || Game.board[x][y].id == 5){
-//
-//        }
     }
 }

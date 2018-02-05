@@ -17,8 +17,8 @@ public class Bishop extends ChessPiece  {
 
         int x = super.field.getX() - 1;
         int y = super.field.getY() - 1;
-        while(x >= 0 && x < 8 && y >= 0 && y < 8){
-            if(!checkMove(x, y, true, false)) {
+        while(isMoveOnBoard(x, y)){
+            if(!checkMove(x, y, true, false, false)) {
                 break;
             }
             x--;
@@ -29,8 +29,8 @@ public class Bishop extends ChessPiece  {
     public void moveUpRight(){
         int x = super.field.getX() + 1;
         int y = super.field.getY() - 1;
-        while(x >= 0 && x < 8 && y >= 0 && y < 8){
-            if(!checkMove(x, y, true, false)) {
+        while(isMoveOnBoard(x, y)){
+            if(!checkMove(x, y, true, false, false)) {
                 break;
             }
             x++;
@@ -41,8 +41,8 @@ public class Bishop extends ChessPiece  {
     public void moveDownLeft(){
         int x = super.field.getX() - 1;
         int y = super.field.getY() + 1;
-        while(x >= 0 && x < 8 && y >= 0 && y < 8){
-            if(!checkMove(x, y, true, false)) {
+        while(isMoveOnBoard(x, y)){
+            if(!checkMove(x, y, true, false, false)) {
                 break;
             }
             x--;
@@ -53,12 +53,12 @@ public class Bishop extends ChessPiece  {
     public void moveDownRight(){
         int x = super.field.getX() + 1;
         int y = super.field.getY() + 1;
-        while(x >= 0 && x < 8 && y >= 0 && y < 8){
-            if(!checkMove(x, y, true, false)) {
+        while(isMoveOnBoard(x, y)){
+            if(!checkMove(x, y, true, false, false)) {
                 break;
             }
             x++;
-            y--;
+            y++;
         }
     }
 }

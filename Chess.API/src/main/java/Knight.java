@@ -19,7 +19,7 @@ public class Knight extends ChessPiece {
         int x = super.field.getX() + 1;
         int y = super.field.getY() - 2;
         if(isMoveOnBoard(x, y)) {
-            checkMove(x, y, true, false);
+            checkMove(x, y, true, false, false);
         }
     }
 
@@ -27,7 +27,7 @@ public class Knight extends ChessPiece {
         int x = super.field.getX() - 1;
         int y = super.field.getY() - 2;
         if(isMoveOnBoard(x, y)) {
-            checkMove(x, y, true, false);
+            checkMove(x, y, true, false, false);
         }
     }
 
@@ -35,7 +35,7 @@ public class Knight extends ChessPiece {
         int x = super.field.getX() - 2;
         int y = super.field.getY() - 1;
         if(isMoveOnBoard(x, y)) {
-            checkMove(x, y, true, false);
+            checkMove(x, y, true, false, false);
         }
     }
 
@@ -43,7 +43,7 @@ public class Knight extends ChessPiece {
         int x = super.field.getX() + 2;
         int y = super.field.getY() - 1;
         if(isMoveOnBoard(x, y)) {
-            checkMove(x, y, true, false);
+            checkMove(x, y, true, false, false);
         }
     }
 
@@ -51,7 +51,7 @@ public class Knight extends ChessPiece {
         int x = super.field.getX() - 1;
         int y = super.field.getY() + 2;
         if(isMoveOnBoard(x, y)) {
-            checkMove(x, y, true, false);
+            checkMove(x, y, true, false, false);
         }
     }
 
@@ -59,7 +59,7 @@ public class Knight extends ChessPiece {
         int x = super.field.getX() + 1;
         int y = super.field.getY() + 2;
         if(isMoveOnBoard(x, y)) {
-            checkMove(x, y, true, false);
+            checkMove(x, y, true, false, false);
         }
     }
 
@@ -67,7 +67,7 @@ public class Knight extends ChessPiece {
         int x = super.field.getX() - 2;
         int y = super.field.getY() - 1;
         if(isMoveOnBoard(x, y)) {
-            checkMove(x, y, true, false);
+            checkMove(x, y, true, false, false);
         }
     }
 
@@ -75,7 +75,7 @@ public class Knight extends ChessPiece {
         int x = super.field.getX() + 2;
         int y = super.field.getY() + 1;
         if(isMoveOnBoard(x, y)) {
-            checkMove(x, y, true, false);
+            checkMove(x, y, true, false, false);
         }
     }
 }

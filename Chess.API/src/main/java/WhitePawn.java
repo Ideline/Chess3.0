@@ -7,77 +7,64 @@ public class WhitePawn extends ChessPiece implements IPawn{
 
     @Override
     public void setPotentialMoves() {
-        // Swaps the pawn for a queen. Need to fix so that it works in the frontend aswell and that it counts as a move
+        // Signals to swap the pawn for a queen
         if(super.field.getY() == 0){
             setPossibleQueen(true);
         }
         else {
+            // If it's the pawns first move
             if (super.field.getY() == 6) {
-                firstMove(super.field.getX(), super.field.getY() - 1);
+                firstMove(super.field.getX(), super.field.getY() - 1, false);
             }
-            nextMove(super.field.getX(), super.field.getY() - 1);
-            strikeRight(super.field.getX() + 1, super.field.getY() - 1);
-            strikeLeft(super.field.getX() - 1, super.field.getY() - 1);
+            // And all moves
+            nextMove(super.field.getX(), super.field.getY() - 1, false);
+            strikeRight(super.field.getX() + 1, super.field.getY() - 1, false);
+            strikeLeft(super.field.getX() - 1, super.field.getY() - 1, false);
         }
     }
 
+    // If the first field is empty we check the next
     @Override
-    public void firstMove(int x, int y) {
-        if(isMoveOnBoard(x, y) && isFieldEmpty(x, y)){
+    public void firstMove(int x, int y, boolean nextMove) {
+        if(isFieldEmpty(x, y)){
             y--;
-            checkMove(x, y, false, true);
-            checkNextPotentialMoves(x, y);
-        }
-    }
-
-    @Override
-    public void nextMove(int x, int y) {
-        if(isMoveOnBoard(x, y)){
-            checkMove(x, y,false, true);
-            checkNextPotentialMoves(x, y);
-        }
-    }
-
-    @Override
-    public void strikeRight(int x, int y) {
-        if(isMoveOnBoard(x, y)){
-            if(checkMove(x, y, true, true)) {
+            // When we have checked are first potential move we check the follow up move
+            if( checkMove(x, y, false, true, nextMove)) {
                 checkNextPotentialMoves(x, y);
             }
         }
     }
 
     @Override
-    public void strikeLeft(int x, int y) {
+    public void nextMove(int x, int y, boolean nextMove) {
+        if(isMoveOnBoard(x, y)){
+            if(checkMove(x, y,false, true, nextMove)) {
+                checkNextPotentialMoves(x, y);
+            }
+        }
+    }
+
+    @Override
+    public void strikeRight(int x, int y, boolean nextMove) {
+        if(isMoveOnBoard(x, y)){
+            if(checkMove(x, y, true, true, nextMove)) {
+                checkNextPotentialMoves(x, y);
+            }
+        }
+    }
+
+    @Override
+    public void strikeLeft(int x, int y, boolean nextMove) {
         if(isMoveOnBoard(x, y)) {
-            if(checkMove(x, y, true, true)) {
+            if(checkMove(x, y, true, true, nextMove)) {
                 checkNextPotentialMoves(x, y);
             }
         }
     }
 
     public void checkNextPotentialMoves(int x, int y){
-        nextMoveNextMove(x, y - 1);
-        nextMoveStrikeLeft(x - 1, y - 1);
-        nextMoveStrikeRight(x + 1, y - 1);
-    }
-
-    public void nextMoveNextMove(int x, int y){
-        if(isMoveOnBoard(x, y)){
-            checkNextMove(x, y, false, true);
-        }
-    }
-
-    public void nextMoveStrikeRight(int x, int y){
-        if(isMoveOnBoard(x, y)){
-            checkNextMove(x, y, true, true);
-        }
-    }
-
-    public void nextMoveStrikeLeft(int x, int y){
-        if(isMoveOnBoard(x, y)) {
-            checkNextMove(x, y, true, true);
-
-        }
+        nextMove(x, y - 1, true);
+        strikeLeft(x - 1, y - 1, true);
+        strikeRight(x + 1, y - 1, true);
     }
 }

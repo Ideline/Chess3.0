@@ -3,6 +3,8 @@
   var baseurl = 'http://localhost:9999';
   var moveHandler;
   var numberOfMoves = 0;
+  var paus = false;
+  var interval = 1500;
 
   $(function(ready) {
     console.info('Spelet startar ...');
@@ -11,19 +13,47 @@
       board = json;
       console.info(`Spelet startat ...`);
 
-      moveHandler = setInterval(getNextMove, 2000);
+      moveHandler = setInterval(getNextMove, 1500);
     }).fail(function() {
       console.warn('Spelet kunde ej startas.');
     });
   });
 
+  $('#pause').on('click', function(){
+    paus = true;
+    $('.pause').show();
+    $('#pause').fadeIn(100).fadeOut(100).fadeIn(100);
+  });
+
+  $('#play').on('click', function(){
+    paus = false;
+    $('.pause').hide();
+    $('#play').fadeIn(100).fadeOut(100).fadeIn(100);
+    clearInterval(moveHandler);
+    moveHandler = setInterval(getNextMove, 1500);
+  });
+
+  $('#slower').on('click', function(){
+    clearInterval(moveHandler);
+    $('#slower').fadeIn(100).fadeOut(100).fadeIn(100);
+    moveHandler = setInterval(getNextMove, 3000);
+  });
+
+  $('#faster').on('click', function(){
+    clearInterval(moveHandler);
+    $('#faster').fadeIn(100).fadeOut(100).fadeIn(100);
+    moveHandler = setInterval(getNextMove, 300)
+  });
+
   function getNextMove() {
-    $.getJSON(`${baseurl}/move`, function(json) {
-      handleMove(json);
-    }).fail(() => {
-      console.warn('Kunde ej utföra move.');
-      clearInterval(moveHandler);
-    });
+    if(!paus){
+      $.getJSON(`${baseurl}/move`, function(json) {
+        handleMove(json);
+      }).fail(() => {
+        console.warn('Kunde ej utföra move.');
+        clearInterval(moveHandler);
+      });
+    }
   }
 
   //Gör movet
@@ -72,9 +102,12 @@
       
       });
     }
+    printMoves(move);
+  }
+
+  function printMoves(move){
     numberOfMoves++;
     var chessPiece = $(`#${move.from} img`).attr('src').substr(10);
-
     chessPiece = getTypeOfChessPiece(chessPiece);
 
     if(numberOfMoves < 16){
