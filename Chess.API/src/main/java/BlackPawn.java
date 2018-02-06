@@ -28,7 +28,7 @@ public class BlackPawn extends ChessPiece implements IPawn{
     public void firstMove(int x, int y, boolean nextMove){
         if(isFieldEmpty(x, y)){
             y++;
-            // When we have checked are first potential move we check the follow up move
+            // When we have checked our first potential move we check the follow up move
             if(checkMove(x, y, false, true, nextMove)) {
                 checkNextPotentialMoves(x, y);
             }
