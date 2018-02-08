@@ -10,6 +10,7 @@ class ChessPiece {
     protected int currentYPosition;
     private boolean possibleQueen = false;
     protected boolean safeSpotCheck = false;
+    protected boolean secondTurn = false;
     private List<Coordinates> unsafePositions = new ArrayList<>();
     private Map<Integer, Map<String, List<Coordinates>>> allPotentialMoves = new HashMap<>();
 
@@ -22,71 +23,41 @@ class ChessPiece {
         currentYPosition = tile.getY();
     }
 
-    public int getValue() {
-        return value;
-    }
-
-    public void setAllPotentialmoves() {
-        setPotentialMoves();
-    }
-
-    public Map<Integer, Map<String, List<Coordinates>>> getAllPotentialMoves() {
-        setAllPotentialmoves();
-        return allPotentialMoves;
-    }
-
-    public void setPotentialMoves() {
-
-    }
-
-    public boolean isPossibleQueen() {
-        return possibleQueen;
-    }
-
-    public void setPossibleQueen(boolean possible) {
-        possibleQueen = possible;
-    }
-
-    public boolean checkMove(int x, int y, boolean strike, boolean pawn, boolean nextMove, boolean safeSpotCheck) {
+    public boolean checkMove(int moveX, int moveY, boolean strike, boolean pawn, boolean firstOrSecondTurn) {
         if (pawn) {
-            if(safeSpotCheck && strike){
-                if(tileIsEmpty(x, y)){
-                    unsafePositions.add(new Coordinates(x, y));
-                }
-                else if(!tileIsEmpty(x, y)){
-                    unsafePositions.add(new Coordinates(x, y));
-                }            }
-            else {
-                if (!safeSpotCheck && tileIsEmpty(x, y) && !strike) {
-                    addPotentialMoves(x, y, nextMove);
-                    return !nextMove;
-                } else if (!tileIsEmpty(x, y) && strike && !sameColor(x, y)) {
-                    addPotentialStrikesAndMoves(x, y, nextMove);
-                    return !nextMove;
+            if (safeSpotCheck && strike) {
+                unsafePositions.add(new Coordinates(moveX, moveY));
+            } else if(!safeSpotCheck){
+                if (tileIsEmpty(moveX, moveY) && !strike) {
+                    addPotentialMoves(moveX, moveY, firstOrSecondTurn);
+                    return !firstOrSecondTurn;
+                } else if (!tileIsEmpty(moveX, moveY) && strike && !sameColor(moveX, moveY)) {
+                    addPotentialStrikesAndMoves(moveX, moveY, firstOrSecondTurn);
+                    return !firstOrSecondTurn;
                 }
             }
         } else if (!pawn) {
-            if(safeSpotCheck){
-                if(tileIsEmpty(x, y)){
-                    unsafePositions.add(new Coordinates(x, y));
-                    return true;
+            if (safeSpotCheck) {
+                if (tileIsEmpty(moveX, moveY)) {
+                    unsafePositions.add(new Coordinates(moveX, moveY));
+                    return true; // signal for the piece to keep checking next tile
+                } else if (!tileIsEmpty(moveX, moveY)) {
+                    unsafePositions.add(new Coordinates(moveX, moveY));
+                    return false; // signaling for the piece it's the end of the line
                 }
-                else if(!tileIsEmpty(x, y)){
-                    unsafePositions.add(new Coordinates(x, y));
-                    return false;
-                }
-            }
-            else {
-                if (tileIsEmpty(x, y)) {
-                    addPotentialMoves(x, y, nextMove);
-                    return true;
-                } else if (!tileIsEmpty(x, y) && !sameColor(x, y)) {
-                    addPotentialStrikesAndMoves(x, y, nextMove);
-                    return false;
+            } else {
+                if (tileIsEmpty(moveX, moveY)) {
+                    addPotentialMoves(moveX, moveY, firstOrSecondTurn);
+                    secondTurn = !secondTurn;
+                    return true; // signal for the piece to keep checking next tile
+                } else if (!tileIsEmpty(moveX, moveY) && !sameColor(moveX, moveY)) {
+                    addPotentialStrikesAndMoves(moveX, moveY, firstOrSecondTurn);
+                    secondTurn = !secondTurn;
+                    return false; // signal for the piece it's the end of the line
                 }
             }
         }
-        return false;
+        return false; // signal for the piece it's the end of the line
     }
 
     public boolean moveOnBoard(int x, int y) {
@@ -102,8 +73,8 @@ class ChessPiece {
     }
 
 
-    public void addPotentialStrikesAndMoves(int x, int y, boolean nextMove) {
-        if (nextMove) {
+    public void addPotentialStrikesAndMoves(int x, int y, boolean nextTurn) {
+        if (nextTurn) {
             addOtherMove(x, y, "nextPotentialMoves");
             addOtherMove(x, y, "nextPotentialStrikes");
         } else {
@@ -112,8 +83,8 @@ class ChessPiece {
         }
     }
 
-    public void addPotentialMoves(int x, int y, boolean nextMove) {
-        if (nextMove) {
+    public void addPotentialMoves(int x, int y, boolean nextTurn) {
+        if (nextTurn) {
             addOtherMove(x, y, "nextPotentialMoves");
         } else {
             addPotentialMove(x, y, "potentialMoves");
@@ -150,10 +121,37 @@ class ChessPiece {
         }
     }
 
-    public List<Coordinates> getUnsafePositions(){
+    public List<Coordinates> getUnsafePositions() {
+        unsafePositions.clear();
         safeSpotCheck = true;
         setPotentialMoves();
         safeSpotCheck = false;
         return unsafePositions;
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    public void setAllPotentialmoves() {
+        setPotentialMoves();
+    }
+
+    public Map<Integer, Map<String, List<Coordinates>>> getAllPotentialMoves() {
+        allPotentialMoves.clear();
+        setAllPotentialmoves();
+        return allPotentialMoves;
+    }
+
+    public void setPotentialMoves() {
+
+    }
+
+    public boolean isPossibleQueen() {
+        return possibleQueen;
+    }
+
+    public void setPossibleQueen(boolean possible) {
+        possibleQueen = possible;
     }
 }

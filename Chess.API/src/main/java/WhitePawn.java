@@ -39,19 +39,19 @@ public class WhitePawn extends ChessPiece implements IPawn{
         if(tileIsEmpty(moveX, moveY)){
             moveY = currentYPosition + UP;
             // When we have checked if it's open to move two steps we try the move
-            if( checkMove(moveX, moveY, MOVE, PAWN, FIRSTTURN, safeSpotCheck)) {
+            if( checkMove(moveX, moveY, MOVE, PAWN, FIRSTTURN)) {
                 checkNextPotentialMoves(moveX, moveY);
             }
         }
     }
 
     @Override
-    public void move(int x, int y, int rightLeftOrStay, int upDownOrStay, boolean firstOrSecondMove, boolean strikeOrMove) {
+    public void move(int x, int y, int rightLeftOrStay, int upDownOrStay, boolean firstOrSecondTurn, boolean strikeOrMove) {
         int moveX = x + rightLeftOrStay;
         int moveY = y + upDownOrStay;
 
         if(moveOnBoard(moveX, moveY)){
-            if(checkMove(moveX, moveY,strikeOrMove, PAWN, firstOrSecondMove, safeSpotCheck)) {
+            if(checkMove(moveX, moveY,strikeOrMove, PAWN, firstOrSecondTurn)) {
                 checkNextPotentialMoves(moveX, moveY);
             }
         }

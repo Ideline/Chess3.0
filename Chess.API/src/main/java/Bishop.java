@@ -22,11 +22,11 @@ public class Bishop extends ChessPiece implements IChessPieces {
     }
 
     @Override
-    public void move(int x, int y, int rightLeftOrStay, int upDownOrStay, boolean firstOrSecondMove){
+    public void move(int x, int y, int rightLeftOrStay, int upDownOrStay, boolean firstOrSecondTurn){
         int moveX = x + rightLeftOrStay;
         int moveY = y + upDownOrStay;
         while(moveOnBoard(moveX, moveY)){
-            if(!checkMove(moveX, moveY, STRIKE, NO_PAWN, firstOrSecondMove, safeSpotCheck)) {
+            if(!checkMove(moveX, moveY, STRIKE, NO_PAWN, firstOrSecondTurn)) {
                 break;
             }
             else{
@@ -35,4 +35,7 @@ public class Bishop extends ChessPiece implements IChessPieces {
             }
         }
     }
+
+    @Override
+    public void checkNextPotentialMoves(int moveX, int moveY){};
 }
