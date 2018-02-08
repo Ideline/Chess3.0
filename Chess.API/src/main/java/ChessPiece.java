@@ -6,6 +6,8 @@ class ChessPiece {
     protected String color;
     protected int id;
     protected int value;
+    protected int currentXPosition;
+    protected int currentYPosition;
     private boolean possibleQueen = false;
     protected boolean safeSpotCheck = false;
     private List<Coordinates> unsafePositions = new ArrayList<>();
@@ -16,6 +18,8 @@ class ChessPiece {
         this.color = color;
         this.id = id;
         this.value = value;
+        currentXPosition = tile.getX();
+        currentYPosition = tile.getY();
     }
 
     public int getValue() {

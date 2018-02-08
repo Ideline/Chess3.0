@@ -4,8 +4,6 @@ public class Rook extends ChessPiece {
         super(x, y, color, id, value);
     }
 
-        private int x = tile.getX();
-        private int y = tile.getY();
         private final int UP = -1;
         private final int DOWN = 1;
         private final int LEFT = -1;
@@ -14,14 +12,10 @@ public class Rook extends ChessPiece {
 
 
     public void setPotentialMoves() {
-//        moveDown();
-//        moveUp();
-//        moveLeft();
-//        moveRight();
-        move(x, y, STAY, UP);
-        move(x, y, STAY, DOWN);
-        move(x, y, LEFT, STAY);
-        move(x, y, RIGHT, STAY);
+        move(currentXPosition, currentYPosition, STAY, UP);
+        move(currentXPosition, currentYPosition, STAY, DOWN);
+        move(currentXPosition, currentYPosition, LEFT, STAY);
+        move(currentXPosition, currentYPosition, RIGHT, STAY);
     }
 
     private void move(int x, int y, int rightLeftOrStay, int upDownOrStay){
@@ -37,37 +31,4 @@ public class Rook extends ChessPiece {
             }
         }
     }
-
-//    public void moveDown(){
-//        int x = super.tile.getX();
-//        for(int y = super.tile.getY()-1; y >= 0; y-- ){
-//            if(!checkMove(x, y, true, false, false, safeSpotCheck))
-//                break;
-//        }
-//    }
-//
-//    public void moveUp(){
-//        int x = super.tile.getX();
-//        for(int y = super.tile.getY()+1; y < 8; y++ ){
-//            if(!checkMove(x, y, true, false, false, safeSpotCheck))
-//                break;
-//        }
-//    }
-//
-//    public void moveLeft(){
-//        int y = super.tile.getY();
-//        for(int x = super.tile.getX()-1; x >= 0; x-- ){
-//            if(!checkMove(x, y, true, false, false, safeSpotCheck))
-//                break;
-//        }
-//    }
-//
-//    public void moveRight(){
-//        int y = super.tile.getY();
-//        for(int x = super.tile.getX()+1; x < 8; x++ ){
-//            if(!checkMove(x, y, true, false, false, safeSpotCheck))
-//                break;
-//
-//        }
-//    }
 }

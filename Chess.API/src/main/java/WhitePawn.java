@@ -4,12 +4,12 @@ public class WhitePawn extends ChessPiece implements IPawn{
         super(x, y, color, id, value);
     }
 
-    private int x = tile.getX();
-    private int y = tile.getY();
     private final int UP = -1;
     private final int LEFT = -1;
     private final int RIGHT = 1;
     private final int STAY = 0;
+    private final int STARTPOSITION = 6;
+    private final int OPPONENTS_NEST = 0;
     private final boolean PAWN = true;
     private final boolean STRIKE = true;
     private final boolean MOVE = false;
@@ -19,32 +19,26 @@ public class WhitePawn extends ChessPiece implements IPawn{
     @Override
     public void setPotentialMoves() {
         // Signals to swap the pawn for a queen
-        if(super.tile.getY() == 0){
-            setPossibleQueen(true);
+        if(currentYPosition == OPPONENTS_NEST){
+            setPossibleQueen(true); // Signals to swap the pawn for a queen
         }
         else {
-            // If it's the pawns first move
-            if (super.tile.getY() == 6) {
+            if (currentYPosition == STARTPOSITION) {
                 firstMove();
             }
-            // And all moves
-//            nextMove(super.tile.getX(), super.tile.getY() - 1, false);
-//            strikeRight(super.tile.getX() + 1, super.tile.getY() - 1, false);
-//            strikeLeft(super.tile.getX() - 1, super.tile.getY() - 1, false);
-            move(x, y, STAY, UP, FIRSTTURN, MOVE);
-            move(x, y, LEFT, UP, FIRSTTURN,  STRIKE);
-            move(x, y, RIGHT, UP, FIRSTTURN, STRIKE);
+            move(currentXPosition, currentYPosition, STAY, UP, FIRSTTURN, MOVE);
+            move(currentXPosition, currentYPosition, LEFT, UP, FIRSTTURN,  STRIKE);
+            move(currentXPosition, currentYPosition, RIGHT, UP, FIRSTTURN, STRIKE);
         }
     }
 
-    // If the first tile is empty we check the next
     @Override
     public void firstMove() {
-        int moveY = y + UP;
-        int moveX = x;
+        int moveY = currentYPosition + UP;
+        int moveX = currentXPosition;
         if(tileIsEmpty(moveX, moveY)){
-            moveY = y + UP;
-            // When we have checked are first potential move we check the follow up move
+            moveY = currentYPosition + UP;
+            // When we have checked if it's open to move two steps we try the move
             if( checkMove(moveX, moveY, MOVE, PAWN, FIRSTTURN, safeSpotCheck)) {
                 checkNextPotentialMoves(moveX, moveY);
             }
@@ -67,31 +61,4 @@ public class WhitePawn extends ChessPiece implements IPawn{
         move(moveX, moveY, LEFT, UP, SECONDTURN,  STRIKE);
         move(moveX, moveY, RIGHT, UP, SECONDTURN, STRIKE);
     }
-
-//    @Override
-//    public void nextMove(int x, int y, boolean nextMove) {
-//        if(moveOnBoard(x, y)){
-//            if(checkMove(x, y,false, true, nextMove, safeSpotCheck)) {
-//                checkNextPotentialMoves(x, y);
-//            }
-//        }
-//    }
-//
-//    @Override
-//    public void strikeRight(int x, int y, boolean nextMove) {
-//        if(moveOnBoard(x, y)){
-//            if(checkMove(x, y, true, true, nextMove, safeSpotCheck)) {
-//                checkNextPotentialMoves(x, y);
-//            }
-//        }
-//    }
-//
-//    @Override
-//    public void strikeLeft(int x, int y, boolean nextMove) {
-//        if(moveOnBoard(x, y)) {
-//            if(checkMove(x, y, true, true, nextMove, safeSpotCheck)) {
-//                checkNextPotentialMoves(x, y);
-//            }
-//        }
-//    }
 }

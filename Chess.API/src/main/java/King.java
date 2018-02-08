@@ -4,8 +4,6 @@ public class King extends ChessPiece {
         super(x, y, color, id, value);
     }
 
-    private int x = tile.getX();
-    private int y = tile.getY();
     private final int UP = -1;
     private final int DOWN = 1;
     private final int LEFT = -1;
@@ -13,22 +11,14 @@ public class King extends ChessPiece {
     private final int STAY = 0;
 
     public void setPotentialMoves() {
-//        moveUp();
-//        moveDown();
-//        moveUpRight();
-//        moveUpLeft();
-//        moveDownRight();
-//        moveDownLeft();
-//        moveRight();
-//        moveLeft();
-        move(x, y, STAY, UP);
-        move(x, y, STAY, DOWN);
-        move(x, y, LEFT, STAY);
-        move(x, y, LEFT, UP);
-        move(x, y, LEFT, DOWN);
-        move(x, y, RIGHT, STAY);
-        move(x, y, RIGHT, UP);
-        move(x, y, RIGHT, DOWN);
+        move(currentXPosition, currentYPosition, STAY, UP);
+        move(currentXPosition, currentYPosition, STAY, DOWN);
+        move(currentXPosition, currentYPosition, LEFT, STAY);
+        move(currentXPosition, currentYPosition, LEFT, UP);
+        move(currentXPosition, currentYPosition, LEFT, DOWN);
+        move(currentXPosition, currentYPosition, RIGHT, STAY);
+        move(currentXPosition, currentYPosition, RIGHT, UP);
+        move(currentXPosition, currentYPosition, RIGHT, DOWN);
     }
 
     private void move(int x, int y, int rightLeftOrStay, int upDownOrStay) {
@@ -38,60 +28,4 @@ public class King extends ChessPiece {
             checkMove(moveX, moveY, true, false, false, safeSpotCheck);
         }
     }
-
-//    private void moveRight() {
-//        int x = super.tile.getX();
-//        int y = super.tile.getY() - 1;
-//        if (moveOnBoard(x, y)) {
-//            checkMove(x, y, true, false, false, safeSpotCheck);
-//        }
-//    }
-//
-//    private void moveUp() {
-//        int x = super.tile.getX();
-//        int y = super.tile.getY() - 1;
-//        if (moveOnBoard(x, y)) {
-//            checkMove(x, y, true, false, false, safeSpotCheck);
-//        }
-//    }
-//
-//    private void moveDown() {
-//        int x = super.tile.getX();
-//        int y = super.tile.getY() + 1;
-//        if (moveOnBoard(x, y)) {
-//            checkMove(x, y, true, false, false, safeSpotCheck);
-//        }
-//    }
-//
-//    private void moveUpRight() {
-//        int x = super.tile.getX() + 1;
-//        int y = super.tile.getY() - 1;
-//        if (moveOnBoard(x, y)) {
-//            checkMove(x, y, true, false, false, safeSpotCheck);
-//        }
-//    }
-//
-//    private void moveUpLeft() {
-//        int x = super.tile.getX() - 1;
-//        int y = super.tile.getY() - 1;
-//        if (moveOnBoard(x, y)) {
-//            checkMove(x, y, true, false, false, safeSpotCheck);
-//        }
-//    }
-//
-//    private void moveDownLeft() {
-//        int x = super.tile.getX() - 1;
-//        int y = super.tile.getY() + 1;
-//        if (moveOnBoard(x, y)) {
-//            checkMove(x, y, true, false, false, safeSpotCheck);
-//        }
-//    }
-//
-//    private void moveDownRight() {
-//        int x = super.tile.getX() + 1;
-//        int y = super.tile.getY() + 1;
-//        if (moveOnBoard(x, y)) {
-//            checkMove(x, y, true, false, false, safeSpotCheck);
-//        }
-//    }
 }
