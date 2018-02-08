@@ -78,11 +78,11 @@
 //
 //        default public boolean checkMove(int x, int y, boolean strike, boolean pawn){
 //            if(pawn){
-//                if (isFieldEmpty(x, y) && !strike) {
+//                if (tileIsEmpty(x, y) && !strike) {
 //                    addPotentialMove(x, y);
 //                }
-//                else if(!isFieldEmpty(x, y) && strike){
-//                    if(!isSameColor(x, y)){
+//                else if(!tileIsEmpty(x, y) && strike){
+//                    if(!sameColor(x, y)){
 //                        addPotentialMove(x, y);
 //                        addPotentialStrike(x, y);
 //                        return true;
@@ -90,12 +90,12 @@
 //                }
 //            }
 //            else if(!pawn){
-//                if (isFieldEmpty(x, y)) {
+//                if (tileIsEmpty(x, y)) {
 //                    addPotentialMove(x, y);
 //                    return true;
 //                }
-//                else if(!isFieldEmpty(x, y)){
-//                    if(!isSameColor(x, y)){
+//                else if(!tileIsEmpty(x, y)){
+//                    if(!sameColor(x, y)){
 //                        addPotentialMove(x, y);
 //                        addPotentialStrike(x, y);
 //                        return false;
@@ -107,22 +107,22 @@
 //
 //         default boolean checkNextMove(int x, int y, boolean strike, boolean pawn){
 //            if(pawn) {
-//                if (isFieldEmpty(x, y) && !strike) {
+//                if (tileIsEmpty(x, y) && !strike) {
 //                    addNextPotentialMove(x, y);
-//                } else if (!isFieldEmpty(x, y) && strike) {
-//                    if (!isSameColor(x, y)) {
+//                } else if (!tileIsEmpty(x, y) && strike) {
+//                    if (!sameColor(x, y)) {
 //                        addNextPotentialMove(x, y);
 //                        addNextPotentialStrike(x, y);
 //                    }
 //                }
 //            }
 //            else if(!pawn){
-//                if (isFieldEmpty(x, y)) {
+//                if (tileIsEmpty(x, y)) {
 //                    addNextPotentialMove(x, y);
 //                    return true;
 //                }
-//                else if(!isFieldEmpty(x, y)){
-//                    if(!isSameColor(x, y)){
+//                else if(!tileIsEmpty(x, y)){
+//                    if(!sameColor(x, y)){
 //                        addNextPotentialMove(x, y);
 //                        addNextPotentialStrike(x, y);
 //                        return false;
@@ -132,21 +132,21 @@
 //            return false;
 //        }
 //
-//        default public boolean isMoveOnBoard(int x, int y){
+//        default public boolean moveOnBoard(int x, int y){
 //            if(y >= 0 && y < 8 && x >= 0 && x < 8){
 //                return true;
 //            }
 //            return false;
 //        }
 //
-//        default public boolean isSameColor(int x, int y){
+//        default public boolean sameColor(int x, int y){
 //            if(color == Game.board[x][y].color){
 //                return true;
 //            }
 //            return false;
 //        }
 //
-//        default public boolean isFieldEmpty(int x, int y){
+//        default public boolean tileIsEmpty(int x, int y){
 //            if (Game.board[x][y] == null) {
 //                return true;
 //            }

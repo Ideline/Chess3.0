@@ -23,4 +23,8 @@ class Coordinates {
     public int getY() {
         return y;
     }
+
+    public String getStringCoordinate(){
+        return String.format("%d%d", x, y);
+    }
 }

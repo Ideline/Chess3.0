@@ -2,11 +2,9 @@ public interface IPawn {
 
     void setPotentialMoves();
 
-    void firstMove(int x, int y, boolean nextMove);
+    void firstMove();
 
-    void nextMove(int x, int y, boolean nextMove);
+    void move(int x, int y, int rightLeftOrStay, int upDownOrStay, boolean nextMove, boolean strikeOrMove);
 
-    void strikeRight(int x, int y, boolean nextMove);
-
-    void strikeLeft(int x, int y, boolean nextMove);
+    public void checkNextPotentialMoves(int x, int y);
 }
