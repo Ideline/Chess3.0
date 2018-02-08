@@ -35,8 +35,6 @@ public class Test {
         rankThreats();
         createSafePositionsList();
         return allPotentialMoves;
-
-        // fel safecoordinater (3, 0), (3, 7), (5, 0), (5, 7) kungen!
     }
 
     private static void createThreatenedPiecesMap() {

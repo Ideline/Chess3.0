@@ -1,4 +1,4 @@
-public class Bishop extends ChessPiece  {
+public class Bishop extends ChessPiece implements IChessPieces {
 
     public Bishop(int x, int y, String color , int id, int value) {
         super(x, y,color, id, value);
@@ -8,19 +8,25 @@ public class Bishop extends ChessPiece  {
     private final int DOWN = 1;
     private final int LEFT = -1;
     private final int RIGHT = 1;
+    private final boolean NO_PAWN = false;
+    private final boolean STRIKE = true;
+    private final boolean FIRSTTURN = false;
+    private final boolean SECONDTURN = true;
 
+    @Override
     public void setPotentialMoves() {
-        move(currentXPosition, currentYPosition, LEFT, UP);
-        move(currentXPosition, currentYPosition, LEFT, DOWN);
-        move(currentXPosition, currentYPosition, RIGHT, UP);
-        move(currentXPosition, currentYPosition, RIGHT, DOWN);
+        move(currentXPosition, currentYPosition, LEFT, UP, FIRSTTURN);
+        move(currentXPosition, currentYPosition, LEFT, DOWN, FIRSTTURN);
+        move(currentXPosition, currentYPosition, RIGHT, UP, FIRSTTURN);
+        move(currentXPosition, currentYPosition, RIGHT, DOWN, FIRSTTURN);
     }
 
-    private void move(int x, int y, int rightLeftOrStay, int upDownOrStay){
+    @Override
+    public void move(int x, int y, int rightLeftOrStay, int upDownOrStay, boolean firstOrSecondMove){
         int moveX = x + rightLeftOrStay;
         int moveY = y + upDownOrStay;
         while(moveOnBoard(moveX, moveY)){
-            if(!checkMove(moveX, moveY, true, false, false, safeSpotCheck)) {
+            if(!checkMove(moveX, moveY, STRIKE, NO_PAWN, firstOrSecondMove, safeSpotCheck)) {
                 break;
             }
             else{

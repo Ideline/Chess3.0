@@ -45,6 +45,7 @@ public class WhitePawn extends ChessPiece implements IPawn{
         }
     }
 
+    @Override
     public void move(int x, int y, int rightLeftOrStay, int upDownOrStay, boolean firstOrSecondMove, boolean strikeOrMove) {
         int moveX = x + rightLeftOrStay;
         int moveY = y + upDownOrStay;
@@ -56,6 +57,7 @@ public class WhitePawn extends ChessPiece implements IPawn{
         }
     }
 
+    @Override
     public void checkNextPotentialMoves(int moveX, int moveY){
         move(moveX, moveY, STAY, UP, SECONDTURN, MOVE);
         move(moveX, moveY, LEFT, UP, SECONDTURN,  STRIKE);
