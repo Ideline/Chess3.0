@@ -37,7 +37,7 @@ public class BlackPawn extends ChessPiece implements IPawn{
         int moveY = currentYPosition + DOWN;
         int moveX = currentXPosition;
         if(tileIsEmpty(moveX, moveY)){
-            moveY = currentYPosition + DOWN;
+            moveY += DOWN;
             // When we have checked if it's open to move two steps we try the move
             if( checkMove(moveX, moveY, MOVE, PAWN, FIRSTTURN)) {
                 checkNextPotentialMoves(moveX, moveY);

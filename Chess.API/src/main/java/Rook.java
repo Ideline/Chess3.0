@@ -1,4 +1,4 @@
-public class Rook extends ChessPiece implements IChessPieces {
+public class Rook extends ChessPiece {
 
     public Rook(int x, int y, String color, int id, int value) {
         super(x, y, color, id, value);
@@ -11,31 +11,34 @@ public class Rook extends ChessPiece implements IChessPieces {
     private final int STAY = 0;
     private final boolean NO_PAWN = false;
     private final boolean STRIKE = true;
-    private final boolean FIRSTTURN = false;
-    private final boolean SECONDTURN = true;
 
-    @Override
     public void setPotentialMoves() {
-        move(currentXPosition, currentYPosition, STAY, UP, FIRSTTURN);
-        move(currentXPosition, currentYPosition, STAY, DOWN, FIRSTTURN);
-        move(currentXPosition, currentYPosition, LEFT, STAY, FIRSTTURN);
-        move(currentXPosition, currentYPosition, RIGHT, STAY, FIRSTTURN);
+        move(currentXPosition, currentYPosition, STAY, UP, false);
+        move(currentXPosition, currentYPosition, STAY, DOWN, false);
+        move(currentXPosition, currentYPosition, LEFT, STAY, false);
+        move(currentXPosition, currentYPosition, RIGHT, STAY, false);
     }
 
-    @Override
-    public void move(int x, int y, int rightLeftOrStay, int upDownOrStay, boolean firstOrSecondTurn) {
+    public void move(int x, int y, int rightLeftOrStay, int upDownOrStay, boolean nextTurn) {
         int moveX = x + rightLeftOrStay;
         int moveY = y + upDownOrStay;
         while (moveOnBoard(moveX, moveY)) {
-            if (!checkMove(moveX, moveY, STRIKE, NO_PAWN, firstOrSecondTurn)) {
+            if (!checkMove(moveX, moveY, STRIKE, NO_PAWN, nextTurn)) {
                 break;
             } else {
+                if(!nextTurn){
+                    checkNextPotentialMoves(moveX, moveY);
+                }
                 moveX += rightLeftOrStay;
                 moveY += upDownOrStay;
             }
         }
     }
 
-    @Override
-    public void checkNextPotentialMoves(int moveX, int moveY){};
+    public void checkNextPotentialMoves(int moveX, int moveY){
+        move(moveX, moveY, STAY, UP, true);
+        move(moveX, moveY, STAY, DOWN, true);
+        move(moveX, moveY, LEFT, STAY, true);
+        move(moveX, moveY, RIGHT, STAY, true);
+    }
 }

@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.List;
 
 public class Move {
 
@@ -15,10 +16,18 @@ public class Move {
     private String from;
     private String to;
     private Move move;
-    private static ArrayList<Move> moves;
+    private static List<Move> moves = new ArrayList<>();
 
-    public static ArrayList<Move> getMoves() {
+    public static List<Move> getMoves() {
         return moves;
+    }
+
+    public static void removeMove(){
+        moves.remove(0);
+    }
+
+    public static Move getMove(){
+        return moves.get(0);
     }
 
     public static void makePlaylist(){

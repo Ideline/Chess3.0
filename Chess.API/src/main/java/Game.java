@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 public class Game {
 
-    //Test
+    //MoveCollection
     public Game(){
         this.players = new ArrayList<Player>();
         this.running = false;
@@ -30,6 +30,7 @@ public class Game {
         fillBoard();
         //piece = board[3][1];
         running = true;
+        Move.makePlaylist();
         return board;
     }
 
@@ -38,7 +39,7 @@ public class Game {
         board[0][0] = new Rook(0, 0, "Black", 1, 5);
         board[1][0] = new Knight(1, 0, "Black", 2, 3);
         board[2][0] = new Bishop(2, 0, "Black", 3,  3);
-        board[3][0] = null;//new Queen(3, 0, "Black", 4, 9);
+        board[3][0] = new Queen(3, 0, "Black", 4, 9);
         board[4][0] = new King(4, 0, "Black", 5 , 1000);
         board[5][0] = new Bishop(5, 0, "Black", 6, 3);
         board[6][0] = new Knight(6, 0, "Black", 7, 3);
@@ -53,9 +54,9 @@ public class Game {
         board[6][1] = new BlackPawn(6, 1, "Black", 15, 1);
         board[7][1] = new BlackPawn(7, 1, "Black", 16, 1);
 
-        board[0][2] = null;
+        board[0][2] = null;//new Rook(0, 2, "Black", 1, 5);//null;
         board[1][2] = null;
-        board[2][2] = new Queen(2, 2, "Black", 4, 9);//null;
+        board[2][2] = null;//new Queen(2, 2, "Black", 4, 9);//null;
         board[3][2] = null;
         board[4][2] = null;
         board[5][2] = null;
@@ -101,7 +102,7 @@ public class Game {
         board[0][7] = new Rook(0, 7, "White", 25, 5);
         board[1][7] = new Knight(1, 7, "White", 26, 3);
         board[2][7] = new Bishop(2, 7, "White", 27, 3);
-        board[3][7] = null;//new Queen(3, 7, "White", 28, 9);
+        board[3][7] = new Queen(3, 7, "White", 28, 9);
         board[4][7] = new King(4, 7, "White", 29, 1000);
         board[5][7] = new Bishop(5, 7, "White", 30, 3);
         board[6][7] = new Knight(6, 7, "White", 31, 3);
@@ -114,6 +115,8 @@ public class Game {
         if(!running)
             Game.start();
 
+
+// Random
 //        List<Coordinates> potentialMoves = piece.getPotentialMoves();
 //
 //        Random r = new Random();
@@ -132,10 +135,13 @@ public class Game {
 //        piece = board[x2][y2];
 //        piece.tile.setX(x2);
 //        piece.tile.setY(y2);
+// 2
+        Map<String, Map<Integer, Map<String, List<Coordinates>>>> testMap = MoveCollection.createAllPotentialMovesMap();
 
-        Map<String, Map<Integer, Map<String, List<Coordinates>>>> testMap = Test.createAllPotentialMovesMap();
+        //Move test = new Move("A1", "A2");
+        Move move = Move.getMove();
+        Move.removeMove();
 
-        Move test = new Move("A1", "A2");
-        return test;//MoveHandler.getMove(black);
+        return move;//test;//MoveHandler.getMove(black);
     }
 }

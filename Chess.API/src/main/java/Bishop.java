@@ -15,18 +15,18 @@ public class Bishop extends ChessPiece implements IChessPieces {
 
     @Override
     public void setPotentialMoves() {
-        move(currentXPosition, currentYPosition, LEFT, UP, FIRSTTURN);
-        move(currentXPosition, currentYPosition, LEFT, DOWN, FIRSTTURN);
-        move(currentXPosition, currentYPosition, RIGHT, UP, FIRSTTURN);
-        move(currentXPosition, currentYPosition, RIGHT, DOWN, FIRSTTURN);
+        move(currentXPosition, currentYPosition, LEFT, UP);
+        move(currentXPosition, currentYPosition, LEFT, DOWN);
+        move(currentXPosition, currentYPosition, RIGHT, UP);
+        move(currentXPosition, currentYPosition, RIGHT, DOWN);
     }
 
     @Override
-    public void move(int x, int y, int rightLeftOrStay, int upDownOrStay, boolean firstOrSecondTurn){
+    public void move(int x, int y, int rightLeftOrStay, int upDownOrStay){
         int moveX = x + rightLeftOrStay;
         int moveY = y + upDownOrStay;
         while(moveOnBoard(moveX, moveY)){
-            if(!checkMove(moveX, moveY, STRIKE, NO_PAWN, firstOrSecondTurn)) {
+            if(!checkMove(moveX, moveY, STRIKE, NO_PAWN, false)) {
                 break;
             }
             else{

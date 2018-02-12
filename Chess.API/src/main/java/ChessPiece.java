@@ -23,17 +23,17 @@ class ChessPiece {
         currentYPosition = tile.getY();
     }
 
-    public boolean checkMove(int moveX, int moveY, boolean strike, boolean pawn, boolean firstOrSecondTurn) {
+    public boolean checkMove(int moveX, int moveY, boolean strike, boolean pawn, boolean nextTurn) {
         if (pawn) {
             if (safeSpotCheck && strike) {
                 unsafePositions.add(new Coordinates(moveX, moveY));
             } else if(!safeSpotCheck){
                 if (tileIsEmpty(moveX, moveY) && !strike) {
-                    addPotentialMoves(moveX, moveY, firstOrSecondTurn);
-                    return !firstOrSecondTurn;
+                    addPotentialMoves(moveX, moveY, nextTurn);
+                    return !nextTurn;
                 } else if (!tileIsEmpty(moveX, moveY) && strike && !sameColor(moveX, moveY)) {
-                    addPotentialStrikesAndMoves(moveX, moveY, firstOrSecondTurn);
-                    return !firstOrSecondTurn;
+                    addPotentialStrikesAndMoves(moveX, moveY, nextTurn);
+                    return !nextTurn;
                 }
             }
         } else if (!pawn) {
@@ -46,15 +46,16 @@ class ChessPiece {
                     return false; // signaling for the piece it's the end of the line
                 }
             } else {
-                if (tileIsEmpty(moveX, moveY)) {
-                    addPotentialMoves(moveX, moveY, firstOrSecondTurn);
+                if (tileIsEmpty(moveX, moveY) || (moveX == currentXPosition && moveY == currentYPosition)) {
+                    addPotentialMoves(moveX, moveY, nextTurn);
                     secondTurn = !secondTurn;
                     return true; // signal for the piece to keep checking next tile
                 } else if (!tileIsEmpty(moveX, moveY) && !sameColor(moveX, moveY)) {
-                    addPotentialStrikesAndMoves(moveX, moveY, firstOrSecondTurn);
+                    addPotentialStrikesAndMoves(moveX, moveY, nextTurn);
                     secondTurn = !secondTurn;
                     return false; // signal for the piece it's the end of the line
                 }
+                secondTurn = false;
             }
         }
         return false; // signal for the piece it's the end of the line
@@ -74,7 +75,7 @@ class ChessPiece {
 
 
     public void addPotentialStrikesAndMoves(int x, int y, boolean nextTurn) {
-        if (nextTurn) {
+        if (nextTurn || secondTurn) {
             addOtherMove(x, y, "nextPotentialMoves");
             addOtherMove(x, y, "nextPotentialStrikes");
         } else {
@@ -84,13 +85,14 @@ class ChessPiece {
     }
 
     public void addPotentialMoves(int x, int y, boolean nextTurn) {
-        if (nextTurn) {
+        if (nextTurn || secondTurn) {
             addOtherMove(x, y, "nextPotentialMoves");
         } else {
             addPotentialMove(x, y, "potentialMoves");
         }
     }
 
+    // Should add condition unique
     private void addPotentialMove(int x, int y, String key) {
 
         if (allPotentialMoves.get(id) == null) {
@@ -106,6 +108,7 @@ class ChessPiece {
         }
     }
 
+    // Should add condition unique
     private void addOtherMove(int x, int y, String key) {
 
         if (allPotentialMoves.get(id).get(key) == null) {
@@ -117,7 +120,9 @@ class ChessPiece {
         } else {
             Map<String, List<Coordinates>> map = allPotentialMoves.get(id);
             List<Coordinates> list = map.get(key);
-            list.add(new Coordinates(x, y));
+            if(!list.stream().anyMatch(coordinate -> coordinate.getX() == x && coordinate.getY() == y)){
+                list.add(new Coordinates(x, y));
+            }
         }
     }
 

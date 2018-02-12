@@ -3,7 +3,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class Test {
+public class MoveCollection {
 
     private static Map<String, Map<Integer, Map<String, List<Coordinates>>>> allPotentialMoves = new HashMap<>();
     private static Map<String, List<ChessPiece>> threatenedPieces = new HashMap<>();

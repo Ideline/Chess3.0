@@ -11,27 +11,25 @@ public class King extends ChessPiece implements IChessPieces{
     private final int STAY = 0;
     private final boolean NO_PAWN = false;
     private final boolean STRIKE = true;
-    private final boolean FIRSTTURN = false;
-    private final boolean SECONDTURN = true;
 
     @Override
     public void setPotentialMoves() {
-        move(currentXPosition, currentYPosition, STAY, UP, FIRSTTURN);
-        move(currentXPosition, currentYPosition, STAY, DOWN, FIRSTTURN);
-        move(currentXPosition, currentYPosition, LEFT, STAY, FIRSTTURN);
-        move(currentXPosition, currentYPosition, LEFT, UP, FIRSTTURN);
-        move(currentXPosition, currentYPosition, LEFT, DOWN, FIRSTTURN);
-        move(currentXPosition, currentYPosition, RIGHT, STAY, FIRSTTURN);
-        move(currentXPosition, currentYPosition, RIGHT, UP, FIRSTTURN);
-        move(currentXPosition, currentYPosition, RIGHT, DOWN, FIRSTTURN);
+        move(currentXPosition, currentYPosition, STAY, UP);
+        move(currentXPosition, currentYPosition, STAY, DOWN);
+        move(currentXPosition, currentYPosition, LEFT, STAY);
+        move(currentXPosition, currentYPosition, LEFT, UP);
+        move(currentXPosition, currentYPosition, LEFT, DOWN);
+        move(currentXPosition, currentYPosition, RIGHT, STAY);
+        move(currentXPosition, currentYPosition, RIGHT, UP);
+        move(currentXPosition, currentYPosition, RIGHT, DOWN);
     }
 
     @Override
-    public void move(int x, int y, int rightLeftOrStay, int upDownOrStay, boolean firstOrSecondTurn) {
+    public void move(int x, int y, int rightLeftOrStay, int upDownOrStay) {
         int moveX = x + rightLeftOrStay;
         int moveY = y + upDownOrStay;
         if (moveOnBoard(moveX, moveY)) {
-            checkMove(moveX, moveY, STRIKE, NO_PAWN, firstOrSecondTurn);
+            checkMove(moveX, moveY, STRIKE, NO_PAWN, false);
             if(secondTurn){
                 checkNextPotentialMoves(moveX, moveY);
             }
@@ -40,8 +38,21 @@ public class King extends ChessPiece implements IChessPieces{
 
     @Override
     public void checkNextPotentialMoves(int moveX, int moveY){
-        move(moveX, moveY, STAY, UP, SECONDTURN);
-        move(moveX, moveY, LEFT, UP, SECONDTURN);
-        move(moveX, moveY, RIGHT, UP, SECONDTURN);
+        move(moveX, moveY, STAY, UP);
+        secondTurn = true;
+        move(moveX, moveY, STAY, DOWN);
+        secondTurn = true;
+        move(moveX, moveY, RIGHT, STAY);
+        secondTurn = true;
+        move(moveX, moveY, RIGHT, UP);
+        secondTurn = true;
+        move(moveX, moveY, RIGHT, DOWN);
+        secondTurn = true;
+        move(moveX, moveY, LEFT, STAY);
+        secondTurn = true;
+        move(moveX, moveY, LEFT, UP);
+        secondTurn = true;
+        move(moveX, moveY, LEFT, DOWN);
+        secondTurn = false;
     }
 }
