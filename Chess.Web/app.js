@@ -61,8 +61,12 @@
     console.log(move);
     //debugger;
 
-    if(move.from === "SS"){
+    if(move.from === "CM"){
       $('.checkmate').show();
+    }
+
+    if(move.from === "CH"){
+      $('#check').show();
     }
 
     if($(`#${move.from} img`).length === 0)

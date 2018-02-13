@@ -11,6 +11,10 @@ class ChessPiece {
     private boolean possibleQueen = false;
     protected boolean safeSpotCheck = false;
     protected boolean secondTurn = false;
+    private List<MoveCoordinates> potentialMoves = new ArrayList<>();
+    private List<MoveCoordinates> potentialStrikes = new ArrayList<>();
+    private List<MoveCoordinates> nextPotentialMoves = new ArrayList<>();
+    private List<MoveCoordinates> nextPotentialStrikes = new ArrayList<>();
     private List<Coordinates> unsafePositions = new ArrayList<>();
     private Map<Integer, Map<String, List<Coordinates>>> allPotentialMoves = new HashMap<>();
 
@@ -23,35 +27,75 @@ class ChessPiece {
         currentYPosition = tile.getY();
     }
 
+    public List<MoveCoordinates> getPotentialMoves() {
+        setPotentialMoves();
+        return potentialMoves;
+    }
+
+    public List<MoveCoordinates> getPotentialStrikes() {
+        return potentialStrikes;
+    }
+
+    public List<MoveCoordinates> getNextPotentialMoves() {
+        return nextPotentialMoves;
+    }
+
+    public List<MoveCoordinates> getNextPotentialStrikes() {
+        return nextPotentialStrikes;
+    }
+
+    public Map<Integer, Map<String, List<Coordinates>>> getMapAllPotentialMoves(){
+        return allPotentialMoves;
+    }
+
     public boolean checkMove(int moveX, int moveY, boolean strike, boolean pawn, boolean nextTurn) {
         if (pawn) {
             if (safeSpotCheck && strike) {
                 unsafePositions.add(new Coordinates(moveX, moveY));
             } else if(!safeSpotCheck){
                 if (tileIsEmpty(moveX, moveY) && !strike) {
-                    addPotentialMoves(moveX, moveY, nextTurn);
+                    addPotentialMove(moveX, moveY);
+                    //addPotentialMoves(moveX, moveY, nextTurn);
                     return !nextTurn;
                 } else if (!tileIsEmpty(moveX, moveY) && strike && !sameColor(moveX, moveY)) {
-                    addPotentialStrikesAndMoves(moveX, moveY, nextTurn);
+                    addPotentialMove(moveX, moveY);
+                    addPotentialStrike(moveX, moveY);
+//                    addNextPotentialMove(moveX, moveY);
+//                    addPotentialStrike(moveX, moveY);
+//                    addPotentialStrikesAndMoves(moveX, moveY, nextTurn);
                     return !nextTurn;
                 }
             }
         } else if (!pawn) {
             if (safeSpotCheck) {
-                if (tileIsEmpty(moveX, moveY)) {
+                if (tileIsEmpty(moveX, moveY) && !nextTurn) {
                     unsafePositions.add(new Coordinates(moveX, moveY));
                     return true; // signal for the piece to keep checking next tile
-                } else if (!tileIsEmpty(moveX, moveY)) {
+                } else if (!tileIsEmpty(moveX, moveY) && !nextTurn) {
                     unsafePositions.add(new Coordinates(moveX, moveY));
                     return false; // signaling for the piece it's the end of the line
                 }
             } else {
                 if (tileIsEmpty(moveX, moveY) || (moveX == currentXPosition && moveY == currentYPosition)) {
-                    addPotentialMoves(moveX, moveY, nextTurn);
+                    if(!secondTurn){
+                        addPotentialMove(moveX, moveY);
+                    }
+                    else{
+                        addNextPotentialMove(moveX, moveY);
+                    }
+//                    addPotentialMoves(moveX, moveY, nextTurn);
                     secondTurn = !secondTurn;
                     return true; // signal for the piece to keep checking next tile
                 } else if (!tileIsEmpty(moveX, moveY) && !sameColor(moveX, moveY)) {
-                    addPotentialStrikesAndMoves(moveX, moveY, nextTurn);
+                    if(!secondTurn){
+                        addPotentialMove(moveX, moveY);
+                        addPotentialStrike(moveX, moveY);
+                    }
+                    else{
+                        addNextPotentialMove(moveX, moveY);
+                        addNextPotentialStrike(moveX, moveY);
+                    }
+//                    addPotentialStrikesAndMoves(moveX, moveY, nextTurn);
                     secondTurn = !secondTurn;
                     return false; // signal for the piece it's the end of the line
                 }
@@ -73,58 +117,93 @@ class ChessPiece {
         return (Game.board[x][y] == null);
     }
 
-
-    public void addPotentialStrikesAndMoves(int x, int y, boolean nextTurn) {
-        if (nextTurn || secondTurn) {
-            addOtherMove(x, y, "nextPotentialMoves");
-            addOtherMove(x, y, "nextPotentialStrikes");
-        } else {
-            addPotentialMove(x, y, "potentialMoves");
-            addOtherMove(x, y, "potentialStrikes");
-        }
+    private void addPotentialMove(int x, int y){
+        potentialMoves.add(new MoveCoordinates(new Coordinates(currentXPosition, currentYPosition), new Coordinates(x, y)));
     }
 
-    public void addPotentialMoves(int x, int y, boolean nextTurn) {
-        if (nextTurn || secondTurn) {
-            addOtherMove(x, y, "nextPotentialMoves");
-        } else {
-            addPotentialMove(x, y, "potentialMoves");
-        }
+    private void addPotentialStrike(int x, int y){
+        potentialStrikes.add(new MoveCoordinates(new Coordinates(currentXPosition, currentYPosition), new Coordinates(x, y)));
     }
+
+    private void addNextPotentialMove(int x, int y){
+        nextPotentialMoves.add(new MoveCoordinates(new Coordinates(currentXPosition, currentYPosition), new Coordinates(x, y)));
+    }
+
+    private void addNextPotentialStrike(int x, int y){
+        nextPotentialStrikes.add(new MoveCoordinates(new Coordinates(currentXPosition, currentYPosition), new Coordinates(x, y)));
+    }
+
+//    private void addPotentialMove(int x, int y, boolean nextTurn, boolean strike){
+//        if(!nextTurn && !strike) {
+//            potentialMoves.add(new MoveCoordinates(new Coordinates(currentXPosition, currentYPosition), new Coordinates(x, y)));
+//        }
+//        else if(!nextTurn && strike){
+//            potentialMoves.add(new MoveCoordinates(new Coordinates(currentXPosition, currentYPosition), new Coordinates(x, y)));
+//            potentialStrikes.add(new MoveCoordinates(new Coordinates(currentXPosition, currentYPosition), new Coordinates(x, y)));
+//        }
+//        else if(nextTurn && !strike){
+//            nextPotentialMoves.add(new MoveCoordinates(new Coordinates(currentXPosition, currentYPosition), new Coordinates(x, y)));
+//        }
+//        else{
+//            nextPotentialMoves.add(new MoveCoordinates(new Coordinates(currentXPosition, currentYPosition), new Coordinates(x, y)));
+//            nextPotentialStrikes.add(new MoveCoordinates(new Coordinates(currentXPosition, currentYPosition), new Coordinates(x, y)));
+//        }
+//    }
+
+//    public void addPotentialStrikesAndMoves(int x, int y, boolean nextTurn) {
+//        if (nextTurn || secondTurn) {
+//            addOtherMove(x, y, "nextPotentialMoves");
+//            addOtherMove(x, y, "nextPotentialStrikes");
+//        } else {
+//            addPotentialMove(x, y, "potentialMoves");
+//            addOtherMove(x, y, "potentialStrikes");
+//        }
+//    }
+//
+//    public void addPotentialMoves(int x, int y, boolean nextTurn) {
+//        if (nextTurn || secondTurn) {
+//            addOtherMove(x, y, "nextPotentialMoves");
+//        } else {
+//            addPotentialMove(x, y, "potentialMoves");
+//        }
+//    }
+
 
     // Should add condition unique
-    private void addPotentialMove(int x, int y, String key) {
+//    private void addPotentialMove(int x, int y, String key) {
+//
 
-        if (allPotentialMoves.get(id) == null) {
-            Map<String, List<Coordinates>> map = new HashMap();
-            List<Coordinates> list = new ArrayList<>();
-            map.put(key, list);
-            allPotentialMoves.put(id, map);
-            list.add(new Coordinates(x, y));
-        } else {
-            Map<String, List<Coordinates>> map = allPotentialMoves.get(id);
-            List<Coordinates> list = map.get(key);
-            list.add(new Coordinates(x, y));
-        }
-    }
+//        if (allPotentialMoves.get(id) == null) {
+//
+//            Map<String, List<Coordinates>> map = new HashMap();
+//            List<Coordinates> list = new ArrayList<>();
+//            map.put(key, list);
+//            allPotentialMoves.put(id, map);
+//            list.add(new Coordinates(x, y));
+//        } else {
+//            Map<String, List<Coordinates>> map = allPotentialMoves.get(id);
+//            List<Coordinates> list = map.get(key);
+//            list.add(new Coordinates(x, y));
+//        }
+//    }
 
     // Should add condition unique
-    private void addOtherMove(int x, int y, String key) {
-
-        if (allPotentialMoves.get(id).get(key) == null) {
-            Map<String, List<Coordinates>> map = allPotentialMoves.get(id);
-            List<Coordinates> list = new ArrayList<>();
-            map.put(key, list);
-            allPotentialMoves.put(id, map);
-            list.add(new Coordinates(x, y));
-        } else {
-            Map<String, List<Coordinates>> map = allPotentialMoves.get(id);
-            List<Coordinates> list = map.get(key);
-            if(!list.stream().anyMatch(coordinate -> coordinate.getX() == x && coordinate.getY() == y)){
-                list.add(new Coordinates(x, y));
-            }
-        }
-    }
+//    private void addOtherMove(int x, int y, String key) {
+//
+//        if (allPotentialMoves.get(id).get(key) == null) {
+//            Map<String, List<Coordinates>> map = allPotentialMoves.get(id);
+//            List<Coordinates> list = new ArrayList<>();
+//            map.put(key, list);
+//            allPotentialMoves.put(id, map);
+//            list.add(new Coordinates(x, y));
+//        } else {
+//            Map<String, List<Coordinates>> map = allPotentialMoves.get(id);
+//            List<Coordinates> list = map.get(key);
+//            if(!list.stream().anyMatch(coordinate -> coordinate.getX() == x && coordinate.getY() == y)){
+//                list.add(new Coordinates(x, y));
+//            }
+//        }
+//    }
 
     public List<Coordinates> getUnsafePositions() {
         unsafePositions.clear();
@@ -145,6 +224,9 @@ class ChessPiece {
     public Map<Integer, Map<String, List<Coordinates>>> getAllPotentialMoves() {
         allPotentialMoves.clear();
         setAllPotentialmoves();
+        if(allPotentialMoves.size() > 0){
+            int i = 0;
+        }
         return allPotentialMoves;
     }
 

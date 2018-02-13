@@ -1,4 +1,3 @@
-import java.util.*;
 import java.util.ArrayList;
 
 public class Game {
@@ -57,7 +56,7 @@ public class Game {
         board[0][2] = null;//new Rook(0, 2, "Black", 1, 5);//null;
         board[1][2] = null;
         board[2][2] = null;//new Queen(2, 2, "Black", 4, 9);//null;
-        board[3][2] = null;
+        board[3][2] = new Knight(3, 2, "White", 26, 3);//null;
         board[4][2] = null;
         board[5][2] = null;
         board[6][2] = null;
@@ -74,9 +73,9 @@ public class Game {
 
         board[0][4] = null;
         board[1][4] = null;
-        board[2][4] = new Queen(2, 4, "White", 28, 9);//null;
+        board[2][4] = null;
         board[3][4] = null;
-        board[4][4] = null;
+        board[4][4] = null;//new Queen(4, 4, "White", 28, 9);//null;
         board[5][4] = null;
         board[6][4] = null;
         board[7][4] = null;
@@ -100,7 +99,7 @@ public class Game {
         board[7][6] = new WhitePawn(7, 6, "White", 24, 1);
 
         board[0][7] = new Rook(0, 7, "White", 25, 5);
-        board[1][7] = new Knight(1, 7, "White", 26, 3);
+        board[1][7] = null;//new Knight(1, 7, "White", 26, 3);
         board[2][7] = new Bishop(2, 7, "White", 27, 3);
         board[3][7] = new Queen(3, 7, "White", 28, 9);
         board[4][7] = new King(4, 7, "White", 29, 1000);
@@ -136,12 +135,14 @@ public class Game {
 //        piece.tile.setX(x2);
 //        piece.tile.setY(y2);
 // 2
-        Map<String, Map<Integer, Map<String, List<Coordinates>>>> testMap = MoveCollection.createAllPotentialMovesMap();
-
-        //Move test = new Move("A1", "A2");
-        Move move = Move.getMove();
-        Move.removeMove();
-
-        return move;//test;//MoveHandler.getMove(black);
+// 3       Map<String, Map<Integer, Map<String, List<Coordinates>>>> testMap = MoveCollection.createAllPotentialMovesMap();
+//
+//        //Move test = new Move("A1", "A2");
+//        Move move = Move.getMove();
+//        Move.removeMove();
+//
+//  3      MoveHandler.pickMove();
+        MoveCollection.createCurrentChessPieceList();
+        return MoveHandler.pickMove();//test;//MoveHandler.getMove(black);
     }
 }

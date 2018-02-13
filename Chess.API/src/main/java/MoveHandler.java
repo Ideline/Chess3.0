@@ -1,145 +1,75 @@
-//import java.util.*;
-//import java.util.Random;
+import java.util.ArrayList;
+import java.util.List;
+
+class MoveHandler{
+
+    private static List<Threat> blackThreats = new ArrayList<>();
+    private static List<Threat> whiteThreats = new ArrayList<>();
+
+    public static PlayerTurn playerTurn = PlayerTurn.BLACK;
+
+    public static Move pickMove(){
+
+        blackThreats = MoveCollection.getBlackThreats();
+        whiteThreats = MoveCollection.getWhiteThreats();
+
+        switch (playerTurn){
+            case BLACK:
+                if(blackThreats.size() != 0) {
+                    if(check("Black")) {
+                        if(takeThreat("Black")){
+
+                        }
+                        Move move = new Move("CH", "CH");
+                        return move;
+                    }
+                }
+                break;
+            case WHITE:
+                if(whiteThreats.size() != 0) {
+                    if(check("White")){
+                        Move move = new Move("CH", "CH");
+                        return move;
+                    }
+                }
+                break;
+        }
+        Move testMove = new Move("A2", "A3");
+        return testMove;
+    }
+
+    private static boolean check(String player){
+
+        if(player == "Black"){
+            return blackThreats.get(0).getThreatenedPieceValue() == 1000;
+        }
+        else {
+            return whiteThreats.get(0).getThreatenedPieceValue() == 1000;
+        }
+    }
+
+    private static boolean takeThreat(String color){
+        if(color == "Black"){
+            for(Threat threat : blackThreats){
+                if(threat.getThreatenedPieceValue() == 1000){
+                    whiteThreats.stream()
+                            .an
+                }
+            }
+        }
+    }
+
+
+
+//    private static boolean takeThreat(String player){
 //
-//public class MoveHandler {
+//        List<Coordinates> potentialStrikes = new ArrayList<>();
 //
-//    private static Map<Integer, List<Coordinates>> allPotentialMoves = new HashMap<Integer, List<Coordinates>>();
-//    private static Map<Integer, List<Coordinates>> allPotentialStrikes = new HashMap<Integer, List<Coordinates>>();
-//    private static Map<Integer, Map<String, List<Coordinates>>> allNextPotentialMoves = new HashMap<>();
-//    private static Map<String, List<Coordinates>> nextPotentialMoves = new HashMap<>();
-//    private static Map<String, List<ChessPiece>> chessPieceList = new HashMap<String, List<ChessPiece>>();
-//    private static List<ChessPiece> blackPieces = new ArrayList<>();
-//    private static List<ChessPiece> whitePieces = new ArrayList<>();
-//    private static Random r = new Random();
-//    private static Move fakeReturnMove = new Move("A2", "A3");
-//    private static Move queenSwapMove;
-//    private static List<Coordinates> potentialMoves = new ArrayList<Coordinates>();
-//    private static List<Coordinates> potentialStrikes = new ArrayList<>();
+//        potentialStrikes = MoveCollection.getAllPotentialMoves().get(player).get().get("")
+
+//        MoveCollection.getAllPotentialMoves().get(player).entrySet().stream()
+//                .forEach(id -> { id.
 //
-//    public static Map<Integer, Map<String, List<Coordinates>>> getAllNextPotentialMoves() {
-//        return allNextPotentialMoves;
-//    }
-//
-//    public static Move getMove(boolean black) {
-//
-//        // Creates a list with all current pieces
-//        boolean endTurn = createCollections();
-//
-//        if(endTurn){
-//            return queenSwapMove;
-//        }
-//        else {
-//            // Picks a random chesspiece
-//            if (black) {
-//
-//                boolean run = true;
-//                while (run) {
-//                    int index = r.nextInt(chessPieceList.get("Black").size());
-//                    ChessPiece c = chessPieceList.get("Black").get(index);
-//
-//                    // Checks if chosen piece has any moves and is a working piece then randomizes one of it's moves
-//                    if (allPotentialMoves.get(c.id) != null) {
-//                        run = false;
-//                        return chooseMove(c);
-//                    }
-//                }
-//
-//            } else {
-//
-//                boolean run = true;
-//                while (run) {
-//                    int index = r.nextInt(chessPieceList.get("White").size());
-//                    ChessPiece c = chessPieceList.get("White").get(index);
-//                    if (allPotentialMoves.get(c.id) != null) {
-//                        run = false;
-//                        return chooseMove(c);
-//                    }
-//                }
-//            }
-//        }
-//        return fakeReturnMove;
-//    }
-//
-//    private static boolean createCollections() {
-//
-//        allPotentialMoves.clear();
-//        chessPieceList.clear();
-//        blackPieces.clear();
-//        whitePieces.clear();
-//        potentialMoves.clear();
-//        nextPotentialMoves.clear();
-//        allNextPotentialMoves.clear();
-//
-//        for (int y = 0; y < 8; y++) {
-//            for (int x = 0; x < 8; x++) {
-//                ChessPiece c = Game.board[x][y];
-//                if (c != null) {
-//
-//                    if(c.isPossibleQueen()){
-//                        //c.setPossibleQueen(false);
-//                        int a = c.tile.getX();
-//                        int b = c.tile.getY();
-//                        Game.board[a][b] = new Queen(a, b, c.color, c.id, 9);
-//                        queenSwapMove = new Move(a, b, a, b);
-//                        return true;
-//                    }
-//                    else {
-//                        if (c.color == "White") {
-//                            whitePieces.add(c);
-//                            createAllPotentialMovesMap(c);
-//                        } else {
-//                            blackPieces.add(c);
-//                            createAllPotentialMovesMap(c);
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        chessPieceList.put("White", whitePieces);
-//        chessPieceList.put("Black", blackPieces);
-//        if(allPotentialStrikes.size() > 0) {
-//            MoveValues.setAllNextPotentialMoves(allPotentialStrikes);
-//            MoveValues.setChessPieceMap(chessPieceList);
-//        }
-//        return false;
-//    }
-//
-//    private static void createAllPotentialMovesMap(ChessPiece c){
-//        potentialMoves = c.getPotentialMoves();
-//        potentialStrikes = c.getPotentialStrikes();
-//        nextPotentialMoves = c.getAllPotentialMoves();
-//        if (potentialMoves != null && potentialMoves.size() > 0) {
-//            allPotentialMoves.put(c.id, potentialMoves);
-//            allPotentialStrikes.put(c.id, potentialStrikes);
-//        }
-//        if (nextPotentialMoves.get("potentialMoves") != null && nextPotentialMoves.get("potentialMoves").size() > 0) {
-//            allNextPotentialMoves.put(c.id, c.getAllPotentialMoves());
-//        }
-//    }
-//
-//    // Picks a random move for chosen piece
-//    private static Move chooseMove(ChessPiece c) {
-//
-//        int bound = allPotentialMoves.get(c.id).size();
-//        int index = r.nextInt(bound);
-//
-//        int moveFromX = c.tile.getX();
-//        int moveFromY = c.tile.getY();
-//        int moveToX = allPotentialMoves.get(c.id).get(index).getX();
-//        int moveToY = allPotentialMoves.get(c.id).get(index).getY();
-//
-//        Move m = new Move(moveFromX, moveFromY, moveToX, moveToY);
-//        updateGameBoard(c, moveFromX, moveFromY, moveToX, moveToY);
-//        return m;
-//    }
-//
-//    private static void updateGameBoard(ChessPiece c, int moveFromX, int moveFromY, int moveToX, int moveToY) {
-//
-//        Game.board[moveToX][moveToY] = c;
-//        c.tile.setX(moveToX);
-//        c.tile.setY(moveToY);
-//        Game.board[moveFromX][moveFromY] = null;
-//
-//    }
-//
-//}
+//                });
+    //}
+}
