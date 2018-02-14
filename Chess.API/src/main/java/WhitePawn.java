@@ -4,10 +4,7 @@ public class WhitePawn extends ChessPiece implements IPawn{
         super(x, y, color, id, value);
     }
 
-    private final int UP = -1;
-    private final int LEFT = -1;
-    private final int RIGHT = 1;
-    private final int STAY = 0;
+
     private final int STARTPOSITION = 6;
     private final int OPPONENTS_NEST = 0;
     private final boolean PAWN = true;

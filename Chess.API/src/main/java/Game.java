@@ -143,6 +143,14 @@ public class Game {
 //
 //  3      MoveHandler.pickMove();
         MoveCollection.createCurrentChessPieceList();
-        return MoveHandler.pickMove();//test;//MoveHandler.getMove(black);
+        Move move = MoveHandler.pickMove();
+        if(MoveHandler.getPlayerTurn() == PlayerTurn.WHITE){
+            MoveHandler.setPlayerTurn(PlayerTurn.BLACK);
+        }
+        else{
+            MoveHandler.setPlayerTurn(PlayerTurn.WHITE);
+        }
+
+        return move;//test;//MoveHandler.getMove(black);
     }
 }

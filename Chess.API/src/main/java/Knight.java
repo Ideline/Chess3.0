@@ -4,14 +4,7 @@ public class Knight extends ChessPiece implements IChessPieces {
         super(x, y, color, id, value);
     }
 
-    private final int FARUP = -2;
-    private final int UP = -1;
-    private final int FARDOWN = 2;
-    private final int DOWN = 1;
-    private final int FARLEFT = -2;
-    private final int LEFT = -1;
-    private final int FARRIGHT = 2;
-    private final int RIGHT = 1;
+
     private final boolean NO_PAWN = false;
     private final boolean STRIKE = true;
 

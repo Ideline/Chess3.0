@@ -8,11 +8,19 @@ public class MoveCollection {
     //    private static Map<String, Map<Integer, Map<String, List<Coordinates>>>> allPotentialMoves = new HashMap<>();
     private static Map<String, List<ChessPiece>> threatenedPieces = new HashMap<>();
     private static Map<String, List<ChessPiece>> rankedThreats = new HashMap<>();
-    private static List<Coordinates> test = new ArrayList<>();
+    //private static List<Coordinates> test = new ArrayList<>();
     private static List<Coordinates> safePositions = new ArrayList<>();
     private static List<ChessPiece> allCurrentChessPieces = new ArrayList<>();
+    private static List<ChessPiece> allCurrentTestChessPieces = new ArrayList<>();
     private static List<Threat> blackThreats = new ArrayList<>();
     private static List<Threat> whiteThreats = new ArrayList<>();
+    private static List<Threat> testBlackThreats = new ArrayList<>();
+    private static List<Threat> testWhiteThreats = new ArrayList<>();
+    private static boolean test = false;
+
+    public static void setTest(boolean test) {
+        MoveCollection.test = test;
+    }
 
     public static List<Threat> getBlackThreats() {
         return blackThreats;
@@ -20,6 +28,22 @@ public class MoveCollection {
 
     public static List<Threat> getWhiteThreats() {
         return whiteThreats;
+    }
+
+    public static List<Coordinates> getSafePositions() {
+        return safePositions;
+    }
+
+    public static List<ChessPiece> getAllCurrentChessPieces() {
+        return allCurrentChessPieces;
+    }
+
+    public static List<Threat> getTestBlackThreats() {
+        return testBlackThreats;
+    }
+
+    public static List<Threat> getTestWhiteThreats() {
+        return testWhiteThreats;
     }
     //
 //    public static Map<String, List<ChessPiece>> getRankedThreats() {
@@ -33,33 +57,52 @@ public class MoveCollection {
     public static void createCurrentChessPieceList() {
 
         allCurrentChessPieces.clear();
+        allCurrentTestChessPieces.clear();
 
         Stream.of(Game.board)
                 .flatMap(Stream::of)
                 .forEach(piece -> {
                     if (piece != null) {
-                        if (piece.id == 26) {
-                            int i = 0;
-                        }
                         piece.setPotentialMoves();
-                        allCurrentChessPieces.add(piece);
+                        if (test) {
+                            allCurrentTestChessPieces.add(piece);
+                        } else {
+                            allCurrentChessPieces.add(piece);
+                        }
+
                     }
                 });
 
-        createThreatList();
-        createSafePositionsList();
-        int i = 0;
+        if (!test) {
+            createThreatList();
+            createSafePositionsList();
+        }
     }
 
     public static void createThreatList() {
 
         whiteThreats.clear();
         blackThreats.clear();
+        testBlackThreats.clear();
+        testWhiteThreats.clear();
+
+        List<ChessPiece> list;
+
+        if (test) {
+            createCurrentChessPieceList();
+            list = allCurrentTestChessPieces;
+        } else {
+            list = allCurrentChessPieces;
+        }
 
         List<MoveCoordinates> strikeList;
 
-        for (ChessPiece piece : allCurrentChessPieces) {
-            strikeList = piece.getPotentialStrikes();
+        for (ChessPiece piece : list) {
+            if (test) {
+                strikeList = piece.getPotentialStrikesTest();
+            } else {
+                strikeList = piece.getPotentialStrikes();
+            }
             if (strikeList.size() != 0) {
                 for (MoveCoordinates mc : strikeList) {
                     int threatenedXCoordinate = mc.getTo().getX();
@@ -68,9 +111,17 @@ public class MoveCollection {
                     for (ChessPiece piece2 : allCurrentChessPieces) {
                         if (threatenedXCoordinate == piece2.currentXPosition && threatenedYCoordinate == piece2.currentYPosition) {
                             if (piece2.color == "Black") {
-                                blackThreats.add(new Threat(piece2, piece));
+                                if (test) {
+                                    testBlackThreats.add(new Threat(piece2, piece));
+                                } else {
+                                    blackThreats.add(new Threat(piece2, piece));
+                                }
                             } else {
-                                whiteThreats.add(new Threat(piece2, piece));
+                                if (test) {
+                                    testWhiteThreats.add(new Threat(piece2, piece));
+                                } else {
+                                    whiteThreats.add(new Threat(piece2, piece));
+                                }
                             }
 
                         }
@@ -81,9 +132,12 @@ public class MoveCollection {
 
         blackThreats = sortThreatList(blackThreats);
         whiteThreats = sortThreatList(whiteThreats);
+        testBlackThreats = sortThreatList(testBlackThreats);
+        testWhiteThreats = sortThreatList(testWhiteThreats);
+
     }
 
-    private static List<Threat> sortThreatList(List<Threat> threatList){
+    public static List<Threat> sortThreatList(List<Threat> threatList) {
         threatList = threatList.stream()
                 .sorted(Comparator.comparing(Threat::getThreatenedPieceValue).reversed())
                 .collect(Collectors.toList());
@@ -157,7 +211,7 @@ public class MoveCollection {
         safePositions.clear();
         fillSafePositionList();
 
-        for(ChessPiece piece : allCurrentChessPieces){
+        for (ChessPiece piece : allCurrentChessPieces) {
             List<Coordinates> unsafePositions = piece.getUnsafePositions();
 
             unsafePositions.forEach(up -> {

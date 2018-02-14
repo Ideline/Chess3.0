@@ -4,10 +4,6 @@ public class BlackPawn extends ChessPiece implements IPawn{
         super(x, y, color, id, value);
     }
 
-    private final int DOWN = 1;
-    private final int LEFT = -1;
-    private final int RIGHT = 1;
-    private final int STAY = 0;
     private final int STARTPOSITION = 1;
     private final int OPPONENTS_NEST = 7;
     private final boolean PAWN = true;
