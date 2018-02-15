@@ -101,6 +101,9 @@ public class MoveCollection {
             if (test) {
                 strikeList = piece.getPotentialStrikesTest();
             } else {
+                if(piece.id == 32){
+                    int test = 0;
+                }
                 strikeList = piece.getPotentialStrikes();
             }
             if (strikeList.size() != 0) {

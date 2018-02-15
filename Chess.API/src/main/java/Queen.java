@@ -4,11 +4,6 @@ public class Queen extends ChessPiece implements IChessPieces {
         super(x, y, color, id, value);
     }
 
-    private final int UP = -1;
-    private final int DOWN = 1;
-    private final int LEFT = -1;
-    private final int RIGHT = 1;
-    private final int STAY = 0;
     private final boolean NO_PAWN = false;
     private final boolean STRIKE = true;
     private final boolean FIRSTTURN = false;

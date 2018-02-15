@@ -21,9 +21,10 @@ public class Rook extends ChessPiece {
             if (!checkMove(moveX, moveY, STRIKE, NO_PAWN, nextTurn)) {
                 break;
             } else {
-                if(!nextTurn){
+                if(nextTurn){
                     checkNextPotentialMoves(moveX, moveY);
                 }
+                secondTurn = false;
                 moveX += rightLeftOrStay;
                 moveY += upDownOrStay;
             }

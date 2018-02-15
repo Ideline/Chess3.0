@@ -1,6 +1,5 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 class MoveHandler {
 
@@ -21,7 +20,7 @@ class MoveHandler {
     private static ChessPiece savedPiece;
     private static MoveCoordinates bestMove;
 
-    private static PlayerTurn playerTurn = PlayerTurn.WHITE;
+    private static PlayerTurn playerTurn = PlayerTurn.BLACK;
 
     public static void setPlayerTurn(PlayerTurn playerTurn) {
         MoveHandler.playerTurn = playerTurn;
@@ -44,20 +43,42 @@ class MoveHandler {
                     Threat highestBlackThreat = blackThreats.get(0);
 
                     if (highestBlackThreat.getThreatenedPieceValue() < 9) {
-                        // Obs kolla queenswap!!!!
-                    } else {
-                        if (whiteThreats.size() > 0) {
 
-                            Threat highestWhiteThreat = whiteThreats.get(0);
-                            if (highestBlackThreat.getThreatenedPieceValue() > highestWhiteThreat.getThreatenedPieceValue()) {
-                                return move(highestBlackThreat, blackThreats, whiteThreats);
+                        // Maybe check if we can take oponents queen first????
+                        Move move = makeQueenSwap();
+                        if (move != null) {
+                            return move;
+                        }
+                    }
+                    if (whiteThreats.size() > 0) {
+
+                        Threat highestWhiteThreat = whiteThreats.get(0);
+                        if (highestBlackThreat.getThreatenedPieceValue() > highestWhiteThreat.getThreatenedPieceValue()) {
+                            Move m = move(highestBlackThreat, blackThreats, whiteThreats);
+                            if (m != null) {
+                                return m;
                             } else {
-                                // metod för att räkna ut om det är värt att ta den vita mest värdefulla pjäsen
-                                //return takeSafestHighestValuedPiece();
+                                // Metod för att se om vi kan  ställa oss i mellan
+                                MoveCoordinates mc = blockThreat(highestBlackThreat);
+                                if(mc != null){
+                                    Move move = new Move(mc.getFrom().getX(),mc.getFrom().getY(), mc.getTo().getX(), mc.getTo().getY());
+                                    int i = 0;
+                                    return move;
+                                }
+                                // Gör metod för att ta högsta värderade motståndarpjäs
+                                else{
+
+                                }
+                                // Finns det inget att ta gör random move
+
                             }
                         } else {
-                            return move(highestBlackThreat, blackThreats, whiteThreats);
+                            // metod för att räkna ut om det är värt att ta den vita mest värdefulla pjäsen
+                            //return takeSafestHighestValuedPiece();
                         }
+                    } else {
+                        return move(highestBlackThreat, blackThreats, whiteThreats);
+                    }
 
 //                    int highestThreatenedPieceID = highestBlackThreat.getThreatenedPiece().id;
 //                    String highestThreatColor = highestBlackThreat.getThreatenedPiece().color;
@@ -84,7 +105,7 @@ class MoveHandler {
 //                        Move lowestThreatMove = new Move(fromX, fromY, toX, toY);
 //                        return lowestThreatMove;
 //                    }
-                    }
+
                 } else {
                     // Metod för att välja en random pjäs att flytta till en säker position
                     return getRandomSafeMove("Black");
@@ -96,20 +117,23 @@ class MoveHandler {
                     Threat highestWhiteThreat = whiteThreats.get(0);
 
                     if (highestWhiteThreat.getThreatenedPieceValue() < 9) {
-                        // Obs kolla queenswap!!!!
-                    } else {
-                        if (blackThreats.size() > 0) {
-
-                            Threat highestBlackThreat = blackThreats.get(0);
-                            if (highestWhiteThreat.getThreatenedPieceValue() > highestBlackThreat.getThreatenedPieceValue()) {
-                                return move(highestWhiteThreat, whiteThreats, blackThreats);
-                            } else {
-                                // metod för att räkna ut om det är värt att ta den svarta mest värdefulla pjäsen
-                                //return takeSafestHighestValuedPiece();
-                            }
-                        } else {
-                            return move(highestWhiteThreat, whiteThreats, blackThreats);
+                        Move move = makeQueenSwap();
+                        if (move != null) {
+                            return move;
                         }
+                    }
+                    if (blackThreats.size() > 0) {
+
+                        Threat highestBlackThreat = blackThreats.get(0);
+                        if (highestWhiteThreat.getThreatenedPieceValue() > highestBlackThreat.getThreatenedPieceValue()) {
+                            return move(highestWhiteThreat, whiteThreats, blackThreats);
+                        } else {
+                            // metod för att räkna ut om det är värt att ta den svarta mest värdefulla pjäsen
+                            //return takeSafestHighestValuedPiece();
+                        }
+                    } else {
+                        return move(highestWhiteThreat, whiteThreats, blackThreats);
+                    }
 
 
 //                    int highestThreatenedPieceID = highestThreat.getThreatenedPiece().id;
@@ -137,13 +161,107 @@ class MoveHandler {
 //                        Move lowestThreatMove = new Move(fromX, fromY, toX, toY);
 //                        return lowestThreatMove;
 //                    }
-                    }
+
                 } else {
                     return getRandomSafeMove("White");
                 }
         }
         Move testMove = new Move("A2", "A3");
         return testMove;
+    }
+
+    private static ChessPiece possibleQueenSwap() {
+
+        for (ChessPiece piece : allCurrentChesspieces) {
+            if (piece.isPossibleQueen()) {
+                return piece;
+            }
+        }
+        return null;
+    }
+
+    private static Move makeQueenSwap() {
+        ChessPiece queenswapPiece = possibleQueenSwap();
+
+        if (queenswapPiece != null) {
+            int moveX = queenswapPiece.currentXPosition;
+            int moveY = queenswapPiece.currentYPosition;
+            if (safeSpot(moveX, moveY)) {
+                Move move = new Move(moveX, moveY, moveX, moveY);
+                Game.board[moveX][moveY] = new Queen(moveX, moveY, queenswapPiece.color, queenswapPiece.id, 9);
+                queenswapPiece.setPossibleQueen(false);
+                return move;
+            }
+        }
+        return null;
+    }
+
+    private static MoveCoordinates blockThreat(Threat threat) {
+
+        int x1 = threat.getThreatenedPiece().currentXPosition;
+        int y1 = threat.getThreatenedPiece().currentYPosition;
+        int x2 = threat.getThreat().currentXPosition;
+        int y2 = threat.getThreat().currentYPosition;
+        int tempX;
+        int tempY;
+        String color = threat.getThreatenedPiece().color; // Linas
+        List<Threat> highestPotentialThreats = new ArrayList<>();
+        Map<Integer, MoveCoordinates> potentialBlockCoordinates = new HashMap<>(); // Ali
+
+        if (x1 > x2) {
+            tempX = x1--;
+        } else {
+            tempX = x1++;
+        }
+        if (y1 > y2) {
+            tempY = y1--;
+        } else {
+            tempY = y1++;
+        }
+
+        for (ChessPiece piece : allCurrentChesspieces) {
+            if(piece.color == color) {
+                for (MoveCoordinates mc : piece.getPotentialMoves()) {
+                    int moveX = mc.getTo().getX();
+                    int moveY = mc.getTo().getY();
+                    while (x1 != x2) {
+                        x1 = tempX;
+                        y1 = tempY;
+                        if (moveX == x1 && moveY == y1) {
+                            testRun(piece.id, piece.currentXPosition, piece.currentYPosition, tempX, tempY);// Kör testmove och returnera threatlista
+
+                            if (piece.color == "Black") {
+                                List<Threat> testBlackThreatList = MoveCollection.getTestBlackThreats();
+                                if (testBlackThreatList.size() != 0) {
+                                    highestPotentialThreats.add(testBlackThreatList.get(0));
+                                }
+                            } else {
+                                List<Threat> testWhiteThreatList = MoveCollection.getTestWhiteThreats();
+                                if (testWhiteThreatList.size() != 0) {
+
+                                    highestPotentialThreats.add(testWhiteThreatList.get(0));
+                                }
+                            }
+
+                            potentialBlockCoordinates.put(piece.id, mc);
+                        }
+                    }
+                }
+            }
+        }
+        if(highestPotentialThreats.size() != 0) { //ska kanske va efter alla måsvingar
+            highestPotentialThreats = MoveCollection.sortThreatList(highestPotentialThreats);
+            Threat bestBlockMoveOption = highestPotentialThreats.get(highestPotentialThreats.size() - 1);//Vill man ha den sista i listan?
+            return potentialBlockCoordinates.get(bestBlockMoveOption.getThreat().id);
+        }
+        else if(threat.getThreatenedPieceValue() == 1000){
+            System.out.println("SchackMatt!!!!");
+            MoveCoordinates checkMate = new MoveCoordinates(new Coordinates(-1,-1), new Coordinates(-1, -1));
+            return checkMate;
+        }
+        return null;
+        // Om inte kung gör metod för att ta högsta värderade motståndarpjäs
+        // Finns det inget att ta gör random move
     }
 
     private static Move getRandomSafeMove(String color) {
@@ -248,12 +366,7 @@ class MoveHandler {
                 int id = threatMove.getThreat().id;
 
                 //Setting up board for a testrun
-                setBoard(id, fromX, fromY, toX, toY, false);
-                MoveCollection.setTest(true);
-                MoveCollection.createThreatList();
-                MoveCollection.setTest(false);
-                //Resetting board
-                setBoard(id, toX, toY, fromX, fromY, true);
+                testRun(id, fromX, fromY, toX, toY);
 
                 if (color == "Black") {
                     List<Threat> testBlackThreatList = MoveCollection.getTestBlackThreats();
@@ -306,6 +419,18 @@ class MoveHandler {
             return testList2.get(lastIndex2);
         }
         return null;
+    }
+
+    private static void testRun(int id, int fromX, int fromY, int toX, int toY){
+
+        //Setting up board for a testrun
+        setBoard(id, fromX, fromY, toX, toY, false);
+        MoveCollection.setTest(true);
+        MoveCollection.createThreatList();
+        MoveCollection.setTest(false);
+        //Resetting board
+        setBoard(id, toX, toY, fromX, fromY, true);
+
     }
 
     private static List<Threat> testPotentialMoves(List<MoveCoordinates> list, Threat threat, String color) {
