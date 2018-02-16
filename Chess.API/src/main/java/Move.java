@@ -30,6 +30,14 @@ public class Move {
         return moves.get(0);
     }
 
+    public String getFrom() {
+        return from;
+    }
+
+    public String getTo() {
+        return to;
+    }
+
     public static void makePlaylist(){
 
         moves = new ArrayList<Move>();
@@ -85,6 +93,10 @@ public class Move {
 
     private static char getCharacter(int i){
         switch (i){
+            case -1:
+                return 'S';
+            case -2:
+                return 'M';
             case 0:
                 return 'A';
             case 1:

@@ -28,6 +28,7 @@ public class Bishop extends ChessPiece implements IChessPieces {
             else{
                 moveX += rightLeftOrStay;
                 moveY += upDownOrStay;
+                secondTurn = false;
             }
         }
     }

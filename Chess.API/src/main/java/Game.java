@@ -35,7 +35,7 @@ public class Game {
 
     private static void fillBoard() {
         //this.players = new ArrayList<Player>();
-        board[0][0] = new Rook(0, 0, "Black", 1, 5);
+        board[0][0] = null;//new Rook(0, 0, "Black", 1, 5);
         board[1][0] = new Knight(1, 0, "Black", 2, 3);
         board[2][0] = new Bishop(2, 0, "Black", 3,  3);
         board[3][0] = new Queen(3, 0, "Black", 4, 9);
@@ -53,7 +53,7 @@ public class Game {
         board[6][1] = new BlackPawn(6, 1, "Black", 15, 1);
         board[7][1] = new BlackPawn(7, 1, "Black", 16, 1);
 
-        board[0][2] = null;//new Rook(0, 2, "Black", 1, 5);//null;
+        board[0][2] = new Rook(0, 2, "Black", 1, 5);//null;
         board[1][2] = null;
         board[2][2] = null;//new Queen(2, 2, "Black", 4, 9);//null;
         board[3][2] = null;//new Knight(3, 2, "White", 26, 3);//null;

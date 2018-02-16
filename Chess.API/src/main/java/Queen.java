@@ -32,6 +32,7 @@ public class Queen extends ChessPiece implements IChessPieces {
             else{
                 moveX += rightLeftOrStay;
                 moveY += upDownOrStay;
+                secondTurn = false;
             }
         }
     }
