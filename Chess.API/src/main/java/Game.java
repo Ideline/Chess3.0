@@ -47,13 +47,13 @@ public class Game {
         board[0][1] = new BlackPawn(0, 1, "Black", 9, 1);
         board[1][1] = new BlackPawn(1, 1, "Black" , 10, 1);
         board[2][1] = new BlackPawn(2, 1, "Black", 11, 1);
-        board[3][1] = new BlackPawn(3, 1, "Black", 12, 1);
-        board[4][1] = null;//new BlackPawn(4, 1, "Black", 13, 1);
+        board[3][1] = null;//new BlackPawn(3, 1, "Black", 12, 1);
+        board[4][1] = new BlackPawn(4, 1, "Black", 13, 1);
         board[5][1] = new BlackPawn(5, 1, "Black", 14, 1);
         board[6][1] = new BlackPawn(6, 1, "Black", 15, 1);
         board[7][1] = new BlackPawn(7, 1, "Black", 16, 1);
 
-        board[0][2] = new Rook(0, 2, "Black", 1, 5);//null;
+        board[0][2] = null;//new Rook(0, 2, "Black", 1, 5);//null;
         board[1][2] = null;
         board[2][2] = null;//new Queen(2, 2, "Black", 4, 9);//null;
         board[3][2] = null;//new Knight(3, 2, "White", 26, 3);//null;
@@ -71,11 +71,11 @@ public class Game {
         board[6][3] = null;
         board[7][3] = null;
 
-        board[0][4] = null;
+        board[0][4] = new Queen(0, 4, "White", 28, 9);//null;
         board[1][4] = null;
         board[2][4] = null;
         board[3][4] = null;
-        board[4][4] = new Queen(4, 4, "White", 28, 9);//null;
+        board[4][4] = null;
         board[5][4] = null;
         board[6][4] = null;
         board[7][4] = null;
@@ -150,7 +150,7 @@ public class Game {
         else{
             MoveHandler.setPlayerTurn(PlayerTurn.WHITE);
         }
-
+        System.out.println(move);
         return move;//test;//MoveHandler.getMove(black);
     }
 }

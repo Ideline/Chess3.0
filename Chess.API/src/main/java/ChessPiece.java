@@ -38,12 +38,22 @@ class ChessPiece {
         currentYPosition = tile.getY();
     }
 
+    public void setCurrentXPosition(int currentXPosition) {
+        this.currentXPosition = currentXPosition;
+    }
+
+    public void setCurrentYPosition(int currentYPosition) {
+        this.currentYPosition = currentYPosition;
+    }
+
     public void setPotentialMoves() {
 
     }
 
     public List<MoveCoordinates> getPotentialMoves() {
-        setPotentialMoves();
+        if(potentialMoves.size() == 0) {
+            setPotentialMoves();
+        }
         return potentialMoves;
     }
 
@@ -128,7 +138,10 @@ class ChessPiece {
             if (strikeTest && !tileIsEmpty(moveX, moveY) && !sameColor(moveX, moveY) && strike && !nextTurn && ! secondTurn) {
                 potentialStrikesTest.add(new MoveCoordinates(new Coordinates(currentXPosition, currentYPosition),
                         new Coordinates(moveX, moveY)));
-                return !nextTurn;
+                return false;
+            }
+            else if(strikeTest && tileIsEmpty(moveX, moveY)){
+                return true;
             }
             else if (safeSpotCheck) {
                 if (tileIsEmpty(moveX, moveY) && !nextTurn) {
@@ -138,7 +151,7 @@ class ChessPiece {
                     unsafePositions.add(new Coordinates(moveX, moveY));
                     return false; // signaling for the piece it's the end of the line
                 }
-            } else {
+            } else if(!strikeTest) {
                 if (tileIsEmpty(moveX, moveY) || (moveX == currentXPosition && moveY == currentYPosition)) {
                     if (!secondTurn) {
                         addPotentialMove(moveX, moveY);

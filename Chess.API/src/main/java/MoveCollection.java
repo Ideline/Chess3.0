@@ -56,14 +56,20 @@ public class MoveCollection {
 
     public static void createCurrentChessPieceList() {
 
-        allCurrentChessPieces.clear();
-        allCurrentTestChessPieces.clear();
+        if(!test){
+            allCurrentChessPieces.clear();
+        }
+        else{
+            allCurrentTestChessPieces.clear();
+        }
 
         Stream.of(Game.board)
                 .flatMap(Stream::of)
                 .forEach(piece -> {
                     if (piece != null) {
-                        piece.setPotentialMoves();
+                        if(!test) {
+                            piece.setPotentialMoves();
+                        }
                         if (test) {
                             allCurrentTestChessPieces.add(piece);
                         } else {
@@ -81,10 +87,14 @@ public class MoveCollection {
 
     public static void createThreatList() {
 
-        whiteThreats.clear();
-        blackThreats.clear();
-        testBlackThreats.clear();
-        testWhiteThreats.clear();
+        if(!test){
+            whiteThreats.clear();
+            blackThreats.clear();
+        }
+        else{
+            testBlackThreats.clear();
+            testWhiteThreats.clear();
+        }
 
         List<ChessPiece> list;
 
@@ -101,9 +111,6 @@ public class MoveCollection {
             if (test) {
                 strikeList = piece.getPotentialStrikesTest();
             } else {
-                if(piece.id == 32){
-                    int test = 0;
-                }
                 strikeList = piece.getPotentialStrikes();
             }
             if (strikeList.size() != 0) {
@@ -111,7 +118,7 @@ public class MoveCollection {
                     int threatenedXCoordinate = mc.getTo().getX();
                     int threatenedYCoordinate = mc.getTo().getY();
 
-                    for (ChessPiece piece2 : allCurrentChessPieces) {
+                    for (ChessPiece piece2 : list) {
                         if (threatenedXCoordinate == piece2.currentXPosition && threatenedYCoordinate == piece2.currentYPosition) {
                             if (piece2.color == "Black") {
                                 if (test) {

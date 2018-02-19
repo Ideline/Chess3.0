@@ -36,6 +36,7 @@ class MoveHandler {
         blackThreats = MoveCollection.getBlackThreats();
         whiteThreats = MoveCollection.getWhiteThreats();
         allCurrentChesspieces = MoveCollection.getAllCurrentChessPieces();
+        bestMove = null;
 
         switch (playerTurn) {
             case BLACK:
@@ -67,12 +68,8 @@ class MoveHandler {
                             }
                             // If we couldn't eliminate the threat or move our threatened piece we try to block it
                             else {
-                                MoveCoordinates mc = blockThreat(highestBlackThreat);
-                                if (mc != null) {
-                                    Move move = new Move(mc.getFrom().getX(), mc.getFrom().getY(), mc.getTo().getX(), mc.getTo().getY());
-                                    int test = 0;
-                                    // Will return Check mate if we couldn't block and it'sour king that's threatened
-                                    // Or it will return the blocking move
+                                Move move = blockThreat(highestBlackThreat);
+                                if (move != null) {
                                     return move;
                                 }
                                 // If we can't block it we try to take our opponents highest valued piece
@@ -88,10 +85,8 @@ class MoveHandler {
                         }
                         // If we couldn't eliminate the threat or move our threatened piece we try to block it
                         else {
-                            MoveCoordinates mc = blockThreat(highestBlackThreat);
-                            if (mc != null) {
-                                Move move = new Move(mc.getFrom().getX(), mc.getFrom().getY(), mc.getTo().getX(), mc.getTo().getY());
-                                int test = 0;
+                            Move move = blockThreat(highestBlackThreat);
+                            if (move != null) {
                                 // Will return Check mate if we couldn't block and it'sour king that's threatened
                                 // Or it will return the blocking move
                                 return move;
@@ -134,12 +129,8 @@ class MoveHandler {
                             }
                             // If we couldn't eliminate the threat or move our threatened piece we try to block it
                             else {
-                                MoveCoordinates mc = blockThreat(highestWhiteThreat);
-                                if (mc != null) {
-                                    Move move = new Move(mc.getFrom().getX(), mc.getFrom().getY(), mc.getTo().getX(), mc.getTo().getY());
-                                    int test = 0;
-                                    // Will return Check mate if we couldn't block and it'sour king that's threatened
-                                    // Or it will return the blocking move
+                                Move move = blockThreat(highestWhiteThreat);
+                                if (move != null) {
                                     return move;
                                 }
                                 // If we can't block it we try to take our opponents highest valued piece
@@ -155,12 +146,8 @@ class MoveHandler {
                         }
                         // If we couldn't eliminate the threat or move our threatened piece we try to block it
                         else {
-                            MoveCoordinates mc = blockThreat(highestWhiteThreat);
-                            if (mc != null) {
-                                Move move = new Move(mc.getFrom().getX(), mc.getFrom().getY(), mc.getTo().getX(), mc.getTo().getY());
-                                int test = 0;
-                                // Will return Check mate if we couldn't block and it'sour king that's threatened
-                                // Or it will return the blocking move
+                            Move move = blockThreat(highestWhiteThreat);
+                            if (move != null) {
                                 return move;
                             }
                             // If we can't block it we try to take our opponents highest valued piece
@@ -212,14 +199,13 @@ class MoveHandler {
         //TODO might be wrong color
         String color;
 
-        if(playerTurn == playerTurn.BLACK){
+        if (playerTurn == playerTurn.BLACK) {
             color = "White";
-        }
-        else{
+        } else {
             color = "Black";
         }
 
-        if(opponentsThreatlist.size() > 0) {
+        if (opponentsThreatlist.size() > 0) {
 
             move = getRandomSafeMove(color);
             if (move != null) {
@@ -284,46 +270,38 @@ class MoveHandler {
     // ----------------------------------------------------------------------------------------------------- //
 
     // Try to find a way to block our threat
-    // TODO: This might not save the piece. Need to check if the theat is eliminated after.
-    private static MoveCoordinates blockThreat(Threat threat) {
+    // TODO: This might not save the piece. Need to check if the threat is eliminated after.
+    private static Move blockThreat(Threat threat) {
 
         int x1 = threat.getThreatenedPiece().currentXPosition;
         int y1 = threat.getThreatenedPiece().currentYPosition;
         int x2 = threat.getThreat().currentXPosition;
         int y2 = threat.getThreat().currentYPosition;
-        int tempX;
-        int tempY;
+
+        // Gets all coordinates that will block our current threat
+        List<Coordinates> blockCoordinates = getBlockCoordinates(x1, y1, x2, y2);
         String color = threat.getThreatenedPiece().color;
         List<Threat> highestPotentialThreats = new ArrayList<>();
         Map<Integer, MoveCoordinates> potentialBlockCoordinates = new HashMap<>();
 
-        // Checkes to see how we should change the coordinates to look for tiles that is between our threatened
-        // piece, and the threatening piece.
-        if (x1 > x2) {
-            tempX = x1--;
-        } else {
-            tempX = x1++;
-        }
-        if (y1 > y2) {
-            tempY = y1--;
-        } else {
-            tempY = y1++;
-        }
 
         for (ChessPiece piece : allCurrentChesspieces) {
             // Checkes all allies
             if (piece.color == color) {
+
+                //List<MoveCoordinates> matchingBlocks = new ArrayList<>();
                 for (MoveCoordinates mc : piece.getPotentialMoves()) {
-                    // if they have any possible move that will block the path
-                    int moveX = mc.getTo().getX();
-                    int moveY = mc.getTo().getY();
-                    // checkes every tile to see if it's a match
-                    while (x1 != x2) {
-                        x1 = tempX;
-                        y1 = tempY;
-                        if (moveX == x1 && moveY == y1) {
-                            // Kör testmove
-                            testRun(piece.id, piece.currentXPosition, piece.currentYPosition, tempX, tempY);
+
+                    int fromX = mc.getFrom().getX();
+                    int fromY = mc.getFrom().getY();
+                    int toX = mc.getTo().getX();
+                    int toY = mc.getTo().getY();
+
+                    for (Coordinates c : blockCoordinates) {
+                        if (c.getX() == toX && c.getY() == toY) {
+                            //matchingBlocks.add(mc);
+
+                            testRun(piece.id, piece.currentXPosition, piece.currentYPosition, toX, toY);
                             if (piece.color == "Black") {
                                 // returnerar threatlista
                                 List<Threat> testBlackThreatList = MoveCollection.getTestBlackThreats();
@@ -332,10 +310,10 @@ class MoveHandler {
                                 if (testBlackThreatList.size() != 0) {
                                     highestPotentialThreats.add(testBlackThreatList.get(0));
                                 }
-                                // If there no longer is any threat against us we make that move
+                                // If there is no longer any threat, we will choose to make this move
                                 else {
-                                    //TODO: If there is no threat anymore we will choose this move to make
-                                    // Don't forget to return it!
+                                    Move move = new Move(fromX, fromY, toX, toY);
+                                    return move;
                                 }
                             } else {
                                 List<Threat> testWhiteThreatList = MoveCollection.getTestWhiteThreats();
@@ -346,8 +324,8 @@ class MoveHandler {
                                 }
                                 // If there no longer is any threat against us we make that move
                                 else {
-                                    //TODO: If there is no threat anymore we will choose this move to make
-                                    // Don't forget to return it!
+                                    Move move = new Move(fromX, fromY, toX, toY);
+                                    return move;
                                 }
                             }
                             // Saves the blocking piece id and the relevant move into a map
@@ -362,15 +340,86 @@ class MoveHandler {
             highestPotentialThreats = MoveCollection.sortThreatList(highestPotentialThreats);
             // Selects the option with the lowest threat value
             Threat bestBlockMoveOption = highestPotentialThreats.get(highestPotentialThreats.size() - 1);
-            // Get the piece ID and the MoveCoordinates
-            return potentialBlockCoordinates.get(bestBlockMoveOption.getThreat().id);
+
+            // Checkes to see if it's worth blocking the threat
+            if (bestBlockMoveOption.getThreatenedPieceValue() < threat.getThreatenedPieceValue()) {
+                // Get the piece ID and the MoveCoordinates
+                MoveCoordinates mc = potentialBlockCoordinates.get(bestBlockMoveOption.getThreat().id);
+                int fromX = mc.getFrom().getX();
+                int fromY = mc.getFrom().getY();
+                int toX = mc.getTo().getX();
+                int toY = mc.getTo().getY();
+                Move move = new Move(fromX, fromY, toX, toY);
+                return move;
+            }
             // If we couldn't find a way to block the move it's check mate if the threatened piece is the king
         } else if (threat.getThreatenedPieceValue() == KINGSVALUE) {
             System.out.println("SchackMatt!!!!");
-            MoveCoordinates checkMate = new MoveCoordinates(new Coordinates(-1, -1), new Coordinates(-2, -2));
+            Move checkMate = new Move(-1, -1, -2, -2);
             return checkMate;
         }
         return null;
+    }
+
+    private static List<Coordinates> getBlockCoordinates(int x1, int y1, int x2, int y2) {
+
+        List<Coordinates> blockCoordinates = new ArrayList<>();
+        // TODO fixa så detta funkar även på diagonalen
+        if (x1 == x2) {
+            if (y1 > y2) {
+                for (int i = y2 + 1; i < y1; i++) {
+                    blockCoordinates.add(new Coordinates(x1, i));
+                }
+            } else {
+                for (int i = y1 + 1; i < y2; i++) {
+                    blockCoordinates.add(new Coordinates(x1, i));
+                }
+            }
+        } else if (y1 == y2) {
+            if (x1 > x2) {
+                for (int i = x2 + 1; i < x1; i++) {
+                    blockCoordinates.add(new Coordinates(i, y1));
+                }
+            } else {
+                for (int i = x1 + 1; i < x2; i++) {
+                    blockCoordinates.add(new Coordinates(i, y1));
+                }
+            }
+        } else {
+            if (x1 > x2) {
+                if (y1 > y2) {
+                    while(x1 != x2+1 || y1 != y2+1){
+                        x1--;
+                        y1--;
+                        blockCoordinates.add(new Coordinates(x1, y1));
+                    }
+                }
+                else if(y1 < y2){
+                    while(x1 != x2+1 || y1 != y2-1){
+                        x1--;
+                        y1++;
+                        blockCoordinates.add(new Coordinates(x1, y1));
+                    }
+                }
+            }
+            else if (x1 < x2){
+                if (y1 > y2) {
+                    while(x1 != x2-1 || y1 != y2+1){
+                        x1++;
+                        y1--;
+                        blockCoordinates.add(new Coordinates(x1, y1));
+                    }
+                }
+                else if(y1 < y2){
+                    while(x1 != x2-1 || y1 != y2-1){
+                        x1++;
+                        y1++;
+                        blockCoordinates.add(new Coordinates(x1, y1));
+                    }
+                }
+            }
+        }
+        return blockCoordinates;
     }
 
     // ----------------------------------------------------------------------------------------------------- //
@@ -508,30 +557,29 @@ class MoveHandler {
 
         // If we didn't find a way to eliminate all threat we make the move that will result in the lowest
         // threat score against us
-        if (bestMove == null) {
+
+        if (bestMove == null && lowestTestThreatMove != null) {
             int fromX = lowestTestThreatMove.getThreat().currentXPosition;
             int fromY = lowestTestThreatMove.getThreat().currentYPosition;
             int toX = lowestTestThreatMove.getThreatenedPiece().currentXPosition;
             int toY = lowestTestThreatMove.getThreatenedPiece().currentYPosition;
 
             Move lowestThreatMove = new Move(fromX, fromY, toX, toY);
+            return lowestThreatMove;
 
-            if (lowestThreatMove != null) {
-                return lowestThreatMove;
-            }
-            // If we couldn't find any way of eliminating the threat against our piece, we check if it's check
-            else {
-                if (check(highestThreatenedPieceID)) {
-                    // TODO: Method for Checkmate!
-                } else {
-                    //TODO: Method for finding the highest valued strike if there is one to make
-                    // if there isn't one make a random move
-                    // don't forget to return the moves
-                    getRandomSafeMove(highestThreatColor);
-                }
-            }
+//            // If we couldn't find any way of eliminating the threat against our piece, we check if it's check
+//            else{
+//                if (check(highestThreatenedPieceID)) {
+//                    // TODO: Method for Checkmate!
+//                } else {
+//                    //TODO: Method for finding the highest valued strike if there is one to make
+//                    // if there isn't one make a random move
+//                    // don't forget to return the moves
+//                    getRandomSafeMove(highestThreatColor);
+//                }
+//            }
             // If we decided on a best move inside our "getLowestTestThreatMove method we use it
-        } else {
+        } else if (lowestTestThreatMove == null && bestMove != null) {
             int fromX = bestMove.getFrom().getX();
             int fromY = bestMove.getFrom().getY();
             int toX = bestMove.getTo().getX();
@@ -539,8 +587,9 @@ class MoveHandler {
 
             Move lowestThreatMove = new Move(fromX, fromY, toX, toY);
             return lowestThreatMove;
+        } else {
+            return null;
         }
-        return null;
     }
 
     // ----------------------------------------------------------------------------------------------------- //
@@ -699,26 +748,26 @@ class MoveHandler {
                 MoveCollection.createThreatList();
                 MoveCollection.setTest(false);
                 setBoard(threatenedPieceID, moveX, moveY, threatenedPieceCurrentXPosition, threatenedPieceCurrentYPosition, true);
-            }
 
-            if (color == "Black") {
-                List<Threat> testBlackThreatList = MoveCollection.getTestBlackThreats();
-                // If there is no threat against us after the tested savePiece or strike we deside it's our best option
-                if (testBlackThreatList.size() == 0) {
-                    bestMove = mc;
-                    break;
-                    // Otherwise we add the highest threat score to our test list
+                if (color == "Black") {
+                    List<Threat> testBlackThreatList = MoveCollection.getTestBlackThreats();
+                    // If there is no threat against us after the tested savePiece or strike we deside it's our best option
+                    if (testBlackThreatList.size() == 0) {
+                        bestMove = mc;
+                        break;
+                        // Otherwise we add the highest threat score to our test list
+                    } else {
+                        testList.add(testBlackThreatList.get(0));
+                    }
                 } else {
-                    testList.add(testBlackThreatList.get(0));
-                }
-            } else {
-                // Same for white player
-                List<Threat> testWhiteThreatList = MoveCollection.getTestWhiteThreats();
-                if (testWhiteThreatList.size() == 0) {
-                    bestMove = mc;
-                    break;
-                } else {
-                    testList.add(testWhiteThreatList.get(0));
+                    // Same for white player
+                    List<Threat> testWhiteThreatList = MoveCollection.getTestWhiteThreats();
+                    if (testWhiteThreatList.size() == 0) {
+                        bestMove = mc;
+                        break;
+                    } else {
+                        testList.add(testWhiteThreatList.get(0));
+                    }
                 }
             }
         }
@@ -749,6 +798,7 @@ class MoveHandler {
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
                 ChessPiece piece = Game.board[x][y];
+
                 // Finds a piece and checkes if it has the ID we are looking for
                 if (piece != null) {
                     if (piece.id == id) {
@@ -758,7 +808,10 @@ class MoveHandler {
                             savedPiece = Game.board[toX][toY];
                         }
                         // We make the savePiece
+                        piece.setCurrentXPosition(toX);
+                        piece.setCurrentYPosition(toY);
                         Game.board[toX][toY] = piece;
+
                         // And cleares the tile it moves from if it's not a reset
                         if (!reset) {
                             Game.board[fromX][fromY] = null;
