@@ -8,25 +8,25 @@ public class Move {
         this.to = to;
     }
 
-    public Move(int x1, int y1, int x2, int y2){
-        this.from = Character.toString(getCharacter(x1)) + Integer.toString(8-y1);
-        this.to = Character.toString(getCharacter(x2)) + Integer.toString(8-y2);
+    public Move(int x1, int y1, int x2, int y2) {
+        this.from = Character.toString(getCharacter(x1)) + Integer.toString(8 - y1);
+        this.to = Character.toString(getCharacter(x2)) + Integer.toString(8 - y2);
     }
 
     private String from;
     private String to;
-    private Move move;
+
     private static List<Move> moves = new ArrayList<>();
 
     public static List<Move> getMoves() {
         return moves;
     }
 
-    public static void removeMove(){
+    public static void removeMove() {
         moves.remove(0);
     }
 
-    public static Move getMove(){
+    public static Move getMove() {
         return moves.get(0);
     }
 
@@ -38,7 +38,7 @@ public class Move {
         return to;
     }
 
-    public static void makePlaylist(){
+    public static void makePlaylist() {
 
         moves = new ArrayList<Move>();
 
@@ -91,8 +91,8 @@ public class Move {
         moves.add(new Move("SS", "MM"));
     }
 
-    private static char getCharacter(int i){
-        switch (i){
+    private static char getCharacter(int i) {
+        switch (i) {
             case -1:
                 return 'S';
             case -2:
@@ -116,8 +116,9 @@ public class Move {
         }
         return 'z';
     }
-    public static int getX(String i){
-        switch (i){
+
+    public static int getX(String i) {
+        switch (i) {
             case "A":
                 return 0;
             case "B":
@@ -138,8 +139,9 @@ public class Move {
         return 8;
 
     }
-    public static int getY(String i){
-        switch (i){
+
+    public static int getY(String i) {
+        switch (i) {
             case "8":
                 return 0;
             case "7":
@@ -158,7 +160,9 @@ public class Move {
                 return 7;
         }
         return 8;
-
     }
 
+    public void print(){
+        System.out.println(String.format("%s to %s", from, to));
+    }
 }

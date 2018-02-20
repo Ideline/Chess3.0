@@ -4,9 +4,8 @@ import static spark.Spark.*;
 
 public class Main {
 
-
-
     public static void main(String[] args) {
+
 //        Game.start();
 //        while (true) {
 //
@@ -15,11 +14,14 @@ public class Main {
 //            MoveCollection.createCurrentChessPieceList();
 //            Move move = MoveHandler.pickMove();
 //
-//            //TODO: Handle check mate move
-//            Game.updateBoard(move);
-//            Game.changePlayerTurn();
+//            if (move.getTo().matches("S1")) {
+//                move.print();
+//            } else {
+//                Game.updateBoard(move);
+//                Game.changePlayerTurn();
 //
-//            System.out.println(move);
+//                move.print();
+//            }
 //        }
         //Game g = new Game();
         //ex: https://github.com/mscharhag/blog-examples/tree/master/sparkdemo/src/main/java/com/mscharhag/sparkdemo

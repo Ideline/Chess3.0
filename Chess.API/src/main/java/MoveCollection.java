@@ -4,10 +4,6 @@ import java.util.stream.Stream;
 
 public class MoveCollection {
 
-    //    private static Map<String, Map<Integer, Map<String, List<Coordinates>>>> allPotentialMoves = new HashMap<>();
-    private static Map<String, List<ChessPiece>> threatenedPieces = new HashMap<>();
-    private static Map<String, List<ChessPiece>> rankedThreats = new HashMap<>();
-    //private static List<Coordinates> test = new ArrayList<>();
     private static List<Coordinates> whiteSafePositions = new ArrayList<>();
     private static List<Coordinates> blackSafePositions = new ArrayList<>();
     private static List<ChessPiece> allCurrentChessPieces = new ArrayList<>();

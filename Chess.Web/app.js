@@ -1,4 +1,4 @@
-(function() {
+(function () {
   var board = {};
   var baseurl = 'http://localhost:9999';
   var moveHandler;
@@ -6,26 +6,26 @@
   var paus = false;
   var interval = 1500;
 
-  $(function(ready) {
+  $(function (ready) {
     console.info('Spelet startar ...');
 
-    $.getJSON(`${baseurl}/start`, function(json) {
+    $.getJSON(`${baseurl}/start`, function (json) {
       board = json;
       console.info(`Spelet startat ...`);
 
       moveHandler = setInterval(getNextMove, 1500);
-    }).fail(function() {
+    }).fail(function () {
       console.warn('Spelet kunde ej startas.');
     });
   });
 
-  $('#pause').on('click', function(){
+  $('#pause').on('click', function () {
     paus = true;
     $('.pause').show();
     $('#pause').fadeIn(100).fadeOut(100).fadeIn(100);
   });
 
-  $('#play').on('click', function(){
+  $('#play').on('click', function () {
     paus = false;
     $('.pause').hide();
     $('#play').fadeIn(100).fadeOut(100).fadeIn(100);
@@ -33,21 +33,21 @@
     moveHandler = setInterval(getNextMove, 1500);
   });
 
-  $('#slower').on('click', function(){
+  $('#slower').on('click', function () {
     clearInterval(moveHandler);
     $('#slower').fadeIn(100).fadeOut(100).fadeIn(100);
     moveHandler = setInterval(getNextMove, 3000);
   });
 
-  $('#faster').on('click', function(){
+  $('#faster').on('click', function () {
     clearInterval(moveHandler);
     $('#faster').fadeIn(100).fadeOut(100).fadeIn(100);
     moveHandler = setInterval(getNextMove, 300)
   });
 
   function getNextMove() {
-    if(!paus){
-      $.getJSON(`${baseurl}/move`, function(json) {
+    if (!paus) {
+      $.getJSON(`${baseurl}/move`, function (json) {
         handleMove(json);
       }).fail(() => {
         console.warn('Kunde ej utföra move.');
@@ -61,98 +61,117 @@
     console.log(move);
     //debugger;
 
-    if(move.from === "CM"){
+    if (move.to === "M1") {
       $('.checkmate').show();
+      clearInterval(moveHandler);
     }
-
-    if(move.from === "CH"){
+    else if (move.to === "S1") {
       $('#check').show();
     }
+    else {
 
-    if($(`#${move.from} img`).length === 0)
-      return;
+      $('#check').hide();
 
-    if(move.from === move.to){
-      var src = $(`#${move.from} img`).attr('src');
-      $(`#${move.from} img`).remove();
-      if(src === "style/img/blackPawn.png"){
-        $(`#${move.to}`).append('<img src="style/img/blackQueen.png">');
-      }
-      else{
-        $(`#${move.to}`).append('<img src="style/img/whiteQueen.png">');
-      }
-    }
-    else{
-    
-      var posLeftStart = $(`#${move.from}`).css('left');
-      var posLeftFinish = $(`#${move.to}`).css('left');;
-      var posBottomStart = $(`#${move.from}`).css('bottom');
-      var posBottomFinish = $(`#${move.to}`).css('bottom');
-      var src = $(`#${move.from} img`).attr('src');
+      if ($(`#${move.from} img`).length === 0)
+        return;
 
-      $(`#${move.from}`).animate({ 
-        bottom: `${posBottomFinish}`, 
-        left: `${posLeftFinish}`
-      }, {
-        complete: function() {
-          if(move.from === "F1")
-            debugger;
-          $(`#${move.to} img`).remove();
-          $(`#${move.to}`).append(`<img src="${src}">`);
-          $(`#${move.from} img`).remove();
-          $(`#${move.from}`).css({"left": posLeftStart, "bottom": posBottomStart});
-          console.info('Move utfört:');
+      if (move.from === move.to) {
+        var src = $(`#${move.from} img`).attr('src');
+        $(`#${move.from} img`).remove();
+        if (src === "style/img/blackPawn.png") {
+          $(`#${move.to}`).append('<img src="style/img/blackQueen.png">');
         }
-      
-      });
+        else {
+          $(`#${move.to}`).append('<img src="style/img/whiteQueen.png">');
+        }
+      }
+      else {
+
+        var posLeftStart = $(`#${move.from}`).css('left');
+        var posLeftFinish = $(`#${move.to}`).css('left');;
+        var posBottomStart = $(`#${move.from}`).css('bottom');
+        var posBottomFinish = $(`#${move.to}`).css('bottom');
+        var src = $(`#${move.from} img`).attr('src');
+
+        $(`#${move.from}`).animate({
+          bottom: `${posBottomFinish}`,
+          left: `${posLeftFinish}`
+        }, {
+            complete: function () {
+              if (move.from === "F1")
+                debugger;
+              $(`#${move.to} img`).remove();
+              $(`#${move.to}`).append(`<img src="${src}">`);
+              $(`#${move.from} img`).remove();
+              $(`#${move.from}`).css({ "left": posLeftStart, "bottom": posBottomStart });
+              console.info('Move utfört:');
+            }
+
+          });
+      }
     }
     printMoves(move);
   }
 
-  function printMoves(move){
+  function printMoves(move) {
     numberOfMoves++;
     var chessPiece = $(`#${move.from} img`).attr('src').substr(10);
     chessPiece = getTypeOfChessPiece(chessPiece);
 
-    if(numberOfMoves < 16){
-      $('#moves').prepend(`<div class="movesContainer"><p class="move">${chessPiece}:</p><p class="move"> ${move.from} - ${move.to}</p></div>`);
-    }
-    else if(numberOfMoves > 15 && numberOfMoves < 21){
-      switch(numberOfMoves){
-        case 16:
-        $('#moves').prepend(`<div class="movesContainer"><p class="move">${chessPiece}:</p><p class="move"> ${move.from} - ${move.to}</p></div>`);
-        $('#moves div').last().addClass('faded1');
-        break;
-        case 17:
-        $('#moves').prepend(`<div class="movesContainer"><p class="move">${chessPiece}:</p><p class="move"> ${move.from} - ${move.to}</p></div>`);
-        $('#moves div').last().addClass('faded2');
-        $('#moves div').last().prev().addClass('faded1');
-        break;
-        case 18:
-        $('#moves').prepend(`<div class="movesContainer"><p class="move">${chessPiece}:</p><p class="move"> ${move.from} - ${move.to}</p></div>`);
-        $('#moves div').last().addClass('faded3');
-        $('#moves div').last().prev().addClass('faded2');
-        $('#moves div').last().prev().prev().addClass('faded1');
-        break;
-        case 19:
-        $('#moves').prepend(`<div class="movesContainer"><p class="move">${chessPiece}:</p><p class="move"> ${move.from} - ${move.to}</p></div>`);
-        $('#moves div').last().addClass('faded4');
-        $('#moves div').last().prev().addClass('faded3');
-        $('#moves div').last().prev().prev().addClass('faded2');
-        $('#moves div').last().prev().prev().prev().addClass('faded1');
-        break;
-        case 20:
-        $('#moves').prepend(`<div class="movesContainer"><p class="move">${chessPiece}:</p><p class="move"> ${move.from} - ${move.to}</p></div>`);
-        $('#moves div').last().addClass('faded5');
-        $('#moves div').last().prev().addClass('faded4');
-        $('#moves div').last().prev().prev().addClass('faded3');
-        $('#moves div').last().prev().prev().prev().addClass('faded2');
-        $('#moves div').last().prev().prev().prev().prev().addClass('faded1');
-        break;
+    var message;
+
+    if(move.to === "S1"){
+      if(move.from === "A1"){
+        chessPiece = `B King`;
       }
+      else{
+        chessPiece = `W King`;
+      }
+      message = `<div class="movesContainer"><p class="move">${numberOfMoves} ${chessPiece}:</p><p class="move"> Check!!</p></div>`;
     }
     else{
-      $('#moves').prepend(`<div class="movesContainer"><p class="move">${chessPiece}:</p><p class="move"> ${move.from} - ${move.to}</p></div>`);
+      message = `<div class="movesContainer"><p class="move">${numberOfMoves} ${chessPiece}:</p><p class="move"> ${move.from} - ${move.to}</p></div>`;
+    }
+
+    if (numberOfMoves < 16) {
+      $('#moves').prepend(`${message}`);
+    }
+    else if (numberOfMoves > 15 && numberOfMoves < 21) {
+      switch (numberOfMoves) {
+        case 16:
+          $('#moves').prepend(`${message}`);
+          $('#moves div').last().addClass('faded1');
+          break;
+        case 17:
+          $('#moves').prepend(`${message}`);
+          $('#moves div').last().addClass('faded2');
+          $('#moves div').last().prev().addClass('faded1');
+          break;
+        case 18:
+          $('#moves').prepend(`${message}`);
+          $('#moves div').last().addClass('faded3');
+          $('#moves div').last().prev().addClass('faded2');
+          $('#moves div').last().prev().prev().addClass('faded1');
+          break;
+        case 19:
+          $('#moves').prepend(`${message}`);
+          $('#moves div').last().addClass('faded4');
+          $('#moves div').last().prev().addClass('faded3');
+          $('#moves div').last().prev().prev().addClass('faded2');
+          $('#moves div').last().prev().prev().prev().addClass('faded1');
+          break;
+        case 20:
+          $('#moves').prepend(`${message}`);
+          $('#moves div').last().addClass('faded5');
+          $('#moves div').last().prev().addClass('faded4');
+          $('#moves div').last().prev().prev().addClass('faded3');
+          $('#moves div').last().prev().prev().prev().addClass('faded2');
+          $('#moves div').last().prev().prev().prev().prev().addClass('faded1');
+          break;
+      }
+    }
+    else {
+      $('#moves').prepend(`<div class="movesContainer"><p class="move">${numberOfMoves} ${chessPiece}:</p><p class="move"> ${move.from} - ${move.to}</p></div>`);
       $('#moves div').last().prev().addClass('faded5');
       $('#moves div').last().prev().prev().addClass('faded4');
       $('#moves div').last().prev().prev().prev().addClass('faded3');
@@ -162,8 +181,8 @@
     }
   }
 
-  function getTypeOfChessPiece(chessPiece){
-    switch(chessPiece){
+  function getTypeOfChessPiece(chessPiece) {
+    switch (chessPiece) {
       case "whitePawn.png":
         return "W Pawn";
       case "whiteRook.png":

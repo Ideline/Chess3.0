@@ -9,11 +9,11 @@ class MoveHandler {
     public static List<Coordinates> blackSafePositions = new ArrayList<>();
     public static List<ChessPiece> allCurrentChesspieces = new ArrayList<>();
     public static List<Threat> potentialSaviour = new ArrayList<>();
-    private static final int BLACKKINGID = 5;
     private static final int KINGSVALUE = 1000;
     private static final int QUEENSVALUE = 9;
     private static final String BLACK = "Black";
     private static final String WHITE = "White";
+    private static String currentColor;
 
     private static ChessPiece savedPiece;
     private static MoveCoordinates bestMove;
@@ -58,11 +58,12 @@ class MoveHandler {
 
         switch (playerTurn) {
             case BLACK:
-
+                currentColor = BLACK;
                 currentThreatList = blackThreats.stream().collect(Collectors.toList());
                 opponentsThreatList = whiteThreats.stream().collect(Collectors.toList());
                 break;
             case WHITE:
+                currentColor = WHITE;
                 currentThreatList = whiteThreats.stream().collect(Collectors.toList());
                 opponentsThreatList = blackThreats.stream().collect(Collectors.toList());
                 break;
@@ -72,8 +73,19 @@ class MoveHandler {
         // TODO: vi vill loopa detta tills hotet mot motståndaren är större än mot oss
         if (currentThreatList.size() > 0) {
 
-            // We get the one with  the highest value
+            // We get the one with the highest value
             highestCurrentThreat = currentThreatList.get(0);
+
+            if(highestCurrentThreat.getThreatenedPieceValue() == KINGSVALUE){
+                if(!Game.checkFlag.isSignaledCheck()){
+
+                    Game.checkFlag.setSignaledCheck(true);
+                    return check();
+                }
+                else{
+                    Game.checkFlag.setSignaledCheck(false);
+                }
+            }
 
             // If it's not our king or queen we check to see if we can make a queenswap
             if (highestCurrentThreat.getThreatenedPieceValue() < QUEENSVALUE) {
@@ -92,7 +104,11 @@ class MoveHandler {
                 if (highestCurrentThreat.getThreatenedPieceValue() > opHighestThreat.getThreatenedPieceValue()) {
                     return moveStrategy(highestCurrentThreat, currentThreatList, opponentsThreatList);
                 } else {
-                    return makeStrikeOrMove(opponentsThreatList);
+                    Move move = strike(opponentsThreatList);
+                    if(move != null){
+                        return move;
+                    }
+                    return randomMove(currentColor);
                 }
             } else {
                 return moveStrategy(highestCurrentThreat, currentThreatList, opponentsThreatList);
@@ -103,7 +119,11 @@ class MoveHandler {
         if (move != null) {
             return move;
         }
-        return makeStrikeOrMove(opponentsThreatList);
+        move = strike(opponentsThreatList);
+        if(move != null){
+            return move;
+        }
+        return randomMove(currentColor);
     }
 
     // ----------------------------------------------------------------------------------------------------- //
@@ -153,14 +173,18 @@ class MoveHandler {
                     // Or it will return the blocking move
                     return move;
                 }
-            }
-            else{
-                if(highestCurrentThreat.getThreatenedPieceValue() == KINGSVALUE){
+            } else {
+                if (highestCurrentThreat.getThreatenedPieceValue() == KINGSVALUE) {
                     return checkMate();
                 }
             }
             // If we can't block it we try to take our opponents highest valued piece
-            return makeStrikeOrMove(opponentsThreatList);
+            m = strike(opponentsThreatList);
+            if(m != null){
+                return m;
+            }
+            return randomMove(currentColor);
+
         }
     }
 
@@ -374,382 +398,205 @@ class MoveHandler {
 
     private static Move checkMate() {
 
-        Move move = new Move(-1, -1, -2, -2);
+        Move move = new Move(-1, -1, -2, 7);
 
         return move;
     }
 
     // ---------------------------------------------------------------------------------------------------- //
 
-    private static Move makeStrikeOrMove(List<Threat> opponentsThreatlist) {
+    private static Move strike(List<Threat> opponentsThreatList) {
 
         Move move;
 
-        for (int i = 0; i < opponentsThreatlist.size(); i++) {
+        for (int i = 0; i < opponentsThreatList.size(); i++) {
             // gets the highest untested valued strike info
-            ChessPiece opponentsPiece = opponentsThreatlist.get(i).getThreatenedPiece();
+            ChessPiece opponentsPiece = opponentsThreatList.get(i).getThreatenedPiece();
             int opX = opponentsPiece.currentXPosition;
             int opY = opponentsPiece.currentYPosition;
+            List<Threat> testThreatList;
 
-            ChessPiece attackPiece = opponentsThreatlist.get(i).getThreat();
+            ChessPiece attackPiece = opponentsThreatList.get(i).getThreat();
             int attackPieceX = attackPiece.currentXPosition;
             int attackPieceY = attackPiece.currentYPosition;
 
-            // If it's a safeSpot or the piece we take is more valuable than the piece we loose
-            // then we try to make the move
             if (safeSpot(opX, opY, attackPiece.color) || attackPiece.value < opponentsPiece.value) {
-                // Checkes to see if the move will result in check against us
+
                 testRun(attackPiece.id, attackPieceX, attackPieceY, opX, opY, false);
 
-                // TODO: Detta måste ändras
-                if (attackPiece.color == BLACK) {
-                    // If there is a threat after the move
-                    List<Threat> testBlackThreatList = MoveCollection.getTestBlackThreats();
-                    move = resultInCheck(testBlackThreatList, attackPieceX, attackPieceY, opX, opY);
-                } else {
-                    List<Threat> testWhiteThreatsList = MoveCollection.getTestWhiteThreats();
-                    move = resultInCheck(testWhiteThreatsList, attackPieceX, attackPieceY, opX, opY);
-                }
+                move = controlTestThreats(attackPiece, opponentsPiece,  attackPieceX, attackPieceY, opX, opY);
 
-                if (move != null) {
+                if(move != null){
                     return move;
                 }
-            }
-        }
-        // If we can't find an attack that is worth making we do random safemove
-        String color;
-
-        if (playerTurn == playerTurn.BLACK) {
-            color = BLACK;
-        } else {
-            color = WHITE;
-        }
-
-//        if (opponentsThreatlist.size() > 0) {
-//
-////            move = getRandomSafeMove(color);
-////            if (move != null) {
-////                return move;
-////            }
-//
-//
-//            // If we can't find a safespot we try to find a strike that will lead to the lowest threatresult against us
-//            move = getRandomLowThreatMove(color, true);
-//            if (move != null) {
-//                return move;
-//            }
-//        }
-        // If we can't strike we do the move that will lead to the lowest threatresult against us.
-        return getRandomLowThreatMove(color, false);
-    }
-
-    // ----------------------------------------------------------------------------------------------------- //
-
-    private static Move resultInCheck(List<Threat> testThreatList, int attackPieceX, int attackPieceY, int opX, int opY) {
-        if (testThreatList.size() != 0) {
-            // Check if it's check
-            int highestThreatenedPieceID = testThreatList.get(0).getThreatenedPiece().id;
-            if (!check(highestThreatenedPieceID)) {
-                Move attack = new Move(attackPieceX, attackPieceY, opX, opY);
-                return attack;
             }
         }
         return null;
     }
 
-    // ----------------------------------------------------------------------------------------------------- //
+    // -------------------------------------------------------------------------------------------------------- //
 
-    // ----------------------------------------------------------------------------------------------------- //
+    private static Move randomMove(String currentPlayerColor){
 
-    // TODO: getSortedThreatList this method
-    private static Move getRandomSafeMove(String color) {
+        List<MoveOption> moveOptionsList = new ArrayList<>();
+        List<MoveOption> allMoveOptionsList = new ArrayList<>();
+        List<MoveOption> noThreatOptions = new ArrayList<>();
 
-        Random random = new Random();
-        List<MoveOption> highestPotentialThreats = new ArrayList<>();
-        Move move;
+        for(ChessPiece piece : allCurrentChesspieces){
 
-        // Creates a list with the pieces of relevant color
-        List<ChessPiece> notTestedPieces = allCurrentChesspieces.stream()
-                .filter(piece -> piece.color == color)
-                .collect(Collectors.toList());
+            if(piece.color == currentPlayerColor){
 
-        while (notTestedPieces.size() > 0) {
+                List<MoveCoordinates> potentialMoves = new ArrayList<>(piece.getPotentialMoves());
+                List<Threat> currentPlayerTestThreatList;
+                List<Threat> opponentsTestThreatList;
 
-            // Randomizes one of the pieces
-            int indexRandomPiece = random.nextInt(notTestedPieces.size());
-            ChessPiece randomPiece = notTestedPieces.get(indexRandomPiece);
+                for(MoveCoordinates mc : potentialMoves){
 
-            // Get the potential moves for that piece
-            List<MoveCoordinates> potentialMoves = randomPiece.getPotentialMoves().stream()
-                    .collect(Collectors.toList());
+                    int fromX = mc.getFrom().getX();
+                    int fromY = mc.getFrom().getY();
+                    int toX = mc.getTo().getX();
+                    int toY = mc.getTo().getY();
 
-            // Then we look for a safe move to make
-            for (MoveCoordinates mc : potentialMoves) {
+                    if(safeSpot(toX, toY, currentPlayerColor)){
 
-                int fromX = mc.getFrom().getX();
-                int fromY = mc.getFrom().getY();
-                int toX = mc.getTo().getX();
-                int toY = mc.getTo().getY();
+                        testRun(piece.id, fromX, fromY, toX, toY, false);
 
-                // If we find one we return it otherwise we keep looking
-                if (safeSpot(toX, toY, randomPiece.color)) {
-
-//                    testRun(randomPiece.id, fromX, fromY, toX, toY, false);
-//
-//                    if (randomPiece.color == "Black") {
-//                        // returnerar threatlista
-//                        List<Threat> testBlackThreatList = MoveCollection.getTestBlackThreats();
-//                        // if there still is any threat after blocking the main threat we add the
-//                        // highest valued one to our list
-//                        if (testBlackThreatList.size() != 0) {
-//                            int highestThreatValue = testBlackThreatList.get(0).getThreatenedPieceValue();
-//                            highestPotentialThreats.add(new MoveOption(randomPiece, mc, highestThreatValue));
-//                        }
-//                        // If there is no longer any threat, we will choose to make this move
-//                        else {
-//                            move = new Move(fromX, fromY, toX, toY);
-//                            return move;
-//                        }
-//                    } else {
-//                        List<Threat> testWhiteThreatList = MoveCollection.getTestWhiteThreats();
-//                        // if there still is any threat after blocking the main threat we add the
-//                        // highest valued one to our list
-//                        if (testWhiteThreatList.size() != 0) {
-//                            int highestThreatValue = testWhiteThreatList.get(0).getThreatenedPieceValue();
-//                            highestPotentialThreats.add(new MoveOption(randomPiece, mc, highestThreatValue));
-//                        }
-//                        // If there no longer is any threat against us we make that move
-//                        else {
-//                            move = new Move(fromX, fromY, toX, toY);
-//                            return move;
-//                        }
-//                    }
-
-
-//                    Move move = new Move(randomPiece.currentYPosition, randomPiece.currentYPosition, toX, toY);
-//                    return move;
-                }
-            }
-            notTestedPieces.remove(indexRandomPiece);
-        }
-
-        highestPotentialThreats = highestPotentialThreats.stream()
-                .sorted(Comparator.comparing(moveOption -> moveOption.getThreatValue()))
-                .collect(Collectors.toList());
-
-        MoveOption bestMoveOption = highestPotentialThreats.get(0);
-        int bestMoveOptionValue = bestMoveOption.getThreatValue();
-
-        if (bestMoveOptionValue < KINGSVALUE) {
-            MoveCoordinates mc = bestMoveOption.getMoveCoordinates();
-            move = createMove(mc);
-        } else {
-            move = checkMate();
-        }
-
-        return move;
-    }
-
-    // ----------------------------------------------------------------------------------------------------- //
-
-    // TODO: kommentera mera
-    private static Move getRandomLowThreatMove(String color, Boolean strike) {
-
-//        Random random = new Random();
-//        List<Threat> highestTreatList = new ArrayList<>();
-//        Map<Integer, MoveCoordinates> currentBestMoveMap = new HashMap<>();
-//
-//        // Creates a list with the pieces of relevant color
-//        List<ChessPiece> notTestedPieces = allCurrentChesspieces.stream()
-//                .filter(piece -> piece.color == color)
-//                .collect(Collectors.toList());
-//
-//        while (notTestedPieces.size() > 0) {
-//
-//            List<Threat> highestTreatsAfterStrikes = new ArrayList<>();
-//            List<MoveCoordinates> movesList;
-//            // Randomizes one of the pieces
-//            int indexRandomPiece = random.nextInt(notTestedPieces.size());
-//            ChessPiece randomPiece = notTestedPieces.get(indexRandomPiece);
-//
-//            if (strike) {
-//                // Get the potential moves for that piece
-//                movesList = randomPiece.getPotentialStrikes().stream()
-//                        .collect(Collectors.toList());
-//            } else {
-//                movesList = randomPiece.getPotentialMoves().stream()
-//                        .collect(Collectors.toList());
-//            }
-//
-//            MoveCoordinates currentBestMove;
-//
-//            if (movesList.size() > 0) {
-//
-//                currentBestMove = movesList.get(0);
-//
-//                // Then we look for a safe move to make
-//                for (MoveCoordinates mc : movesList) {
-//
-//                    int fromX = mc.getFrom().getX();
-//                    int fromY = mc.getFrom().getX();
-//                    int toX = mc.getTo().getX();
-//                    int toY = mc.getTo().getY();
-//
-//                    testRun(randomPiece.id, fromX, fromY, toX, toY, false);
-//
-//                    if (color == "Black") {
-//                        List<Threat> testBlackThreatList = MoveCollection.getTestBlackThreats();
-//                        if (testBlackThreatList.size() != 0) {
-//                            // Adds the highest threat this strike will generate
-//                            highestTreatsAfterStrikes.add(testBlackThreatList.get(0));
-//                        }
-//
-//                    } else {
-//                        List<Threat> testWhiteThreatList = MoveCollection.getTestWhiteThreats();
-//                        if (testWhiteThreatList.size() != 0) {
-//                            // Adds the highest threat this strike will generate
-//                            highestTreatsAfterStrikes.add(testWhiteThreatList.get(0));
-//                        }
-//                    }
-//                    currentBestMove = mc;
-//                }
-//
-//                highestTreatsAfterStrikes = MoveCollection.sortThreatList(highestTreatsAfterStrikes);
-//                int indexOfLowestThreat = highestTreatsAfterStrikes.size() - 1;
-//
-//                // Adds the best alternative
-//                highestTreatList.add(highestTreatsAfterStrikes.get(indexOfLowestThreat));
-//                currentBestMoveMap.put(randomPiece.id, currentBestMove);
-//                notTestedPieces.remove(indexRandomPiece);
-//            }
-//        }
-//        if (highestTreatList.size() > 0) {
-//            highestTreatList = MoveCollection.sortThreatList(highestTreatList);
-//            int lowestThreatIndex = highestTreatList.size() - 1;
-//            int idOfBestPiece = highestTreatList.get(lowestThreatIndex).getThreatenedPiece().id;
-//            MoveCoordinates bestMC = currentBestMoveMap.get(idOfBestPiece);
-//            Move move = new Move(bestMC.getFrom().getX(), bestMC.getFrom().getY(), bestMC.getTo().getX(), bestMC.getTo().getY());
-//            if (highestTreatList.get(lowestThreatIndex).getThreatenedPieceValue() != KINGSVALUE) {
-//                return move;
-//            } else {
-//                System.out.println("SchackMatt!!!!");
-//                Move checkMateMoveSignal = new Move(-1, -1, -2, -2);
-//                return checkMateMoveSignal;
-//            }
-//        }
-//        return null;
-
-
-        Random random = new Random();
-        List<MoveOption> highestPotentialThreats = new ArrayList<>();
-        Move move;
-
-        // Creates a list with the pieces of relevant color
-        List<ChessPiece> notTestedPieces = allCurrentChesspieces.stream()
-                .filter(piece -> piece.color == color)
-                .collect(Collectors.toList());
-
-        while (notTestedPieces.size() > 0) {
-
-            // Randomizes one of the pieces
-            int indexRandomPiece = random.nextInt(notTestedPieces.size());
-            ChessPiece randomPiece = notTestedPieces.get(indexRandomPiece);
-            List<MoveCoordinates> movesOrStrikesList = new ArrayList<>();
-
-            if (strike) {
-                // Get the potential moves for that piece
-                movesOrStrikesList = randomPiece.getPotentialStrikes().stream()
-                        .collect(Collectors.toList());
-            } else {
-                movesOrStrikesList = randomPiece.getPotentialMoves().stream()
-                        .collect(Collectors.toList());
-            }
-
-            // Then we look for a safe move to make
-            for (MoveCoordinates mc : movesOrStrikesList) {
-
-                int fromX = mc.getFrom().getX();
-                int fromY = mc.getFrom().getY();
-                int toX = mc.getTo().getX();
-                int toY = mc.getTo().getY();
-
-                // If we find one we return it otherwise we keep looking
-                if (safeSpot(toX, toY, randomPiece.color)) {
-
-                    testRun(randomPiece.id, fromX, fromY, toX, toY, false);
-
-                    if (randomPiece.color == BLACK) {
-                        // returnerar threatlista
-                        List<Threat> testBlackThreatList = MoveCollection.getTestBlackThreats();
-                        // if there still is any threat after blocking the main threat we add the
-                        // highest valued one to our list
-                        if (testBlackThreatList.size() != 0) {
-                            int highestThreatValue = testBlackThreatList.get(0).getThreatenedPieceValue();
-                            highestPotentialThreats.add(new MoveOption(randomPiece, mc, highestThreatValue));
+                        if(currentPlayerColor == BLACK){
+                            currentPlayerTestThreatList = new ArrayList<>(MoveCollection.getTestBlackThreats());
+                            opponentsTestThreatList = new ArrayList<>(MoveCollection.getTestWhiteThreats());
                         }
-                        // If there is no longer any threat, we will choose to make this move
-                        else {
-                            move = new Move(fromX, fromY, toX, toY);
-                            return move;
+                        else{
+                            currentPlayerTestThreatList = new ArrayList<>(MoveCollection.getTestWhiteThreats());
+                            opponentsTestThreatList = new ArrayList<>(MoveCollection.getTestBlackThreats());
                         }
-                    } else {
-                        List<Threat> testWhiteThreatList = MoveCollection.getTestWhiteThreats();
-                        // if there still is any threat after blocking the main threat we add the
-                        // highest valued one to our list
-                        if (testWhiteThreatList.size() != 0) {
-                            int highestThreatValue = testWhiteThreatList.get(0).getThreatenedPieceValue();
-                            highestPotentialThreats.add(new MoveOption(randomPiece, mc, highestThreatValue));
+
+                        if(currentPlayerTestThreatList.size() > 0) {
+
+                            int cpHighestThreatValue = currentPlayerTestThreatList.get(0).getThreatenedPieceValue();
+
+                            if(opponentsTestThreatList.size() > 0) {
+
+                                int opHighestThreatValue = opponentsTestThreatList.get(0).getThreatenedPieceValue();
+
+                                if (cpHighestThreatValue < opHighestThreatValue) {
+                                    moveOptionsList.add(new MoveOption(piece, mc, cpHighestThreatValue));
+                                }
+                            }
+
+                            allMoveOptionsList.add(new MoveOption(piece, mc, cpHighestThreatValue));
                         }
-                        // If there no longer is any threat against us we make that move
-                        else {
-                            move = new Move(fromX, fromY, toX, toY);
-                            return move;
+                        else{
+                            if(opponentsTestThreatList.size() > 0){
+                                int opHighestThreatValue = opponentsTestThreatList.get(0).getThreatenedPieceValue();
+
+                                noThreatOptions.add(new MoveOption(piece, mc, opHighestThreatValue));
+                            }
+                            else{
+                                noThreatOptions.add(new MoveOption(piece, mc, 0));
+                            }
                         }
                     }
-
-
-//                    Move move = new Move(randomPiece.currentYPosition, randomPiece.currentYPosition, toX, toY);
-//                    return move;
                 }
             }
-            notTestedPieces.remove(indexRandomPiece);
         }
 
-        highestPotentialThreats = highestPotentialThreats.stream()
-                .sorted(Comparator.comparing(moveOption -> moveOption.getThreatValue()))
+        if(noThreatOptions.size() > 0){
+
+            noThreatOptions = noThreatOptions.stream()
+                    .sorted(Comparator.comparing(MoveOption::getThreatValue).reversed())
+                    .collect(Collectors.toList());
+
+            int bestThreatValue =  noThreatOptions.get(0).getThreatValue();
+
+            List<MoveOption> bestMoveOptions;
+
+            bestMoveOptions = noThreatOptions.stream()
+                    .filter(moveOption -> moveOption.getThreatValue() == bestThreatValue)
+                    .collect(Collectors.toList());
+
+            Random r = new Random();
+            int bound = bestMoveOptions.size();
+
+            int index = r.nextInt(bound);
+            MoveOption randomMoveOption = bestMoveOptions.get(index);
+
+            return createMove(randomMoveOption.getMoveCoordinates());
+        }
+
+        if(moveOptionsList.size() > 0){
+            moveOptionsList =  moveOptionsList.stream()
+                    .sorted(Comparator.comparing(MoveOption::getThreatValue))
+                    .collect(Collectors.toList());
+
+            int bestThreatValue = moveOptionsList.get(0).getThreatValue();
+
+            List<MoveOption> bestMoveOptions;
+
+            bestMoveOptions = moveOptionsList.stream()
+                    .filter(moveOption -> moveOption.getThreatValue() == bestThreatValue)
+                    .collect(Collectors.toList());
+
+            Random r = new Random();
+            int bound = bestMoveOptions.size();
+
+            int index = r.nextInt(bound);
+            MoveOption randomMoveOption = bestMoveOptions.get(index);
+
+            return createMove(randomMoveOption.getMoveCoordinates());
+        }
+
+        allMoveOptionsList = allMoveOptionsList.stream()
+                .sorted(Comparator.comparing(MoveOption::getThreatValue))
                 .collect(Collectors.toList());
 
-        MoveOption bestMoveOption = highestPotentialThreats.get(0);
-        int bestMoveOptionValue = bestMoveOption.getThreatValue();
+        int bestThreatValue = allMoveOptionsList.get(0).getThreatValue();
 
-        if (bestMoveOptionValue < KINGSVALUE) {
-            MoveCoordinates mc = bestMoveOption.getMoveCoordinates();
-            int fromX = mc.getFrom().getX();
-            int fromY = mc.getFrom().getY();
-            int toX = mc.getTo().getX();
-            int toY = mc.getTo().getY();
+        List<MoveOption> bestMoveOptions;
 
-            move = new Move(fromX, fromY, toX, toY);
-        } else {
-            move = checkMate();
-        }
+        bestMoveOptions = allMoveOptionsList.stream()
+                .filter(moveOption -> moveOption.getThreatValue() == bestThreatValue)
+                .collect(Collectors.toList());
 
-        return move;
+        Random r = new Random();
+        int bound = bestMoveOptions.size();
+
+        int index = r.nextInt(bound);
+        MoveOption randomMoveOption = bestMoveOptions.get(index);
+
+
+        return createMove(randomMoveOption.getMoveCoordinates());
     }
 
-    // ----------------------------------------------------------------------------------------------------- //
+    // -------------------------------------------------------------------------------------------------------- //
 
+    private static Move controlTestThreats(ChessPiece attackPiece, ChessPiece opponentsPiece, int attackPieceX,
+                                           int attackPieceY, int opX, int opY){
 
-    // ----------------------------------------------------------------------------------------------------- //
+        Move move;
 
-    private static boolean check(int pieceID) {
+        List<Threat> testThreatList;
 
-        // Looks to see if it's check at the moment
-        if (pieceID == BLACKKINGID) {
-            return blackThreats.get(0).getThreatenedPieceValue() == KINGSVALUE;
+        if (attackPiece.color == BLACK) {
+
+            testThreatList = new ArrayList<>(MoveCollection.getTestBlackThreats());
         } else {
-            return whiteThreats.get(0).getThreatenedPieceValue() == KINGSVALUE;
+            testThreatList = new ArrayList<>(MoveCollection.getTestWhiteThreats());
         }
+
+        if (testThreatList.size() > 0) {
+            int highestThreatValue = testThreatList.get(0).getThreatenedPieceValue();
+            if(highestThreatValue < opponentsPiece.value){
+                move = new Move(attackPieceX, attackPieceY, opX, opY);
+                return move;
+            }
+        }
+        // If there is no longer any threat, we will choose to make this move
+        else {
+            move = new Move(attackPieceX, attackPieceY, opX, opY);
+            return move;
+        }
+
+        return null;
     }
 
     // ----------------------------------------------------------------------------------------------------- //
@@ -843,8 +690,7 @@ class MoveHandler {
             if (highestPotentialThreats3.size() > 0) {
                 lowestThreatMove3 = highestPotentialThreats3.get(0).getMoveCoordinates();
                 lowestThreatValue3 = highestPotentialThreats3.get(0).getThreatValue();
-            }
-            else{
+            } else {
                 return null;
             }
         }
@@ -855,8 +701,7 @@ class MoveHandler {
             if (highestPotentialThreats2.size() > 0) {
                 lowestThreatMove2 = highestPotentialThreats2.get(0).getMoveCoordinates();
                 lowestThreatValue2 = highestPotentialThreats2.get(0).getThreatValue();
-            }
-            else{
+            } else {
                 return null;
             }
         }
@@ -872,19 +717,19 @@ class MoveHandler {
 
         // Returning the lowest threatMove
         if (lowestThreatValue1 <= lowestThreatValue2 && lowestThreatValue1 <= lowestThreatValue3
-                && lowestThreatValue1 != KINGSVALUE && lowestThreatValue1 != KINGSVALUE+1) {
+                && lowestThreatValue1 != KINGSVALUE && lowestThreatValue1 != KINGSVALUE + 1) {
             return lowestThreatMove1;
 
-        } else if (lowestThreatValue3 <= lowestThreatValue2 && lowestThreatValue3 != KINGSVALUE && lowestThreatValue3 != KINGSVALUE+1) {
+        } else if (lowestThreatValue3 <= lowestThreatValue2 && lowestThreatValue3 != KINGSVALUE && lowestThreatValue3 != KINGSVALUE + 1) {
             return lowestThreatMove3;
 
-        } else if (lowestThreatValue2 != KINGSVALUE && lowestThreatValue2 != KINGSVALUE+1) {
+        } else if (lowestThreatValue2 != KINGSVALUE && lowestThreatValue2 != KINGSVALUE + 1) {
             return lowestThreatMove2;
         }
         return null;
     }
 
-// ----------------------------------------------------------------------------------------------------- //
+// ---------------------------------------------------------------------------------------------------------- //
 
     private static List<MoveOption> getSortedThreatList(List<MoveCoordinates> list, Threat threat, String color) {
 
@@ -972,22 +817,6 @@ class MoveHandler {
 
     // ----------------------------------------------------------------------------------------------------- //
 
-    // Checkes if the threatened piece has a strike savePiece that is safe to make
-//    private static boolean safeStrikePosition(Threat threatMove) {
-//
-//        List<MoveCoordinates> potentialStrikes = threatMove.getThreatenedPiece().getPotentialStrikes();
-//
-//        for (MoveCoordinates mc : potentialStrikes) {
-//            if (safeSpot(mc.getTo().getX(), mc.getTo().getY())) {
-//                safeStrikeMove = new MoveCoordinates(mc.getFrom(), mc.getTo());
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-
-    // ----------------------------------------------------------------------------------------------------- //
-
     private static void setBoard(int id, int fromX, int fromY, int toX, int toY, boolean reset) {
 
         outerloop:
@@ -1028,8 +857,6 @@ class MoveHandler {
     // ----------------------------------------------------------------------------------------------------- //
 
     // Checking if the coordinates are a safe spot
-
-    // TODO color!!!
     private static boolean safeSpot(int x, int y, String color) {
 
         List<Coordinates> list;
@@ -1046,5 +873,11 @@ class MoveHandler {
             }
         }
         return false;
+    }
+
+    // ----------------------------------------------------------------------------------------------------- //
+
+    private static Move check(){
+        return new Move(0, 7, -1, 7);
     }
 }

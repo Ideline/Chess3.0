@@ -210,7 +210,10 @@ class ChessPiece {
     }
 
     private void addPotentialMove(int x, int y) {
-        potentialMoves.add(new MoveCoordinates(new Coordinates(currentXPosition, currentYPosition), new Coordinates(x, y)));
+        if(!potentialMoves.stream()
+                .anyMatch(mc -> mc.getTo().getX() == x && mc.getTo().getY() == y)) {
+            potentialMoves.add(new MoveCoordinates(new Coordinates(currentXPosition, currentYPosition), new Coordinates(x, y)));
+        }
     }
 
     private void addPotentialStrike(int x, int y) {
