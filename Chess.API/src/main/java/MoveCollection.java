@@ -1,5 +1,4 @@
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -9,7 +8,8 @@ public class MoveCollection {
     private static Map<String, List<ChessPiece>> threatenedPieces = new HashMap<>();
     private static Map<String, List<ChessPiece>> rankedThreats = new HashMap<>();
     //private static List<Coordinates> test = new ArrayList<>();
-    private static List<Coordinates> safePositions = new ArrayList<>();
+    private static List<Coordinates> whiteSafePositions = new ArrayList<>();
+    private static List<Coordinates> blackSafePositions = new ArrayList<>();
     private static List<ChessPiece> allCurrentChessPieces = new ArrayList<>();
     private static List<ChessPiece> allCurrentTestChessPieces = new ArrayList<>();
     private static List<Threat> blackThreats = new ArrayList<>();
@@ -17,6 +17,15 @@ public class MoveCollection {
     private static List<Threat> testBlackThreats = new ArrayList<>();
     private static List<Threat> testWhiteThreats = new ArrayList<>();
     private static boolean test = false;
+    private static boolean block = false;
+
+    public static void setBlock(boolean block) {
+        MoveCollection.block = block;
+    }
+
+    public static boolean isBlock() {
+        return block;
+    }
 
     public static void setTest(boolean test) {
         MoveCollection.test = test;
@@ -30,8 +39,12 @@ public class MoveCollection {
         return whiteThreats;
     }
 
-    public static List<Coordinates> getSafePositions() {
-        return safePositions;
+    public static List<Coordinates> getWhiteSafePositions() {
+        return whiteSafePositions;
+    }
+
+    public static List<Coordinates> getBlackSafePositions() {
+        return blackSafePositions;
     }
 
     public static List<ChessPiece> getAllCurrentChessPieces() {
@@ -81,7 +94,7 @@ public class MoveCollection {
 
         if (!test) {
             createThreatList();
-            createSafePositionsList();
+            createSafePositionsLists();
         }
     }
 
@@ -177,7 +190,7 @@ public class MoveCollection {
 //
 //        createThreatenedPiecesMap();
 //        rankThreats();
-//        createSafePositionsList();
+//        createSafePositionsLists();
 //        return allPotentialMoves;
 //    }
 
@@ -217,15 +230,20 @@ public class MoveCollection {
 //                        .collect(Collectors.toList())));
 //    }
 //
-    private static void createSafePositionsList() {
-        safePositions.clear();
+    private static void createSafePositionsLists() {
+        whiteSafePositions.clear();
+        blackSafePositions.clear();
         fillSafePositionList();
 
         for (ChessPiece piece : allCurrentChessPieces) {
             List<Coordinates> unsafePositions = piece.getUnsafePositions();
 
             unsafePositions.forEach(up -> {
-                safePositions.removeIf(sp -> sp.getX() == up.getX() && sp.getY() == up.getY());
+                whiteSafePositions.removeIf(sp -> sp.getX() == up.getX() && sp.getY() == up.getY() && piece.color == "Black");
+            });
+
+            unsafePositions.forEach(up -> {
+                blackSafePositions.removeIf(sp -> sp.getX() == up.getX() && sp.getY() == up.getY() && piece.color == "White");
             });
 
 //            for (Coordinates up : unsafePositions) {
@@ -243,12 +261,14 @@ public class MoveCollection {
 //                        }
 //                    }
 //                });
+        int test = 0;
     }
 
     private static void fillSafePositionList() {
         for (int a = 0; a < 8; a++) {
             for (int b = 0; b < 8; b++) {
-                safePositions.add(new Coordinates(a, b));
+                whiteSafePositions.add(new Coordinates(a, b));
+                blackSafePositions.add(new Coordinates(a, b));
             }
         }
     }

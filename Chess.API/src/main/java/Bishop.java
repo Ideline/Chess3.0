@@ -11,6 +11,9 @@ public class Bishop extends ChessPiece implements IChessPieces {
 
     @Override
     public void setPotentialMoves() {
+
+        clearLists();
+
         move(currentXPosition, currentYPosition, LEFT, UP);
         move(currentXPosition, currentYPosition, LEFT, DOWN);
         move(currentXPosition, currentYPosition, RIGHT, UP);

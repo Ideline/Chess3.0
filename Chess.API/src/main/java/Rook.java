@@ -8,6 +8,9 @@ public class Rook extends ChessPiece {
     private final boolean STRIKE = true;
 
     public void setPotentialMoves() {
+
+        clearLists();
+
         move(currentXPosition, currentYPosition, STAY, UP, false);
         move(currentXPosition, currentYPosition, STAY, DOWN, false);
         move(currentXPosition, currentYPosition, LEFT, STAY, false);

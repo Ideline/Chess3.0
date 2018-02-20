@@ -7,7 +7,20 @@ public class Main {
 
 
     public static void main(String[] args) {
-
+//        Game.start();
+//        while (true) {
+//
+//            MoveHandler.clearLists();
+//
+//            MoveCollection.createCurrentChessPieceList();
+//            Move move = MoveHandler.pickMove();
+//
+//            //TODO: Handle check mate move
+//            Game.updateBoard(move);
+//            Game.changePlayerTurn();
+//
+//            System.out.println(move);
+//        }
         //Game g = new Game();
         //ex: https://github.com/mscharhag/blog-examples/tree/master/sparkdemo/src/main/java/com/mscharhag/sparkdemo
 

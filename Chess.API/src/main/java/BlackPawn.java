@@ -15,6 +15,8 @@ public class BlackPawn extends ChessPiece implements IPawn{
     @Override
     public void setPotentialMoves() {
 
+        clearLists();
+
         if(currentYPosition == OPPONENTS_NEST){
             setPossibleQueen(true); // Signals to swap the pawn for a queen
         }

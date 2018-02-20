@@ -10,6 +10,9 @@ public class Knight extends ChessPiece implements IChessPieces {
 
     @Override
     public void setPotentialMoves() {
+
+        clearLists();
+
         move(currentXPosition, currentYPosition, LEFT, FARUP);
         move(currentXPosition, currentYPosition, LEFT, FARDOWN);
         move(currentXPosition, currentYPosition, FARLEFT, UP);

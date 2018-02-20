@@ -47,7 +47,15 @@ class ChessPiece {
     }
 
     public void setPotentialMoves() {
+    }
 
+    public void clearLists(){
+        if(!strikeTest){
+            potentialMoves.clear();
+            potentialStrikes.clear();
+            nextPotentialMoves.clear();
+            nextPotentialStrikes.clear();
+        }
     }
 
     public List<MoveCoordinates> getPotentialMoves() {
@@ -107,11 +115,17 @@ class ChessPiece {
 
     public boolean checkMove(int moveX, int moveY, boolean strike, boolean pawn, boolean nextTurn) {
         if (pawn) { //OBS OBS!! Testkör nextpotentialmoves bonde
-            if (strikeTest && !tileIsEmpty(moveX, moveY) && !sameColor(moveX, moveY) && strike && !nextTurn) {
+            if(strikeTest && tileIsEmpty(moveX, moveY) && !strike && !nextTurn && MoveCollection.isBlock()){
                 potentialStrikesTest.add(new MoveCoordinates(new Coordinates(currentXPosition, currentYPosition),
                         new Coordinates(moveX, moveY)));
                 return !nextTurn;
-            } else if (safeSpotCheck && strike) {
+            }
+            else if (strikeTest && !tileIsEmpty(moveX, moveY) && !sameColor(moveX, moveY) && strike && !nextTurn && !MoveCollection.isBlock()) {
+                potentialStrikesTest.add(new MoveCoordinates(new Coordinates(currentXPosition, currentYPosition),
+                        new Coordinates(moveX, moveY)));
+                return !nextTurn;
+            }
+            else if (safeSpotCheck && strike) {
                 unsafePositions.add(new Coordinates(moveX, moveY));
             } else if (!safeSpotCheck) {
                 if (tileIsEmpty(moveX, moveY) && !strike) {

@@ -9,6 +9,9 @@ public class King extends ChessPiece implements IChessPieces{
 
     @Override
     public void setPotentialMoves() {
+
+        clearLists();
+
         move(currentXPosition, currentYPosition, STAY, UP);
         move(currentXPosition, currentYPosition, STAY, DOWN);
         move(currentXPosition, currentYPosition, LEFT, STAY);

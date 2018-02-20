@@ -11,6 +11,9 @@ public class Queen extends ChessPiece implements IChessPieces {
 
     @Override
     public void setPotentialMoves() {
+
+        clearLists();
+
         move(currentXPosition, currentYPosition, LEFT, STAY);
         move(currentXPosition, currentYPosition, LEFT, UP);
         move(currentXPosition, currentYPosition, LEFT, DOWN);

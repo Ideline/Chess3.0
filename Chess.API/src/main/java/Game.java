@@ -13,7 +13,7 @@ public class Game {
 
     //private ChessPiece piece;
     private static ArrayList<Player> players;
-    private static ChessPiece piece;
+    public static ChessPiece piece;
     private static boolean black = true;
 
     public static boolean isBlack() {
@@ -25,10 +25,14 @@ public class Game {
     }
 
     public static ChessPiece[][] start() {
+        if(running){
+            return board;
+        }
+        running = true;
         board = new ChessPiece[8][8];
         fillBoard();
         //piece = board[3][1];
-        running = true;
+
         Move.makePlaylist();
         return board;
     }
@@ -101,7 +105,7 @@ public class Game {
         board[0][7] = new Rook(0, 7, "White", 25, 5);
         board[1][7] = new Knight(1, 7, "White", 26, 3);
         board[2][7] = new Bishop(2, 7, "White", 27, 3);
-        board[3][7] = new Queen(3, 7, "White", 28, 9);
+        board[3][7] = null;//new Queen(3, 7, "White", 28, 9);
         board[4][7] = new King(4, 7, "White", 29, 1000);
         board[5][7] = new Bishop(5, 7, "White", 30, 3);
         board[6][7] = new Knight(6, 7, "White", 31, 3);
@@ -109,7 +113,8 @@ public class Game {
     }
 
 
-    public static Move getNextMove() {
+    public synchronized static Move getNextMove() {
+
         black = !black;
         if(!running)
             Game.start();
@@ -144,13 +149,49 @@ public class Game {
 //  3      MoveHandler.pickMove();
         MoveCollection.createCurrentChessPieceList();
         Move move = MoveHandler.pickMove();
-        if(MoveHandler.getPlayerTurn() == PlayerTurn.WHITE){
-            MoveHandler.setPlayerTurn(PlayerTurn.BLACK);
+
+        MoveHandler.clearLists();
+
+        //TODO: Handle check mate move
+        updateBoard(move);
+        changePlayerTurn();
+
+        System.out.println(move);
+
+        return move;//test;//MoveHandler.getMove(black);
+    }
+
+    public static void updateBoard(Move move){
+
+        if(!move.getFrom().matches(move.getTo())){
+            String getFrom = move.getFrom();
+            String getTo = move.getTo();
+            String sx1 = getFrom.substring(0,1);
+            String sy1 = getFrom.substring(1);
+            String sx2 = getTo.substring(0,1);
+            String sy2 = getTo.substring(1);
+
+            int x1 = Move.getX(sx1);
+            int y1 = Move.getY(sy1);
+            int x2 = Move.getX(sx2);
+            int y2 = Move.getY(sy2);
+
+            Game.board[x2][y2] = Game.board[x1][y1];
+            Game.board[x1][y1] = null;
+            Game.piece = Game.board[x2][y2];
+            Game.piece.setCurrentXPosition(x2);
+            Game.piece.setCurrentYPosition(y2);
+            Game.piece.tile.setX(x2);
+            Game.piece.tile.setY(y2);
         }
-        else{
+    }
+
+    public static void changePlayerTurn(){
+
+        if (MoveHandler.getPlayerTurn() == PlayerTurn.WHITE) {
+            MoveHandler.setPlayerTurn(PlayerTurn.BLACK);
+        } else {
             MoveHandler.setPlayerTurn(PlayerTurn.WHITE);
         }
-        System.out.println(move);
-        return move;//test;//MoveHandler.getMove(black);
     }
 }
