@@ -3,13 +3,13 @@ public class Threat {
     private ChessPiece threatenedPiece;
     private ChessPiece threat;
     private int threatenedPieceValue;
-    private int threatValue;
+    private int threatsValue;
 
     public Threat(ChessPiece threatenedPiece,  ChessPiece threat){
         this.threatenedPiece = threatenedPiece;
         this.threat = threat;
         this.threatenedPieceValue = threatenedPiece.value;
-        this.threatValue = threat.value;
+        this.threatsValue = threat.value;
     }
 
     public ChessPiece getThreatenedPiece() {
@@ -24,7 +24,7 @@ public class Threat {
         return threatenedPieceValue;
     }
 
-    public int getThreatValue() {
-        return threatValue;
+    public int getThreatsValue() {
+        return threatsValue;
     }
 }
