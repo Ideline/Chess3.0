@@ -1,18 +1,18 @@
 public class MoveCoordinates {
 
-    private Coordinates from;
-    private Coordinates to;
+    private Coordinate from;
+    private Coordinate to;
 
-    public MoveCoordinates(Coordinates from, Coordinates to){
+    public MoveCoordinates(Coordinate from, Coordinate to){
         this.from = from;
         this.to = to;
     }
 
-    public Coordinates getFrom() {
+    public Coordinate getFrom() {
         return from;
     }
 
-    public Coordinates getTo() {
+    public Coordinate getTo() {
         return to;
     }
 }

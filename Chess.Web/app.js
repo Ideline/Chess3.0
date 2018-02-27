@@ -5,6 +5,7 @@
   var numberOfMoves = 0;
   var paus = false;
   var interval = 1500;
+  var check = false;
 
   $(function (ready) {
     console.info('Spelet startar ...');
@@ -23,6 +24,10 @@
     paus = true;
     $('.pause').show();
     $('#pause').fadeIn(100).fadeOut(100).fadeIn(100);
+    if($('#check').is(":visible")){
+      check = true;
+      $('#check').hide();
+    }
   });
 
   $('#play').on('click', function () {
@@ -31,6 +36,10 @@
     $('#play').fadeIn(100).fadeOut(100).fadeIn(100);
     clearInterval(moveHandler);
     moveHandler = setInterval(getNextMove, 1500);
+    if(check === true){
+      check = false;
+      $('#check').show();
+    }
   });
 
   $('#slower').on('click', function () {

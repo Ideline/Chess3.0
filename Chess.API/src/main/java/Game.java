@@ -2,24 +2,17 @@ import java.util.ArrayList;
 
 public class Game {
 
-    //MoveCollection
     public Game(){
         this.players = new ArrayList<Player>();
         this.running = false;
     }
 
-    public static ChessPiece[][] board; //= new ChessPiece[8][8];
-    public static CheckFlag checkFlag;
-    private static boolean running;
-
-    //private ChessPiece piece;
     private static ArrayList<Player> players;
     public static ChessPiece piece;
+    public static ChessPiece[][] board;
+    public static CheckFlag checkFlag;
+    private static boolean running;
     private static boolean black = true;
-
-    public static boolean isBlack() {
-        return black;
-    }
 
     public static void addPlayer(Player player) {
         players.add(player);
@@ -31,18 +24,17 @@ public class Game {
         }
         running = true;
         board = new ChessPiece[8][8];
-        fillBoard();
         checkFlag = new CheckFlag();
-        //piece = board[3][1];
+
+        fillBoard();
 
         Move.makePlaylist();
         return board;
     }
 
     private static void fillBoard() {
-        //this.players = new ArrayList<Player>();
 
-        //TODO: Gör snyggare metod för att fylla brädet och lägg in valuet i resp konstruktor
+        //TODO: Gör snyggare metod för att fylla brädet och lägg in värdet i resp konstruktor
 
         board[0][0] = new Rook(0, 0, "Black", 1, 5);
         board[1][0] = new Knight(1, 0, "Black", 2, 3);
@@ -120,38 +112,9 @@ public class Game {
 
     public synchronized static Move getNextMove() {
 
-        black = !black;
         if(!running)
             Game.start();
 
-
-// Random
-//        List<Coordinates> potentialMoves = piece.getPotentialMoves();
-//
-//        Random r = new Random();
-//        int i = r.nextInt(potentialMoves.size());
-//        Coordinates xy = potentialMoves.get(i);
-//
-//        int x1 = piece.tile.getX();
-//        int y1 = piece.tile.getY();
-//
-//        int x2 = xy.getX();
-//        int y2 = xy.getY();
-//
-//        Move move = new Move(x1, y1, x2, y2);
-//        board[x2][y2] = board[x1][y1];
-//        board[x1][y1] = null;
-//        piece = board[x2][y2];
-//        piece.tile.setX(x2);
-//        piece.tile.setY(y2);
-// 2
-// 3       Map<String, Map<Integer, Map<String, List<Coordinates>>>> testMap = MoveCollection.createAllPotentialMovesMap();
-//
-//        //Move test = new Move("A1", "A2");
-//        Move move = Move.getMove();
-//        Move.removeMove();
-//
-//  3      MoveHandler.pickMove();
         MoveCollection.createCurrentChessPieceList();
         Move move = MoveHandler.pickMove();
 
@@ -163,12 +126,12 @@ public class Game {
         updateBoard(move);
         changePlayerTurn();
 
-        System.out.println(move);
+        System.out.println(move.getFrom() + move.getTo());
 
         return move;
     }
 
-    public static void updateBoard(Move move){
+    synchronized public static void updateBoard(Move move){
 
         if(!move.getFrom().matches(move.getTo())){
             String getFrom = move.getFrom();

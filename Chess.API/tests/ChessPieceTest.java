@@ -20,8 +20,8 @@ public class ChessPieceTest {
         System.out.println();
         //ChessPiece sut = new BlackPawn(0, 1, "Black", 9, 1);
 
-        //List<Coordinates> result = sut.getUnsafePositions();
-        //List<Coordinates> expected = Arrays.asList(new Coordinates(1, 2));
+        //List<Coordinate> result = sut.getUnsafePositions();
+        //List<Coordinate> expected = Arrays.asList(new Coordinate(1, 2));
 
 
         //Assert.assertEquals(expected, result);

@@ -2,15 +2,15 @@ import java.util.List;
 
 public class StrikeValues {
 
-    public StrikeValues(List<Coordinates> potentialStrikes, List<ChessPiece> threatenedPieces){
+    public StrikeValues(List<Coordinate> potentialStrikes, List<ChessPiece> threatenedPieces){
         this.potentialStrikes = potentialStrikes;
         this.threatenedPieces = threatenedPieces;
     }
 
-    private List<Coordinates> potentialStrikes;
+    private List<Coordinate> potentialStrikes;
     private List<ChessPiece> threatenedPieces;
 
-    public List<Coordinates> getPotentialStrikes() {
+    public List<Coordinate> getPotentialStrikes() {
         return potentialStrikes;
     }
 
@@ -18,7 +18,7 @@ public class StrikeValues {
         return threatenedPieces;
     }
 
-    public void setPotentialStrikes(List<Coordinates> potentialStrikes) {
+    public void setPotentialStrikes(List<Coordinate> potentialStrikes) {
         this.potentialStrikes = potentialStrikes;
     }
 

@@ -8,15 +8,15 @@
 //    // fixa interface med default metoder så att vi kan använda den istället för superklassen
 //
 //
-//    Coordinates field;
+//    Coordinate field;
 //    String color;
 //    int id;
 //    boolean possibleQueen = false;
-//    List<Coordinates> potentialMoves = new ArrayList<>();
-//    List<Coordinates> potentialStrikes = new ArrayList<>();
-//    List<Coordinates> nextPotentialMoves = new ArrayList<>();
-//    List<Coordinates> nextPotentialStrikes = new ArrayList<>();
-//    Map<String, List<Coordinates>> allPotentialmoves = new HashMap<>();
+//    List<Coordinate> potentialMoves = new ArrayList<>();
+//    List<Coordinate> potentialStrikes = new ArrayList<>();
+//    List<Coordinate> nextPotentialMoves = new ArrayList<>();
+//    List<Coordinate> nextPotentialStrikes = new ArrayList<>();
+//    Map<String, List<Coordinate>> allPotentialmoves = new HashMap<>();
 //
 //
 //
@@ -39,11 +39,11 @@
 //            this.allPotentialmoves.put("nextPotentialStrikes", nextPotentialStrikes);
 //        }
 //
-//        default public Map<String, List<Coordinates>> getAllPotentialmoves() {
+//        default public Map<String, List<Coordinate>> getAllPotentialmoves() {
 //            return allPotentialmoves;
 //        }
 //
-//        default public List<Coordinates> getPotentialMoves() {
+//        default public List<Coordinate> getPotentialMoves() {
 //            potentialMoves = new ArrayList<>(); // Maybe .clear() instead?
 //            nextPotentialMoves = new ArrayList<>();
 //            potentialStrikes = new ArrayList<>();
@@ -55,25 +55,25 @@
 //        }
 //
 //        // Hmm???
-////    public List<Coordinates> getPotentialStrikes() {
+////    public List<Coordinate> getPotentialStrikes() {
 ////        potentialStrikes = new ArrayList<>();
 ////        return potentialStrikes;
 ////    }
 //
 //        default public void addPotentialMove(int x, int y){
-//            potentialMoves.add(new Coordinates(x, y));
+//            potentialMoves.add(new Coordinate(x, y));
 //        }
 //
 //        default public void addPotentialStrike(int x, int y){
-//            potentialStrikes.add(new Coordinates(x, y));
+//            potentialStrikes.add(new Coordinate(x, y));
 //        }
 //
 //        default public void addNextPotentialMove(int x, int y){
-//            nextPotentialMoves.add(new Coordinates(x, y));
+//            nextPotentialMoves.add(new Coordinate(x, y));
 //        }
 //
 //        default public void addNextPotentialStrike(int x, int y){
-//            nextPotentialStrikes.add(new Coordinates(x, y));
+//            nextPotentialStrikes.add(new Coordinate(x, y));
 //        }
 //
 //        default public boolean checkMove(int x, int y, boolean strike, boolean pawn){

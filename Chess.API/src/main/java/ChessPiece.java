@@ -11,7 +11,7 @@ class ChessPiece {
     protected final int LEFT = -1;
     protected final int RIGHT = 1;
     protected final int STAY = 0;
-    protected Coordinates tile;
+    protected Coordinate tile;
     protected String color;
     protected int id;
     protected int value;
@@ -24,13 +24,12 @@ class ChessPiece {
     private List<MoveCoordinates> potentialStrikes = new ArrayList<>();
     private List<MoveCoordinates> nextPotentialMoves = new ArrayList<>();
     private List<MoveCoordinates> nextPotentialStrikes = new ArrayList<>();
-    private List<Coordinates> unsafePositions = new ArrayList<>();
-    private Map<Integer, Map<String, List<Coordinates>>> allPotentialMoves = new HashMap<>();
+    private List<Coordinate> unsafePositions = new ArrayList<>();
     private List<MoveCoordinates> potentialStrikesTest = new ArrayList<>();
     private boolean strikeTest = false;
 
     public ChessPiece(int x, int y, String color, int id, int value) {
-        this.tile = new Coordinates(x, y);
+        this.tile = new Coordinate(x, y);
         this.color = color;
         this.id = id;
         this.value = value;
@@ -73,7 +72,7 @@ class ChessPiece {
         return potentialStrikesTest;
     }
 
-    public List<Coordinates> getUnsafePositions() {
+    public List<Coordinate> getUnsafePositions() {
         unsafePositions.clear();
         safeSpotCheck = true;
         setPotentialMoves();
@@ -83,10 +82,6 @@ class ChessPiece {
 
     public int getValue() {
         return value;
-    }
-
-    public void setAllPotentialmoves() {
-        setPotentialMoves();
     }
 
     public boolean isPossibleQueen() {
@@ -101,32 +96,20 @@ class ChessPiece {
         return potentialStrikes;
     }
 
-    public List<MoveCoordinates> getNextPotentialMoves() {
-        return nextPotentialMoves;
-    }
-
-    public List<MoveCoordinates> getNextPotentialStrikes() {
-        return nextPotentialStrikes;
-    }
-
-    public Map<Integer, Map<String, List<Coordinates>>> getMapAllPotentialMoves() {
-        return allPotentialMoves;
-    }
-
     public boolean checkMove(int moveX, int moveY, boolean strike, boolean pawn, boolean nextTurn) {
         if (pawn) { //OBS OBS!! Testkör nextpotentialmoves bonde
             if(strikeTest && tileIsEmpty(moveX, moveY) && !strike && !nextTurn && MoveCollection.isBlock()){
-                potentialStrikesTest.add(new MoveCoordinates(new Coordinates(currentXPosition, currentYPosition),
-                        new Coordinates(moveX, moveY)));
+                potentialStrikesTest.add(new MoveCoordinates(new Coordinate(currentXPosition, currentYPosition),
+                        new Coordinate(moveX, moveY)));
                 return !nextTurn;
             }
             else if (strikeTest && !tileIsEmpty(moveX, moveY) && !sameColor(moveX, moveY) && strike && !nextTurn && !MoveCollection.isBlock()) {
-                potentialStrikesTest.add(new MoveCoordinates(new Coordinates(currentXPosition, currentYPosition),
-                        new Coordinates(moveX, moveY)));
+                potentialStrikesTest.add(new MoveCoordinates(new Coordinate(currentXPosition, currentYPosition),
+                        new Coordinate(moveX, moveY)));
                 return !nextTurn;
             }
             else if (safeSpotCheck && strike) {
-                unsafePositions.add(new Coordinates(moveX, moveY));
+                unsafePositions.add(new Coordinate(moveX, moveY));
             } else if (!safeSpotCheck) {
                 if (tileIsEmpty(moveX, moveY) && !strike) {
                     if (!nextTurn) {
@@ -134,7 +117,6 @@ class ChessPiece {
                     } else {
                         addNextPotentialMove(moveX, moveY);
                     }
-                    //addPotentialMoves(moveX, moveY, nextTurn);
                     return !nextTurn;
                 } else if (!tileIsEmpty(moveX, moveY) && strike && !sameColor(moveX, moveY)) {
                     if (!nextTurn) {
@@ -142,16 +124,13 @@ class ChessPiece {
                     } else {
                         addNextPotentialStrike(moveX, moveY);
                     }
-//                    addNextPotentialMove(moveX, moveY);
-//                    addPotentialStrike(moveX, moveY);
-//                    addPotentialStrikesAndMoves(moveX, moveY, nextTurn);
                     return !nextTurn;
                 }
             }
         } else if (!pawn) {
             if (strikeTest && !tileIsEmpty(moveX, moveY) && !sameColor(moveX, moveY) && strike && !nextTurn && ! secondTurn) {
-                potentialStrikesTest.add(new MoveCoordinates(new Coordinates(currentXPosition, currentYPosition),
-                        new Coordinates(moveX, moveY)));
+                potentialStrikesTest.add(new MoveCoordinates(new Coordinate(currentXPosition, currentYPosition),
+                        new Coordinate(moveX, moveY)));
                 return false;
             }
             else if(strikeTest && tileIsEmpty(moveX, moveY)){
@@ -159,10 +138,10 @@ class ChessPiece {
             }
             else if (safeSpotCheck) {
                 if (tileIsEmpty(moveX, moveY) && !nextTurn) {
-                    unsafePositions.add(new Coordinates(moveX, moveY));
+                    unsafePositions.add(new Coordinate(moveX, moveY));
                     return true; // signal for the piece to keep checking next tile
                 } else if (!tileIsEmpty(moveX, moveY) && !nextTurn) {
-                    unsafePositions.add(new Coordinates(moveX, moveY));
+                    unsafePositions.add(new Coordinate(moveX, moveY));
                     return false; // signaling for the piece it's the end of the line
                 }
             } else if(!strikeTest) {
@@ -172,7 +151,6 @@ class ChessPiece {
                     } else {
                         addNextPotentialMove(moveX, moveY);
                     }
-//                    addPotentialMoves(moveX, moveY, nextTurn);
                     secondTurn = !secondTurn;
                     return true; // signal for the piece to keep checking next tile
                 } else if (!tileIsEmpty(moveX, moveY) && !sameColor(moveX, moveY)) {
@@ -183,7 +161,6 @@ class ChessPiece {
                         addNextPotentialMove(moveX, moveY);
                         addNextPotentialStrike(moveX, moveY);
                     }
-//                    addPotentialStrikesAndMoves(moveX, moveY, nextTurn);
                     secondTurn = !secondTurn;
                     return false; // signal for the piece it's the end of the line
                 }
@@ -206,111 +183,27 @@ class ChessPiece {
     }
 
     private void addPotentialStrikeTest(int moveX, int moveY) {
-        potentialStrikesTest.add(new MoveCoordinates(new Coordinates(currentXPosition, currentYPosition), new Coordinates(moveX, moveY)));
+        potentialStrikesTest.add(new MoveCoordinates(new Coordinate(currentXPosition, currentYPosition), new Coordinate(moveX, moveY)));
     }
 
     private void addPotentialMove(int x, int y) {
         if(!potentialMoves.stream()
                 .anyMatch(mc -> mc.getTo().getX() == x && mc.getTo().getY() == y)) {
-            potentialMoves.add(new MoveCoordinates(new Coordinates(currentXPosition, currentYPosition), new Coordinates(x, y)));
+            potentialMoves.add(new MoveCoordinates(new Coordinate(currentXPosition, currentYPosition), new Coordinate(x, y)));
         }
     }
 
     private void addPotentialStrike(int x, int y) {
-        potentialMoves.add(new MoveCoordinates(new Coordinates(currentXPosition, currentYPosition), new Coordinates(x, y)));
-        potentialStrikes.add(new MoveCoordinates(new Coordinates(currentXPosition, currentYPosition), new Coordinates(x, y)));
+        potentialMoves.add(new MoveCoordinates(new Coordinate(currentXPosition, currentYPosition), new Coordinate(x, y)));
+        potentialStrikes.add(new MoveCoordinates(new Coordinate(currentXPosition, currentYPosition), new Coordinate(x, y)));
     }
 
     private void addNextPotentialMove(int x, int y) {
-        nextPotentialMoves.add(new MoveCoordinates(new Coordinates(currentXPosition, currentYPosition), new Coordinates(x, y)));
+        nextPotentialMoves.add(new MoveCoordinates(new Coordinate(currentXPosition, currentYPosition), new Coordinate(x, y)));
     }
 
     private void addNextPotentialStrike(int x, int y) {
-        nextPotentialMoves.add(new MoveCoordinates(new Coordinates(currentXPosition, currentYPosition), new Coordinates(x, y)));
-        nextPotentialStrikes.add(new MoveCoordinates(new Coordinates(currentXPosition, currentYPosition), new Coordinates(x, y)));
+        nextPotentialMoves.add(new MoveCoordinates(new Coordinate(currentXPosition, currentYPosition), new Coordinate(x, y)));
+        nextPotentialStrikes.add(new MoveCoordinates(new Coordinate(currentXPosition, currentYPosition), new Coordinate(x, y)));
     }
-
-//    private void addPotentialMove(int x, int y, boolean nextTurn, boolean strike){
-//        if(!nextTurn && !strike) {
-//            potentialMoves.add(new MoveCoordinates(new Coordinates(currentXPosition, currentYPosition), new Coordinates(x, y)));
-//        }
-//        else if(!nextTurn && strike){
-//            potentialMoves.add(new MoveCoordinates(new Coordinates(currentXPosition, currentYPosition), new Coordinates(x, y)));
-//            potentialStrikes.add(new MoveCoordinates(new Coordinates(currentXPosition, currentYPosition), new Coordinates(x, y)));
-//        }
-//        else if(nextTurn && !strike){
-//            nextPotentialMoves.add(new MoveCoordinates(new Coordinates(currentXPosition, currentYPosition), new Coordinates(x, y)));
-//        }
-//        else{
-//            nextPotentialMoves.add(new MoveCoordinates(new Coordinates(currentXPosition, currentYPosition), new Coordinates(x, y)));
-//            nextPotentialStrikes.add(new MoveCoordinates(new Coordinates(currentXPosition, currentYPosition), new Coordinates(x, y)));
-//        }
-//    }
-
-//    public void addPotentialStrikesAndMoves(int x, int y, boolean nextTurn) {
-//        if (nextTurn || secondTurn) {
-//            addOtherMove(x, y, "nextPotentialMoves");
-//            addOtherMove(x, y, "nextPotentialStrikes");
-//        } else {
-//            addPotentialMove(x, y, "potentialMoves");
-//            addOtherMove(x, y, "potentialStrikes");
-//        }
-//    }
-//
-//    public void addPotentialMoves(int x, int y, boolean nextTurn) {
-//        if (nextTurn || secondTurn) {
-//            addOtherMove(x, y, "nextPotentialMoves");
-//        } else {
-//            addPotentialMove(x, y, "potentialMoves");
-//        }
-//    }
-
-
-    // Should add condition unique
-//    private void addPotentialMove(int x, int y, String key) {
-//
-
-//        if (allPotentialMoves.get(id) == null) {
-//
-//            Map<String, List<Coordinates>> map = new HashMap();
-//            List<Coordinates> list = new ArrayList<>();
-//            map.put(key, list);
-//            allPotentialMoves.put(id, map);
-//            list.add(new Coordinates(x, y));
-//        } else {
-//            Map<String, List<Coordinates>> map = allPotentialMoves.get(id);
-//            List<Coordinates> list = map.get(key);
-//            list.add(new Coordinates(x, y));
-//        }
-//    }
-
-    // Should add condition unique
-//    private void addOtherMove(int x, int y, String key) {
-//
-//        if (allPotentialMoves.get(id).get(key) == null) {
-//            Map<String, List<Coordinates>> map = allPotentialMoves.get(id);
-//            List<Coordinates> list = new ArrayList<>();
-//            map.put(key, list);
-//            allPotentialMoves.put(id, map);
-//            list.add(new Coordinates(x, y));
-//        } else {
-//            Map<String, List<Coordinates>> map = allPotentialMoves.get(id);
-//            List<Coordinates> list = map.get(key);
-//            if(!list.stream().anyMatch(coordinate -> coordinate.getX() == x && coordinate.getY() == y)){
-//                list.add(new Coordinates(x, y));
-//            }
-//        }
-//    }
-
-
-//    public Map<Integer, Map<String, List<Coordinates>>> getAllPotentialMoves() {
-//        allPotentialMoves.clear();
-//        setAllPotentialmoves();
-//        if(allPotentialMoves.size() > 0){
-//            int i = 0;
-//        }
-//        return allPotentialMoves;
-//    }
-
-
 }

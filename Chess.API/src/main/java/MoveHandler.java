@@ -5,19 +5,26 @@ class MoveHandler {
 
     public static List<Threat> blackThreats = new ArrayList<>();
     public static List<Threat> whiteThreats = new ArrayList<>();
-    public static List<Coordinates> whiteSafePositions = new ArrayList<>();
-    public static List<Coordinates> blackSafePositions = new ArrayList<>();
+    public static List<Coordinate> whiteSafePositions = new ArrayList<>();
+    public static List<Coordinate> blackSafePositions = new ArrayList<>();
     public static List<ChessPiece> allCurrentChesspieces = new ArrayList<>();
     public static List<Threat> potentialSaviour = new ArrayList<>();
+
     private static final int KINGSVALUE = 1000;
     private static final int QUEENSVALUE = 9;
+    private static final int BLACKKINGS_ID = 5;
+    private static final int WHITEKINGS_ID = 29;
     private static final String BLACK = "Black";
     private static final String WHITE = "White";
-    private static String currentColor;
 
+    private static int blackKingsX;
+    private static int blackKingsY;
+    private static int whiteKingsX;
+    private static int whiteKingsY;
+
+    private static String currentColor;
     private static ChessPiece savedPiece;
     private static MoveCoordinates bestMove;
-
     private static PlayerTurn playerTurn = PlayerTurn.BLACK;
 
     public static void setPlayerTurn(PlayerTurn playerTurn) {
@@ -39,9 +46,7 @@ class MoveHandler {
     }
 
     public static Move pickMove() {
-        //TODO: Man skulle kunna kolla att om man har flera alternativ till moves så kikar man på
-        // de olika hotade pjäserna man har efter de olika moven, och om nån av pjäserna står på en
-        // icke safespot för motståndaren så föredrar man det draget.
+
         //TODO: Vi vill försöka schacka mer om det går
 
         whiteSafePositions = MoveCollection.getWhiteSafePositions();
@@ -50,6 +55,16 @@ class MoveHandler {
         whiteThreats = MoveCollection.getWhiteThreats();
         allCurrentChesspieces = MoveCollection.getAllCurrentChessPieces();
         bestMove = null;
+
+        for (ChessPiece piece : allCurrentChesspieces) {
+            if (piece.id == BLACKKINGS_ID) {
+                blackKingsX = piece.currentXPosition;
+                blackKingsY = piece.currentYPosition;
+            } else if (piece.id == WHITEKINGS_ID) {
+                whiteKingsX = piece.currentXPosition;
+                whiteKingsY = piece.currentYPosition;
+            }
+        }
 
         List<Threat> currentThreatList = new ArrayList<>();
         List<Threat> opponentsThreatList = new ArrayList<>();
@@ -232,7 +247,7 @@ class MoveHandler {
         int y2 = threat.getThreat().currentYPosition;
 
         // Gets all coordinates that will block our current threat
-        List<Coordinates> blockCoordinates = new ArrayList<>(getBlockCoordinates(x1, y1, x2, y2));
+        List<Coordinate> blockCoordinates = new ArrayList<>(getBlockCoordinates(x1, y1, x2, y2));
         String color = threat.getThreatenedPiece().color;
         List<MoveOption> highestPotentialThreats = new ArrayList<>();
         List<Threat> testThreatList;
@@ -253,7 +268,7 @@ class MoveHandler {
                     int toX = mc.getTo().getX();
                     int toY = mc.getTo().getY();
 
-                    for (Coordinates c : blockCoordinates) {
+                    for (Coordinate c : blockCoordinates) {
                         if (c.getX() == toX && c.getY() == toY) {
 
                             testRun(piece.id, piece.currentXPosition, piece.currentYPosition, toX, toY, true);
@@ -319,39 +334,39 @@ class MoveHandler {
 
     // ---------------------------------------------------------------------------------------------------- //
 
-    private static List<Coordinates> getBlockCoordinates(int x1, int y1, int x2, int y2) {
+    private static List<Coordinate> getBlockCoordinates(int x1, int y1, int x2, int y2) {
 
-        List<Coordinates> blockCoordinates = new ArrayList<>();
+        List<Coordinate> blockCoordinates = new ArrayList<>();
         ValueComparator vcX = new ValueComparator(x1, x2);
         ValueComparator vcY = new ValueComparator(y1, y2);
 
         if (x1 == x2) {
 
             for (int i = vcY.getMinValue() + 1; i < vcY.getMaxValue(); i++) {
-                blockCoordinates.add(new Coordinates(x1, i));
+                blockCoordinates.add(new Coordinate(x1, i));
             }
 //            if (y1 > y2) {
 //                for (int i = y2 + 1; i < y1; i++) {
-//                    blockCoordinates.add(new Coordinates(x1, i));
+//                    blockCoordinates.add(new Coordinate(x1, i));
 //                }
 //            } else {
 //                for (int i = y1 + 1; i < y2; i++) {
-//                    blockCoordinates.add(new Coordinates(x1, i));
+//                    blockCoordinates.add(new Coordinate(x1, i));
 //                }
 //            }
 
         } else if (y1 == y2) {
 
             for (int i = vcX.getMinValue() + 1; i < vcX.getMaxValue(); i++) {
-                blockCoordinates.add(new Coordinates(1, y1));
+                blockCoordinates.add(new Coordinate(1, y1));
             }
 //            if (x1 > x2) {
 //                for (int i = x2 + 1; i < x1; i++) {
-//                    blockCoordinates.add(new Coordinates(i, y1));
+//                    blockCoordinates.add(new Coordinate(i, y1));
 //                }
 //            } else {
 //                for (int i = x1 + 1; i < x2; i++) {
-//                    blockCoordinates.add(new Coordinates(i, y1));
+//                    blockCoordinates.add(new Coordinate(i, y1));
 //                }
 //            }
         } else {
@@ -360,13 +375,13 @@ class MoveHandler {
                     while (x1 != x2 + 1 || y1 != y2 + 1) {
                         x1--;
                         y1--;
-                        blockCoordinates.add(new Coordinates(x1, y1));
+                        blockCoordinates.add(new Coordinate(x1, y1));
                     }
                 } else if (y1 < y2) {
                     while (x1 != x2 + 1 || y1 != y2 - 1) {
                         x1--;
                         y1++;
-                        blockCoordinates.add(new Coordinates(x1, y1));
+                        blockCoordinates.add(new Coordinate(x1, y1));
                     }
                 }
             } else if (x1 < x2) {
@@ -374,13 +389,13 @@ class MoveHandler {
                     while (x1 != x2 - 1 || y1 != y2 + 1) {
                         x1++;
                         y1--;
-                        blockCoordinates.add(new Coordinates(x1, y1));
+                        blockCoordinates.add(new Coordinate(x1, y1));
                     }
                 } else if (y1 < y2) {
                     while (x1 != x2 - 1 || y1 != y2 - 1) {
                         x1++;
                         y1++;
-                        blockCoordinates.add(new Coordinates(x1, y1));
+                        blockCoordinates.add(new Coordinate(x1, y1));
                     }
                 }
             }
@@ -580,6 +595,8 @@ class MoveHandler {
         List<MoveOption> moveOptionsList = new ArrayList<>();
         List<MoveOption> allMoveOptionsList = new ArrayList<>();
         List<MoveOption> noThreatOptions = new ArrayList<>();
+        List<MoveOption> bestclosingInOptions = new ArrayList<>();
+
 
         for (ChessPiece piece : allCurrentChesspieces) {
 
@@ -648,6 +665,18 @@ class MoveHandler {
                     .filter(moveOption -> moveOption.getThreatValue() == bestThreatValue)
                     .collect(Collectors.toList());
 
+            bestclosingInOptions = new ArrayList<>(getBestMoveOptions(bestMoveOptions));
+
+            if(bestclosingInOptions.size() > 0){
+                Random r = new Random();
+                int bound = bestclosingInOptions.size();
+
+                int index = r.nextInt(bound);
+                MoveOption randomMoveOption = bestclosingInOptions.get(index);
+
+                return createMove(randomMoveOption.getMoveCoordinates());
+            }
+
             Random r = new Random();
             int bound = bestMoveOptions.size();
 
@@ -664,13 +693,25 @@ class MoveHandler {
 
             int bestThreatValue = moveOptionsList.get(0).getThreatValue();
 
-            if(bestThreatValue < currentHighestThreatValue){
+            if (bestThreatValue < currentHighestThreatValue) {
 
                 List<MoveOption> bestMoveOptions;
 
                 bestMoveOptions = moveOptionsList.stream()
                         .filter(moveOption -> moveOption.getThreatValue() == bestThreatValue)
                         .collect(Collectors.toList());
+
+                bestclosingInOptions = new ArrayList<>(getBestMoveOptions(bestMoveOptions));
+
+                if(bestclosingInOptions.size() > 0){
+                    Random r = new Random();
+                    int bound = bestclosingInOptions.size();
+
+                    int index = r.nextInt(bound);
+                    MoveOption randomMoveOption = bestclosingInOptions.get(index);
+
+                    return createMove(randomMoveOption.getMoveCoordinates());
+                }
 
                 Random r = new Random();
                 int bound = bestMoveOptions.size();
@@ -695,6 +736,18 @@ class MoveHandler {
                     .filter(moveOption -> moveOption.getThreatValue() == bestThreatValue)
                     .collect(Collectors.toList());
 
+            bestclosingInOptions = new ArrayList<>(getBestMoveOptions(bestMoveOptions));
+
+            if(bestclosingInOptions.size() > 0){
+                Random r = new Random();
+                int bound = bestclosingInOptions.size();
+
+                int index = r.nextInt(bound);
+                MoveOption randomMoveOption = bestclosingInOptions.get(index);
+
+                return createMove(randomMoveOption.getMoveCoordinates());
+            }
+
             Random r = new Random();
             int bound = bestMoveOptions.size();
 
@@ -705,6 +758,69 @@ class MoveHandler {
             return createMove(randomMoveOption.getMoveCoordinates());
         }
         return null;
+    }
+
+    private static List<MoveOption> getBestMoveOptions(List<MoveOption> bestMoveOptions){
+
+        int kingX;
+        int kingY;
+
+        if (currentColor == BLACK) {
+            kingX = blackKingsX;
+            kingY = blackKingsY;
+        } else {
+            kingX = whiteKingsX;
+            kingY = whiteKingsY;
+        }
+
+        List<MoveOption> closingInOptions = new ArrayList<>();
+
+        for (MoveOption mo : bestMoveOptions) {
+
+            int fromX = mo.getMoveCoordinates().getFrom().getX();
+            int fromY = mo.getMoveCoordinates().getFrom().getY();
+            int toX = mo.getMoveCoordinates().getTo().getX();
+            int toY = mo.getMoveCoordinates().getTo().getY();
+            boolean closingInOnKing = false;
+            int distanceX1;
+            int distanceY1;
+            int distanceX2;
+            int distanceY2;
+
+            if (toX < kingX) {
+                distanceX1 = kingX - toX;
+            } else if (toX > kingX) {
+                distanceX1 = toX - kingX;
+            } else {
+                distanceX1 = 0;
+            }
+            if (toY < kingY) {
+                distanceY1 = kingY - toY;
+            } else if (toY > kingY) {
+                distanceY1 = toY - kingY;
+            } else {
+                distanceY1 = 0;
+            }
+            if (fromX < kingX) {
+                distanceX2 = kingX - fromX;
+            } else if (fromX > kingX) {
+                distanceX2 = fromX - kingX;
+            } else {
+                distanceX2 = 0;
+            }
+            if (fromY < kingY) {
+                distanceY2 = kingY - fromY;
+            } else if (fromY > kingY) {
+                distanceY2 = fromY - kingY;
+            } else {
+                distanceY2 = 0;
+            }
+
+            bestMoveOptions = bestMoveOptions.stream()
+                    .filter(moveOption -> distanceX1 + distanceY1 < distanceX2 + distanceY2)
+                    .collect(Collectors.toList());
+        }
+            return bestMoveOptions;
     }
 
 
@@ -790,7 +906,7 @@ class MoveHandler {
                 int toY = threatMove.getThreatenedPiece().currentYPosition;
 
                 MoveCoordinates mc = createMoveCoordinates(fromX, fromY, toX, toY);
-                //MoveCoordinates mc = new MoveCoordinates(new Coordinates(fromX, fromY), new Coordinates(toX, toY));
+                //MoveCoordinates mc = new MoveCoordinates(new Coordinate(fromX, fromY), new Coordinate(toX, toY));
 
 
                 // Testing every saviourPiece that can take the threatening piece
@@ -897,7 +1013,7 @@ class MoveHandler {
 
     private static MoveCoordinates createMoveCoordinates(int fromX, int fromY, int toX, int toY) {
 
-        MoveCoordinates mc = new MoveCoordinates(new Coordinates(fromX, fromY), new Coordinates(toX, toY));
+        MoveCoordinates mc = new MoveCoordinates(new Coordinate(fromX, fromY), new Coordinate(toX, toY));
 
         return mc;
     }
@@ -1011,7 +1127,7 @@ class MoveHandler {
     // Checking if the coordinates are a safe spot
     private static boolean safeSpot(int x, int y, String color) {
 
-        List<Coordinates> list;
+        List<Coordinate> list;
 
         if (color == BLACK) {
             list = blackSafePositions.stream().collect(Collectors.toList());
@@ -1019,7 +1135,7 @@ class MoveHandler {
             list = whiteSafePositions.stream().collect(Collectors.toList());
         }
 
-        for (Coordinates coord : list) {
+        for (Coordinate coord : list) {
             if (coord.getX() == x && coord.getY() == y) {
                 return true;
             }

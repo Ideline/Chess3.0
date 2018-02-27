@@ -5,11 +5,11 @@ import java.util.Map;
 
 public class MoveValues {
 
-    private static Map<Integer, List<Coordinates>> allPotentialStrikes = new HashMap<>();
+    private static Map<Integer, List<Coordinate>> allPotentialStrikes = new HashMap<>();
     private static Map<String, List<ChessPiece>> chessPieceMap = new HashMap<String, List<ChessPiece>>();
     private static Map<String, List<ChessPiece>> threatenedPieces = new HashMap<>();
 
-    public static void setAllNextPotentialMoves(Map<Integer, List<Coordinates>> allPotentialStrikes) {
+    public static void setAllNextPotentialMoves(Map<Integer, List<Coordinate>> allPotentialStrikes) {
         allPotentialStrikes = allPotentialStrikes;
     }
 
@@ -23,7 +23,7 @@ public class MoveValues {
         for(ChessPiece piece : chessPieceMap.get("Black")){
 
             if(allPotentialStrikes.containsKey(piece.id)){
-                for(Coordinates xy : allPotentialStrikes.get(piece.id)){
+                for(Coordinate xy : allPotentialStrikes.get(piece.id)){
                     int x = xy.getX();
                     int y = xy.getY();
 
@@ -43,7 +43,7 @@ public class MoveValues {
         for(ChessPiece piece : chessPieceMap.get("White")){
 
             if(allPotentialStrikes.containsKey(piece.id)){
-                for(Coordinates xy : allPotentialStrikes.get(piece.id)){
+                for(Coordinate xy : allPotentialStrikes.get(piece.id)){
                     int x = xy.getX();
                     int y = xy.getY();
 

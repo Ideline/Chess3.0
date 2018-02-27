@@ -7,26 +7,26 @@
 //
 //class ChessPieceBackup {
 //
-//    protected Coordinates field;
+//    protected Coordinate field;
 //    protected String color;
 //    protected int id;
 //    private boolean possibleQueen = false;
 //    protected int value;
-//    private List<Coordinates> potentialMoves = new ArrayList<>();
-//    private List<Coordinates> potentialStrikes = new ArrayList<>();
-//    private List<Coordinates> nextPotentialMoves = new ArrayList<>();
-//    private List<Coordinates> nextPotentialStrikes = new ArrayList<>();
-//    private Map<String, List<Coordinates>> allPotentialmoves = new HashMap<>();
+//    private List<Coordinate> potentialMoves = new ArrayList<>();
+//    private List<Coordinate> potentialStrikes = new ArrayList<>();
+//    private List<Coordinate> nextPotentialMoves = new ArrayList<>();
+//    private List<Coordinate> nextPotentialStrikes = new ArrayList<>();
+//    private Map<String, List<Coordinate>> allPotentialmoves = new HashMap<>();
 //
 //    public ChessPieceBackup(int x, int y, String color, int id, int value){
-//        this.field = new Coordinates(x, y);
+//        this.field = new Coordinate(x, y);
 //        this.color = color;
 //        this.id = id;
 //        this.value = value;
 //
 //    }
 //
-//    public List<Coordinates> getPotentialStrikes() {
+//    public List<Coordinate> getPotentialStrikes() {
 //        return potentialStrikes;
 //    }
 //
@@ -49,11 +49,11 @@
 //        this.allPotentialmoves.put("nextPotentialStrikes", nextPotentialStrikes);
 //    }
 //
-//    public Map<String, List<Coordinates>> getAllPotentialMoves() {
+//    public Map<String, List<Coordinate>> getAllPotentialMoves() {
 //        return allPotentialmoves;
 //    }
 //
-//    public List<Coordinates> getPotentialMoves() {
+//    public List<Coordinate> getPotentialMoves() {
 //        potentialMoves = new ArrayList<>(); // Maybe .clear() instead?
 //        nextPotentialMoves = new ArrayList<>();
 //        potentialStrikes = new ArrayList<>();
@@ -125,18 +125,18 @@
 //    }
 //
 //    public void addPotentialMove(int x, int y){
-//        potentialMoves.add(new Coordinates(x, y));
+//        potentialMoves.add(new Coordinate(x, y));
 //    }
 //
 //    public void addPotentialStrike(int x, int y){
-//        potentialStrikes.add(new Coordinates(x, y));
+//        potentialStrikes.add(new Coordinate(x, y));
 //    }
 //
 //    public void addNextPotentialMove(int x, int y){
-//        nextPotentialMoves.add(new Coordinates(x, y));
+//        nextPotentialMoves.add(new Coordinate(x, y));
 //    }
 //
 //    public void addNextPotentialStrike(int x, int y){
-//        nextPotentialStrikes.add(new Coordinates(x, y));
+//        nextPotentialStrikes.add(new Coordinate(x, y));
 //    }
 //}

@@ -23,9 +23,9 @@ public class King extends ChessPiece implements IChessPieces{
     }
 
     @Override
-    public void move(int x, int y, int rightLeftOrStay, int upDownOrStay) {
-        int moveX = x + rightLeftOrStay;
-        int moveY = y + upDownOrStay;
+    public void move(int fromX, int fromY, int rightLeftOrStay, int upDownOrStay) {
+        int moveX = fromX + rightLeftOrStay;
+        int moveY = fromY + upDownOrStay;
         if (moveOnBoard(moveX, moveY)) {
             checkMove(moveX, moveY, STRIKE, NO_PAWN, false);
             if(secondTurn){

@@ -5,16 +5,16 @@
 //
 //class ChessPieceBackup2 {
 //
-//    protected Coordinates field;
+//    protected Coordinate field;
 //    protected String color;
 //    protected int id;
 //    protected int value;
 //    private boolean possibleQueen = false;
-//    private Map<String, Map<String, List<Coordinates>>> allPotentialMoves = new HashMap<>();
+//    private Map<String, Map<String, List<Coordinate>>> allPotentialMoves = new HashMap<>();
 //
 //
 //    public ChessPieceBackup2(int x, int y, String color, int id, int value) {
-//        this.field = new Coordinates(x, y);
+//        this.field = new Coordinate(x, y);
 //        this.color = color;
 //        this.id = id;
 //        this.value = value;
@@ -24,7 +24,7 @@
 //        setPotentialMoves();
 //    }
 //
-//    public Map<String, Map<String, List<Coordinates>>> getAllPotentialMoves() {
+//    public Map<String, Map<String, List<Coordinate>>> getAllPotentialMoves() {
 //        setAllPotentialmoves();
 //        return allPotentialMoves;
 //    }
@@ -99,30 +99,30 @@
 //    private void addPotentialMove(int x, int y, String color, String key) {
 //
 //        if (allPotentialMoves.get(color) == null) {
-//            Map<String, List<Coordinates>> map = new HashMap();
-//            List<Coordinates> list = new ArrayList<>();
+//            Map<String, List<Coordinate>> map = new HashMap();
+//            List<Coordinate> list = new ArrayList<>();
 //            map.put(key, list);
 //            allPotentialMoves.put(color, map);
-//            list.add(new Coordinates(x, y));
+//            list.add(new Coordinate(x, y));
 //        } else {
-//            Map<String, List<Coordinates>> map = allPotentialMoves.get(color);
-//            List<Coordinates> list = map.get(key);
-//            list.add(new Coordinates(x, y));
+//            Map<String, List<Coordinate>> map = allPotentialMoves.get(color);
+//            List<Coordinate> list = map.get(key);
+//            list.add(new Coordinate(x, y));
 //        }
 //    }
 //
 //    private void addOtherMove(int x, int y, String color, String key){
 //
 //        if (allPotentialMoves.get(color).get(key) == null) {
-//            Map<String, List<Coordinates>> map = allPotentialMoves.get(color);
-//            List<Coordinates> list = new ArrayList<>();
+//            Map<String, List<Coordinate>> map = allPotentialMoves.get(color);
+//            List<Coordinate> list = new ArrayList<>();
 //            map.put(key, list);
 //            allPotentialMoves.put(color, map);
-//            list.add(new Coordinates(x, y));
+//            list.add(new Coordinate(x, y));
 //        } else {
-//            Map<String, List<Coordinates>> map = allPotentialMoves.get(color);
-//            List<Coordinates> list = map.get(key);
-//            list.add(new Coordinates(x, y));
+//            Map<String, List<Coordinate>> map = allPotentialMoves.get(color);
+//            List<Coordinate> list = map.get(key);
+//            list.add(new Coordinate(x, y));
 //        }
 //    }
 //}
