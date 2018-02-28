@@ -14,7 +14,6 @@ class ChessPiece {
     protected Coordinate tile;
     protected String color;
     protected int id;
-    protected int value;
     protected int currentXPosition;
     protected int currentYPosition;
     private boolean possibleQueen = false;
@@ -28,11 +27,10 @@ class ChessPiece {
     private List<MoveCoordinates> potentialStrikesTest = new ArrayList<>();
     private boolean strikeTest = false;
 
-    public ChessPiece(int x, int y, String color, int id, int value) {
+    public ChessPiece(int x, int y, String color, int id) {
         this.tile = new Coordinate(x, y);
         this.color = color;
         this.id = id;
-        this.value = value;
         currentXPosition = tile.getX();
         currentYPosition = tile.getY();
     }
@@ -57,10 +55,13 @@ class ChessPiece {
         }
     }
 
-    public List<MoveCoordinates> getPotentialMoves() {
-        if(potentialMoves.size() == 0) {
+    public List<MoveCoordinates> getPotentialMoves(boolean init) {
+        if(init){
             setPotentialMoves();
         }
+//        if(potentialMoves.size() == 0) {
+//            setPotentialMoves();
+//        }
         return potentialMoves;
     }
 
@@ -81,7 +82,7 @@ class ChessPiece {
     }
 
     public int getValue() {
-        return value;
+        return 19;
     }
 
     public boolean isPossibleQueen() {

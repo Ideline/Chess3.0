@@ -5,7 +5,7 @@ import static spark.Spark.*;
 public class Main {
 
     public static void main(String[] args) {
-
+//// Used for debugging
 //        Game.start();
 //        while (true) {
 //
@@ -17,8 +17,8 @@ public class Main {
 //            if (move.getTo().matches("S1")) {
 //                move.print();
 //            } else {
-//                Game.updateBoard(move);
-//                Game.changePlayerTurn();
+//                Board.updateBoard(move);
+//                Player.changePlayerTurn();
 //
 //                move.print();
 //            }

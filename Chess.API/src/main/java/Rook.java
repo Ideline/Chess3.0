@@ -1,15 +1,23 @@
 public class Rook extends ChessPiece {
 
-    public Rook(int x, int y, String color, int id, int value) {
-        super(x, y, color, id, value);
+    public Rook(int x, int y, String color, int id) {
+        super(x, y, color, id);
     }
 
     private final boolean NO_PAWN = false;
     private final boolean STRIKE = true;
+    private final int VALUE = 5;
+
+    @Override
+    public int getValue() {
+        return VALUE;
+    }
 
     public void setPotentialMoves() {
 
-        clearLists();
+        if(!safeSpotCheck) {
+            clearLists();
+        }
 
         move(currentXPosition, currentYPosition, STAY, UP, false);
         move(currentXPosition, currentYPosition, STAY, DOWN, false);

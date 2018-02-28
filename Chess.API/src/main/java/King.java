@@ -1,16 +1,24 @@
 public class King extends ChessPiece implements IChessPieces{
 
-    public King(int x, int y, String color, int id, int value) {
-        super(x, y, color, id, value);
+    public King(int x, int y, String color, int id) {
+        super(x, y, color, id);
     }
 
     private final boolean NO_PAWN = false;
     private final boolean STRIKE = true;
+    private final int VALUE = 1000;
+
+    @Override
+    public int getValue() {
+        return VALUE;
+    }
 
     @Override
     public void setPotentialMoves() {
 
-        clearLists();
+        if(!safeSpotCheck) {
+            clearLists();
+        }
 
         move(currentXPosition, currentYPosition, STAY, UP);
         move(currentXPosition, currentYPosition, STAY, DOWN);

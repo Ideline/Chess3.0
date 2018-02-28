@@ -1,7 +1,7 @@
 public class WhitePawn extends ChessPiece implements IPawn{
 
-    public WhitePawn(int x, int y, String color, int id, int value) {
-        super(x, y, color, id, value);
+    public WhitePawn(int x, int y, String color, int id) {
+        super(x, y, color, id);
     }
 
 
@@ -12,11 +12,19 @@ public class WhitePawn extends ChessPiece implements IPawn{
     private final boolean MOVE = false;
     private final boolean FIRSTTURN = false;
     private final boolean SECONDTURN = true;
+    private final int VALUE = 1;
+
+    @Override
+    public int getValue() {
+        return VALUE;
+    }
 
     @Override
     public void setPotentialMoves() {
 
-        clearLists();
+        if(!safeSpotCheck) {
+            clearLists();
+        }
 
         // Signals to swap the pawn for a queen
         if(currentYPosition == OPPONENTS_NEST){

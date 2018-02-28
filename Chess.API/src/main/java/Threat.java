@@ -8,8 +8,8 @@ public class Threat {
     public Threat(ChessPiece threatenedPiece,  ChessPiece threat){
         this.threatenedPiece = threatenedPiece;
         this.threat = threat;
-        this.threatenedPieceValue = threatenedPiece.value;
-        this.threatsValue = threat.value;
+        this.threatenedPieceValue = threatenedPiece.getValue();
+        this.threatsValue = threat.getValue();
     }
 
     public ChessPiece getThreatenedPiece() {

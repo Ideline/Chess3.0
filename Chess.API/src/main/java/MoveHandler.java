@@ -25,7 +25,7 @@ class MoveHandler {
     private static String currentColor;
     private static ChessPiece savedPiece;
     private static MoveCoordinates bestMove;
-    private static PlayerTurn playerTurn = PlayerTurn.BLACK;
+    private static PlayerTurn playerTurn = PlayerTurn.WHITE;
 
     public static void setPlayerTurn(PlayerTurn playerTurn) {
         MoveHandler.playerTurn = playerTurn;
@@ -150,7 +150,7 @@ class MoveHandler {
             int moveY = queenSwapPiece.currentYPosition;
             if (safeSpot(moveX, moveY, queenSwapPiece.color)) {
                 Move move = new Move(moveX, moveY, moveX, moveY);
-                Game.board[moveX][moveY] = new Queen(moveX, moveY, queenSwapPiece.color, queenSwapPiece.id, 9);
+                Game.board[moveX][moveY] = new Queen(moveX, moveY, queenSwapPiece.color, queenSwapPiece.id);
                 queenSwapPiece.setPossibleQueen(false);
                 return move;
             }
@@ -191,7 +191,7 @@ class MoveHandler {
                     return move;
                 }
             } else {
-                if (highestCurrentThreat.getThreatenedPieceValue() == KINGSVALUE) {
+                if (Game.checkFlag.isSignaledCheck()) {//highestCurrentThreat.getThreatenedPieceValue() == KINGSVALUE) {
                     return checkMate();
                 }
             }
@@ -257,7 +257,7 @@ class MoveHandler {
             // Checkes all allies
             if (piece.color == color) {
 
-                List<MoveCoordinates> potentialMovesCopy = new ArrayList<>(piece.getPotentialMoves());
+                List<MoveCoordinates> potentialMovesCopy = new ArrayList<>(piece.getPotentialMoves(false));
 
                 int i = 0;
 
@@ -308,7 +308,7 @@ class MoveHandler {
 
             // Selects the option with the lowest threat value
             MoveOption bestBlockMoveOption = highestPotentialThreats.get(0);
-            int blockPieceValue = bestBlockMoveOption.getPiece().value;
+            int blockPieceValue = bestBlockMoveOption.getPiece().getValue();
             int x = bestBlockMoveOption.getMoveCoordinates().getTo().getX();
             int y = bestBlockMoveOption.getMoveCoordinates().getTo().getY();
 
@@ -442,7 +442,7 @@ class MoveHandler {
             int attackPieceX = attackPiece.currentXPosition;
             int attackPieceY = attackPiece.currentYPosition;
 
-            if (safeSpot(opX, opY, attackPiece.color) || attackPiece.value < opponentsPiece.value) {
+            if (safeSpot(opX, opY, attackPiece.color) || attackPiece.getValue() < opponentsPiece.getValue()) {
 
                 testRun(attackPiece.id, attackPieceX, attackPieceY, opX, opY, false);
 
@@ -468,7 +468,7 @@ class MoveHandler {
 
             if (piece.color == currentPlayerColor) {
 
-                List<MoveCoordinates> potentialMoves = new ArrayList<>(piece.getPotentialMoves());
+                List<MoveCoordinates> potentialMoves = new ArrayList<>(piece.getPotentialMoves(false));
                 List<Threat> currentPlayerTestThreatList;
                 List<Threat> opponentsTestThreatList;
 
@@ -595,14 +595,14 @@ class MoveHandler {
         List<MoveOption> moveOptionsList = new ArrayList<>();
         List<MoveOption> allMoveOptionsList = new ArrayList<>();
         List<MoveOption> noThreatOptions = new ArrayList<>();
-        List<MoveOption> bestclosingInOptions = new ArrayList<>();
+        List<MoveOption> bestClosingInOptions;
 
 
         for (ChessPiece piece : allCurrentChesspieces) {
 
             if (piece.color == currentPlayerColor) {
 
-                List<MoveCoordinates> potentialMoves = new ArrayList<>(piece.getPotentialMoves());
+                List<MoveCoordinates> potentialMoves = new ArrayList<>(piece.getPotentialMoves(false));
                 List<Threat> currentPlayerTestThreatList;
                 List<Threat> opponentsTestThreatList;
 
@@ -665,14 +665,14 @@ class MoveHandler {
                     .filter(moveOption -> moveOption.getThreatValue() == bestThreatValue)
                     .collect(Collectors.toList());
 
-            bestclosingInOptions = new ArrayList<>(getBestMoveOptions(bestMoveOptions));
+            bestClosingInOptions = new ArrayList<>(getBestMoveOptions(bestMoveOptions));
 
-            if(bestclosingInOptions.size() > 0){
+            if (bestClosingInOptions.size() > 0) {
                 Random r = new Random();
-                int bound = bestclosingInOptions.size();
+                int bound = bestClosingInOptions.size();
 
                 int index = r.nextInt(bound);
-                MoveOption randomMoveOption = bestclosingInOptions.get(index);
+                MoveOption randomMoveOption = bestClosingInOptions.get(index);
 
                 return createMove(randomMoveOption.getMoveCoordinates());
             }
@@ -701,14 +701,14 @@ class MoveHandler {
                         .filter(moveOption -> moveOption.getThreatValue() == bestThreatValue)
                         .collect(Collectors.toList());
 
-                bestclosingInOptions = new ArrayList<>(getBestMoveOptions(bestMoveOptions));
+                bestClosingInOptions = new ArrayList<>(getBestMoveOptions(bestMoveOptions));
 
-                if(bestclosingInOptions.size() > 0){
+                if (bestClosingInOptions.size() > 0) {
                     Random r = new Random();
-                    int bound = bestclosingInOptions.size();
+                    int bound = bestClosingInOptions.size();
 
                     int index = r.nextInt(bound);
-                    MoveOption randomMoveOption = bestclosingInOptions.get(index);
+                    MoveOption randomMoveOption = bestClosingInOptions.get(index);
 
                     return createMove(randomMoveOption.getMoveCoordinates());
                 }
@@ -736,41 +736,52 @@ class MoveHandler {
                     .filter(moveOption -> moveOption.getThreatValue() == bestThreatValue)
                     .collect(Collectors.toList());
 
-            bestclosingInOptions = new ArrayList<>(getBestMoveOptions(bestMoveOptions));
+            List<MoveOption> safeSpotOptions;
 
-            if(bestclosingInOptions.size() > 0){
-                Random r = new Random();
-                int bound = bestclosingInOptions.size();
+            safeSpotOptions = bestMoveOptions.stream()
+                    .filter(mo -> {
+                        int toX = mo.getMoveCoordinates().getTo().getX();
+                        int toY = mo.getMoveCoordinates().getTo().getY();
+                        return safeSpot(toX, toY, currentPlayerColor);
+                    })
+                    .collect(Collectors.toList());
 
-                int index = r.nextInt(bound);
-                MoveOption randomMoveOption = bestclosingInOptions.get(index);
-
-                return createMove(randomMoveOption.getMoveCoordinates());
+            if (safeSpotOptions.size() > 0) {
+                bestClosingInOptions = new ArrayList<>(getBestMoveOptions(safeSpotOptions));
+            } else {
+                bestClosingInOptions = new ArrayList<>(getBestMoveOptions(bestMoveOptions));
             }
 
+            List<MoveOption> list;
+
+            if (bestClosingInOptions.size() > 0) {
+                list = bestClosingInOptions;
+            } else {
+                list = bestMoveOptions;
+            }
             Random r = new Random();
-            int bound = bestMoveOptions.size();
+            int bound = list.size();
 
             int index = r.nextInt(bound);
-            MoveOption randomMoveOption = bestMoveOptions.get(index);
-
+            MoveOption randomMoveOption = list.get(index);
 
             return createMove(randomMoveOption.getMoveCoordinates());
+
         }
         return null;
     }
 
-    private static List<MoveOption> getBestMoveOptions(List<MoveOption> bestMoveOptions){
+    private static List<MoveOption> getBestMoveOptions(List<MoveOption> bestMoveOptions) {
 
         int kingX;
         int kingY;
 
         if (currentColor == BLACK) {
-            kingX = blackKingsX;
-            kingY = blackKingsY;
-        } else {
             kingX = whiteKingsX;
             kingY = whiteKingsY;
+        } else {
+            kingX = blackKingsX;
+            kingY = blackKingsY;
         }
 
         List<MoveOption> closingInOptions = new ArrayList<>();
@@ -781,7 +792,6 @@ class MoveHandler {
             int fromY = mo.getMoveCoordinates().getFrom().getY();
             int toX = mo.getMoveCoordinates().getTo().getX();
             int toY = mo.getMoveCoordinates().getTo().getY();
-            boolean closingInOnKing = false;
             int distanceX1;
             int distanceY1;
             int distanceX2;
@@ -816,11 +826,11 @@ class MoveHandler {
                 distanceY2 = 0;
             }
 
-            bestMoveOptions = bestMoveOptions.stream()
-                    .filter(moveOption -> distanceX1 + distanceY1 < distanceX2 + distanceY2)
-                    .collect(Collectors.toList());
+            if (distanceX1 + distanceY1 < distanceX2 + distanceY2) {
+                closingInOptions.add(mo);
+            }
         }
-            return bestMoveOptions;
+        return closingInOptions;
     }
 
 
@@ -842,7 +852,7 @@ class MoveHandler {
 
         if (testThreatList.size() > 0) {
             int highestThreatValue = testThreatList.get(0).getThreatenedPieceValue();
-            if (highestThreatValue < opponentsPiece.value) {
+            if (highestThreatValue < opponentsPiece.getValue()) {
                 move = new Move(attackPieceX, attackPieceY, opX, opY);
                 return move;
             }
@@ -936,7 +946,7 @@ class MoveHandler {
         }
 
         // Fetching the lists with potential moves and strikes for the threatened piece
-        List<MoveCoordinates> potentialMoves = new ArrayList<>(threat.getThreatenedPiece().getPotentialMoves());
+        List<MoveCoordinates> potentialMoves = new ArrayList<>(threat.getThreatenedPiece().getPotentialMoves(false));
         List<MoveCoordinates> potentialStrikes = new ArrayList<>(threat.getThreatenedPiece().getPotentialStrikes());
 
         // Creating testLists with threat outcomes and sorting all lists by the highest threat value

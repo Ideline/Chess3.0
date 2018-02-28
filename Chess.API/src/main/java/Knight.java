@@ -1,17 +1,25 @@
 public class Knight extends ChessPiece implements IChessPieces {
 
-    public Knight(int x, int y, String color, int id, int value) {
-        super(x, y, color, id, value);
+    public Knight(int x, int y, String color, int id) {
+        super(x, y, color, id);
     }
 
 
     private final boolean NO_PAWN = false;
     private final boolean STRIKE = true;
+    private final int VALUE = 3;
+
+    @Override
+    public int getValue() {
+        return VALUE;
+    }
 
     @Override
     public void setPotentialMoves() {
 
-        clearLists();
+        if(!safeSpotCheck) {
+            clearLists();
+        }
 
         move(currentXPosition, currentYPosition, LEFT, FARUP);
         move(currentXPosition, currentYPosition, LEFT, FARDOWN);
